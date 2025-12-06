@@ -676,7 +676,7 @@ namespace Clinic.Api.Infrastructure.Services
                     var existingTimeException = await _context.TimeExceptions.FirstOrDefaultAsync(j => j.Id == model.EditOrNew);
                     if (existingTimeException == null)
                     {
-                        throw new Exception("Product Not Found");
+                        throw new Exception("Time Exception Not Found");
                     }
 
                     _mapper.Map(model, existingTimeException);
@@ -684,7 +684,7 @@ namespace Clinic.Api.Infrastructure.Services
                     existingTimeException.LastUpdated = DateTime.Now;
                     _context.TimeExceptions.Update(existingTimeException);
                     await _context.SaveChangesAsync();
-                    result.Message = "Product Updated Successfully";
+                    result.Message = "Time Exception Updated Successfully";
                     result.Status = 0;
                     return result;
                 }
@@ -721,6 +721,105 @@ namespace Clinic.Api.Infrastructure.Services
                 _context.TimeExceptions.Remove(timeException);
                 await _context.SaveChangesAsync();
                 result.Message = "Time Exception Deleted Successfully";
+                result.Status = 0;
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<GlobalResponse> SaveOutOfTurnException(SaveOutOfTurnExceptionDto model)
+        {
+            var result = new GlobalResponse();
+
+            try
+            {
+                var userId = _token.GetUserId();
+
+                if (model.EditOrNew == -1)
+                {
+                    var outOfTurnException = _mapper.Map<OutOfTurnExceptionsContext>(model);
+                    outOfTurnException.CreatorId = userId;
+                    outOfTurnException.CreatedOn = DateTime.Now;
+                    _context.OutOfTurnExceptions.Add(outOfTurnException);
+                    await _context.SaveChangesAsync();
+                    result.Message = "Out Of Turn Exception Saved Successfully";
+                    result.Status = 0;
+                    return result;
+                }
+                else
+                {
+                    var existingOutOfTurnException = await _context.OutOfTurnExceptions.FirstOrDefaultAsync(j => j.Id == model.EditOrNew);
+                    if (existingOutOfTurnException == null)
+                    {
+                        throw new Exception("Out Of Turn Exception Not Found");
+                    }
+
+                    _mapper.Map(model, existingOutOfTurnException);
+                    existingOutOfTurnException.ModifierId = userId;
+                    existingOutOfTurnException.LastUpdated = DateTime.Now;
+                    _context.OutOfTurnExceptions.Update(existingOutOfTurnException);
+                    await _context.SaveChangesAsync();
+                    result.Message = "Out Of Turn Exception Updated Successfully";
+                    result.Status = 0;
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<IEnumerable<GetOutOfTurnExceptionResponse>> GetOutOfTurnExceptions()
+        {
+            try
+            {
+                var query = _context.OutOfTurnExceptions.AsQueryable();
+                var result = await (
+                    from o in query
+                    join d in _context.Users on o.PractitionerId equals d.Id
+                    join b in _context.Businesses on o.BusinessId equals b.Id
+                    select new GetOutOfTurnExceptionResponse
+                    {
+                        Id = o.Id,
+                        GrigoryDate = o.GrigoryDate,
+                        StartDate = o.StartDate,
+                        PractitionerId = o.PractitionerId,
+                        BusinessId = o.BusinessId,
+                        OutOfTurn = o.OutOfTurn,
+                        CreatorId = o.CreatorId,
+                        ModifierId = o.ModifierId,
+                        CreatedOn = o.CreatedOn,
+                        LastUpdated = o.LastUpdated,
+                        DoctorName = d.FirstName + " " + d.LastName,
+                        BusinessName = b.Name
+                    }
+                    ).ToListAsync();
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<GlobalResponse> DeleteOutOfTurnException(int id)
+        {
+            var result = new GlobalResponse();
+
+            try
+            {
+                var outOfTurnException = await _context.OutOfTurnExceptions.FindAsync(id);
+
+                if (outOfTurnException == null)
+                    throw new Exception("Out Of Turn Exception Not Found");
+
+                _context.OutOfTurnExceptions.Remove(outOfTurnException);
+                await _context.SaveChangesAsync();
+                result.Message = "Out Of Turn Exception Deleted Successfully";
                 result.Status = 0;
                 return result;
             }

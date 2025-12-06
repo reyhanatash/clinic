@@ -71,6 +71,13 @@
         public bool TreatmentTemplateView { get; set; }
         public bool TreatmentView { get; set; }
         public bool UserCreateAndUpdate { get; set; }
+        public bool ExpenseCreateAndUpdate { get; set; }
+        public bool ExpenseDelete { get; set; }
+        public bool ExpenseReport { get; set; }
+        public bool ExpenseView { get; set; }
+        public bool RoleCreateAndUpdate { get; set; }
+        public bool RoleDelete { get; set; }
+        public bool RoleView { get; set; }
         public bool UserDelete { get; set; }
         public bool UserView { get; set; }
         public int EditOrNew { get; set; }

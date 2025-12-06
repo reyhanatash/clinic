@@ -12,6 +12,10 @@ import { MatInputModule } from '@angular/material/input';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideToastr } from 'ngx-toastr';
 import { JalaliMomentDateAdapter } from './share/jalali-date-adapter';
+import { StoreModule } from '@ngrx/store';
+import { objectReducer } from './store/reducer';
+
+
 
 export const PERSIAN_DATE_FORMATS = {
   parse: {
@@ -37,10 +41,12 @@ export const appConfig: ApplicationConfig = {
     importProvidersFrom(
       MatDatepickerModule,
       MatFormFieldModule,
-      MatInputModule
+      MatInputModule,
+      StoreModule.forRoot({ object: objectReducer })
     ),
     provideAnimationsAsync(),
     provideToastr(),
-    JalaliMomentDateAdapter
+    JalaliMomentDateAdapter,
+
   ]
 };

@@ -1,0 +1,76 @@
+<div class="appContainer">
+  <div class="text-right">
+    <h4 class="text-dark"> استثنائات خارج از نوبت </h4>
+    <hr>
+  </div>
+  <div class="py-2 px-3">
+    <div *ngIf="checkAccess(2)" class="col-12">
+      <div class="d-flex flex-wrap">
+        <div class="col-lg-6 col-12 form-group mb-3">
+          <p-dropdown [options]="doctorList" placeholder="پزشک" [(ngModel)]="form.selectedDoctor" optionLabel="name"
+            dataKey="id" class="full-width text-right" />
+        </div>
+        <div class="col-lg-6 col-12 form-group mb-3">
+          <p-dropdown [options]="clinicsList" placeholder="مکان" [(ngModel)]="form.selectedClinic" optionLabel="name"
+            dataKey="id" class="full-width text-right" />
+        </div>
+        <div class="col-lg-6 col-12 form-group mb-3">
+          <ng-persian-datepicker>
+            <input type="text" class="form-control" [formControl]="form.selectedDate" />
+          </ng-persian-datepicker>
+        </div>
+        <div class="col-lg-6 col-12 form-group mb-3">
+          <input placeholder="تعداد خارج از نوبت" class="form-control" id="outOfTurn" name="outOfTurn"
+            [(ngModel)]="form.outOfTurn" OnlyNumber="true" />
+        </div>
+        <div class="col-12 text-center">
+          <button class="btn btn-danger" (click)="saveOutOfTurnException()">ذخیره</button>
+        </div>
+      </div>
+    </div>
+    <hr *ngIf="checkAccess(2)">
+    <div *ngIf="checkAccess(1)" class="col-12">
+      <div class="table-responsive">
+        <p-table #dt [paginator]='true' [rows]="10" [value]='itemList' [resizableColumns]="true"
+          styleClass="p-datatable-gridlines">
+          <ng-template pTemplate="header">
+            <tr>
+              <th class="min-width"> پزشک</th>
+              <th class="min-width">مکان </th>
+              <th class="min-width">تاریخ</th>
+              <th *ngIf="checkAccess(3) || checkAccess(2)" class="min-width">تغییرات</th>
+            </tr>
+            <tr>
+              <th>
+                <input type="text" class="form-control input-sm"
+                  (input)="dt.filter($event.target.value, 'fldOverload', 'startsWith')">
+              </th>
+              <th>
+                <input type="text" class="form-control input-sm"
+                  (input)="dt.filter($event.target.value, 'fldOverload', 'startsWith')">
+              </th>
+              <th></th>
+              <th *ngIf="checkAccess(3) || checkAccess(2)"></th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-item>
+            <tr>
+              <td>{{item.doctorName}}</td>
+              <td>{{item.businessName}}</td>
+              <td>{{item.startDate| JustDateZone}}</td>
+              <td *ngIf="checkAccess(3) || checkAccess(2)">
+                <button *ngIf="checkAccess(2)" class="btn btn-outline-primary" (click)="edit(item)">
+                  تغییر
+                </button>
+                <button *ngIf="checkAccess(3)" class="btn btn-outline-danger mx-1"
+                  (click)="deleteOutOfTurnException(item.id)">
+                  حذف
+                </button>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+  </div>
+</div>

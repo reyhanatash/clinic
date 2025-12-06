@@ -199,5 +199,29 @@ namespace Clinic.Api.Controllers
             var result = await _mainService.DeleteTimeException(id);
             return Ok(result);
         }
+
+        [HttpPost("saveOutOfTurnException")]
+        [Authorize]
+        public async Task<IActionResult> SaveOutOfTurnException(SaveOutOfTurnExceptionDto model)
+        {
+            var result = await _mainService.SaveOutOfTurnException(model);
+            return Ok(result);
+        }
+
+        [HttpGet("getOutOfTurnExceptions")]
+        [Authorize]
+        public async Task<IActionResult> GetOutOfTurnExceptions()
+        {
+            var result = await _mainService.GetOutOfTurnExceptions();
+            return Ok(result);
+        }
+
+        [HttpGet("deleteOutOfTurnException/{id}")]
+        [Authorize]
+        public async Task<IActionResult> DeleteOutOfTurnException(int id)
+        {
+            var result = await _mainService.DeleteOutOfTurnException(id);
+            return Ok(result);
+        }
     }
 }

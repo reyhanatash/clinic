@@ -42,7 +42,7 @@ export const appointmentMenu: imenu[] = [
   { id: 0, text: "انواع وقت دهی", link: '', roleAccess: [], icon: 'fa fa-caret-left' },
   { id: 1, text: "تعطیلات", link: '', roleAccess: [], icon: 'fa fa-caret-left' },
   { id: 2, text: "استثنائات اوقات پزشکان", link: '/exception-time', roleAccess: [], icon: 'fa fa-caret-left' },
-  { id: 3, text: "استثنائات خارج از نوبت", link: '', roleAccess: [], icon: 'fa fa-caret-left' },
+  { id: 3, text: "استثنائات خارج از نوبت", link: '/outOfturnexceptions', roleAccess: [], icon: 'fa fa-caret-left' },
 ];
 
 @Component({

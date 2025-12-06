@@ -41,6 +41,8 @@ namespace Clinic.Api.Mappings
             CreateMap<SaveUserRoleDto, RolesContext>().ReverseMap();
             CreateMap<SaveItemCategoryDto, ItemCategoriesContext>().ReverseMap();
             CreateMap<SaveAppointmentTypeDto, AppointmentsContext>().ReverseMap();
+            CreateMap<SaveTimeExceptionModel, TimeExceptionsContext>().ReverseMap();
+            CreateMap<SaveOutOfTurnExceptionDto, OutOfTurnExceptionsContext>().ReverseMap();
         }
     }
 }

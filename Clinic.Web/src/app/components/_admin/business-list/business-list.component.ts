@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { SharedModule } from '../../share/shared.module';
-import { MainService } from '../../_services/main.service';
 import Swal from 'sweetalert2';
 import { ToastrService } from 'ngx-toastr';
+import { SharedModule } from '../../../share/shared.module';
+import { MainService } from '../../../_services/main.service';
 
 @Component({
   selector: 'app-business-list',

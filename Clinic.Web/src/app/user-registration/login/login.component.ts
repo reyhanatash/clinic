@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { UserService } from '../../_services/user.service';
+import { ObjectService } from '../../_services/store.service';
 
 @Component({
   selector: 'app-login',
@@ -18,7 +19,8 @@ export class LoginComponent {
   constructor(
     private userService: UserService,
     private router: Router,
-    private toastR: ToastrService
+    private toastR: ToastrService,
+    private objectService: ObjectService
   ) { }
 
   ngOnInit() {
@@ -43,6 +45,7 @@ export class LoginComponent {
           localStorage.setItem("token", res.token);
           localStorage.setItem("userName", this.model.userName);
           localStorage.setItem('xP98_g#d94H0w', res.secretCode);
+          this.getUserRole();
           this.router.navigate(["/appointment"]);
         }
       }
@@ -53,12 +56,12 @@ export class LoginComponent {
         this.toastR.error('خطا', 'نام کاربری و رمز عبور را وارد نمایید')
       }
     }
-    catch(ex) {
+    catch (ex) {
       let msg = ex.error.exceptionMessage;
       if (msg == 'Invalid username or password.') {
         this.toastR.error('خطا', 'نام کاربری یا رمز عبور اشتباه است ');
       }
-     }
+    }
   }
 
 
@@ -66,5 +69,11 @@ export class LoginComponent {
     if (event.key === 'Enter') {
       this.login()
     }
+  }
+
+  async getUserRole() {
+    let res: any = await this.userService.getUserRole().toPromise();
+    this.objectService.setData(res[0]);
+
   }
 }

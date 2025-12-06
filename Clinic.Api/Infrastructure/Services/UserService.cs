@@ -98,7 +98,8 @@ namespace Clinic.Api.Infrastructure.Services
                 {
                     Token = token,
                     SecretCode = secret,
-                    Role = role
+                    Role = role,
+                    UserName = user.FirstName + " " + user.LastName,
                 };
             }
             catch (Exception ex)
@@ -495,6 +496,21 @@ namespace Clinic.Api.Infrastructure.Services
                 result.Message = "Role Deleted Successfully";
                 result.Status = 0;
                 return result;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<IEnumerable<RolesContext>> GetUserRole()
+        {
+            try
+            {
+                var userRole = _claims.GetUserRole();
+
+                var role = await _context.Roles.Where(r => r.Name == userRole).ToListAsync();
+                return role;
             }
             catch (Exception ex)
             {

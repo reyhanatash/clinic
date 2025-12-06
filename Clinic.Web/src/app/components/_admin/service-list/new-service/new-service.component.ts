@@ -1,10 +1,10 @@
 import { AfterViewInit, Component } from '@angular/core';
-import { TreatmentsService } from '../../../_services/treatments.service';
-import { SharedModule } from '../../../share/shared.module';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { firstValueFrom } from 'rxjs';
 import { ColorPickerModule } from 'primeng/colorpicker';
+import { SharedModule } from '../../../../share/shared.module';
+import { TreatmentsService } from '../../../../_services/treatments.service';
 
 @Component({
   selector: 'app-new-service',
@@ -62,10 +62,10 @@ export class NewServiceComponent implements AfterViewInit {
         this.toastR.success('با موفقیت ثبت شد!');
         this.router.navigate(['/service-list']);
       } else {
-        this.toastR.error('خطا');
+        this.toastR.error('خطایی رخ داده است');
       }
     } catch (error) {
-      this.toastR.error('خطا');
+      this.toastR.error('خطایی رخ داده است');
     }
   }
 

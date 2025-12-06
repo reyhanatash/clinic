@@ -13,11 +13,21 @@
       [rowsPerPageOptions]="[10,25,50]">
       <ng-template pTemplate="header">
         <tr>
-          <th> شماره</th>
-          <th> بیمار</th>
-          <th> مبلغ</th>
-          <th> مکان</th>
-          <th> تاریخ</th>
+          <th pSortableColumn="id">
+            <p-sortIcon field="id"></p-sortIcon> شماره
+          </th>
+          <th pSortableColumn="patientName">
+            <p-sortIcon field="patientName"></p-sortIcon> بیمار
+          </th>
+          <th pSortableColumn="amount">
+            <p-sortIcon field="amount"></p-sortIcon> مبلغ
+          </th>
+          <th pSortableColumn="businessName">
+            <p-sortIcon field="businessName"></p-sortIcon> مکان
+          </th>
+          <th pSortableColumn="createdOn">
+            <p-sortIcon field="createdOn"></p-sortIcon> تاریخ
+          </th>
           <th> عملیات</th>
         </tr>
         <tr>

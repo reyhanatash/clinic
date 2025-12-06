@@ -148,10 +148,10 @@ export class InvoiceItemsComponent implements OnInit {
         this.selectedProduct = null;
         this.getInvoiceItems();
       } else {
-        this.toastR.error('خطا');
+        this.toastR.error('خطایی رخ داده است');
       }
     } catch (error) {
-      this.toastR.error('خطا');
+      this.toastR.error('خطایی رخ داده است');
     }
   }
 

@@ -260,4 +260,43 @@ export class MainService {
     };
     return this.http.get(uri, httpOptions);
   }
+
+  getOutOfTurnExceptions() {
+    const token: any = localStorage.getItem("token");
+    const uri = this.url + `api/main/getOutOfTurnExceptions`;
+    const httpOptions = {
+      headers: new HttpHeaders({
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token,
+      }),
+    };
+    return this.http.get(uri, httpOptions);
+  }
+
+  deleteOutOfTurnException(id) {
+    const token: any = localStorage.getItem("token");
+    const uri = this.url + `api/main/deleteOutOfTurnException/${id}`;
+    const httpOptions = {
+      headers: new HttpHeaders({
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token,
+      }),
+    };
+    return this.http.get(uri, httpOptions);
+  }
+
+  saveOutOfTurnException(data) {
+    const token: any = localStorage.getItem("token");
+    const uri = this.url + `api/Main/saveOutOfTurnException`;
+    const httpOptions = {
+      headers: new HttpHeaders({
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token,
+        responseType: 'text'
+      }),
+    };
+    return this.http.post(uri, data, httpOptions);
+  }
+
+
 }

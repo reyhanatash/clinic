@@ -20,5 +20,6 @@ namespace Clinic.Api.Application.Interfaces
         Task<IEnumerable<RolesContext>> GetRoles();
         Task<GlobalResponse> SaveUserRole(SaveUserRoleDto model);
         Task<GlobalResponse> DeleteRole(int id);
+        Task<IEnumerable<RolesContext>> GetUserRole();
     }
 }

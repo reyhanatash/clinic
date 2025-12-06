@@ -2,12 +2,12 @@ import { Component, AfterViewInit } from '@angular/core';
 import * as L from 'leaflet';
 import 'leaflet-control-geocoder';
 import { Marker, icon, marker } from 'leaflet';
-import { SharedModule } from '../../../share/shared.module';
-import { TreatmentsService } from '../../../_services/treatments.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
-import { MainService } from '../../../_services/main.service';
 import { ToastrService } from 'ngx-toastr';
+import { SharedModule } from '../../../../share/shared.module';
+import { TreatmentsService } from '../../../../_services/treatments.service';
+import { MainService } from '../../../../_services/main.service';
 
 
 @Component({
@@ -124,10 +124,10 @@ export class NewBusinessComponent implements AfterViewInit {
         this.toastR.success('با موفقیت ثبت شد!');
         this.router.navigate(['/business-List']);
       } else {
-        this.toastR.error('خطا');
+        this.toastR.error('خطایی رخ داده است');
       }
     } catch (error) {
-      this.toastR.error('خطا');
+      this.toastR.error('خطایی رخ داده است');
     }
   }
 

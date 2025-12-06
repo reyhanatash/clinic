@@ -27,6 +27,9 @@ export class InvoiceListComponent implements OnInit {
     try {
       let res: any = await this.InvoiceService.getInvoices().toPromise();
       this.InvoiceList = res;
+      this.InvoiceList.sort((a, b) =>
+       new Date(b.createdOn).getTime() - new Date(a.createdOn).getTime()
+      )
     }
     catch { }
 

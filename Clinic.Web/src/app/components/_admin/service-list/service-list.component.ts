@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { TreatmentsService } from './../../_services/treatments.service';
+import { TreatmentsService } from './../../../_services/treatments.service';
 import Swal from 'sweetalert2';
 import { ToastrService } from 'ngx-toastr';
-import { SharedModule } from '../../share/shared.module';
+import { SharedModule } from '../../../share/shared.module';
 
 @Component({
   selector: 'app-service-list',

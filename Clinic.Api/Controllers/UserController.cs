@@ -124,4 +124,12 @@ public class UserController : ControllerBase
         var result = await _svc.DeleteRole(id);
         return Ok(result);
     }
+
+    [HttpGet("getUserRole")]
+    [Authorize]
+    public async Task<IActionResult> GetUserRole()
+    {
+        var result = await _svc.GetUserRole();
+        return Ok(result);
+    }
 }

@@ -44,10 +44,10 @@ export class NewServiceGroupComponent implements AfterViewInit {
         this.toastR.success('با موفقیت ثبت شد!');
         this.router.navigate(['/service-group-list']);
       } else {
-        this.toastR.error('خطا');
+        this.toastR.error('خطایی رخ داده است');
       }
     } catch (error) {
-      this.toastR.error('خطا');
+      this.toastR.error('خطایی رخ داده است');
     }
   }
 

@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { Component, AfterViewInit, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { UserService } from '../../_services/user.service';
 import { SharedModule } from '../../share/shared.module';
@@ -8,11 +8,11 @@ import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-change-password',
   standalone: true,
-  imports: [CommonModule, SharedModule, RouterLink],
+  imports: [CommonModule, SharedModule],
   templateUrl: './change-password.component.html',
   styleUrl: './change-password.component.css'
 })
-export class ChangePasswordComponent {
+export class ChangePasswordComponent implements OnInit {
 
   model: any = [];
   token: any;
@@ -22,6 +22,10 @@ export class ChangePasswordComponent {
     private router: Router,
     private toastR: ToastrService
   ) { }
+
+  ngOnInit(): void {
+    this.model.userName = localStorage.getItem('userName');
+  }
 
   async changePassword() {
     try {

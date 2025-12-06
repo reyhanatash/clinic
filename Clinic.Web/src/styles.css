@@ -183,13 +183,19 @@ mat-label {
 
 /* calender */
 #appointment .day-col {
-  padding: 0.5rem !important;
+  padding-bottom: 0.5rem !important;
+}
+
+
+.datepicker-outer-container {
+  width: 100%;
+  min-width: unset !important;
 }
 
 #appointment .datepicker-outer-container .datepicker-inner-container .dp-btn {
   border-radius: 50% !important;
-  width: 20px;
-  height: 20px;
+  width: 2em;
+  height: 2em;
   margin: auto;
 }
 
@@ -201,9 +207,9 @@ mat-label {
   width: 100%;
 }
 
-p-dropdown.p-element {
+/* p-dropdown.p-element {
   padding: 0.4rem;
-}
+} */
 
 .p-dropdown-label {
   padding: 0.4rem;
@@ -343,5 +349,10 @@ p-dropdown.p-element {
     padding: 20px;
     margin-right: 0;
     direction: rtl !important;
+  }
+
+
+  .p-dropdown {
+    width: 100%;
   }
 }

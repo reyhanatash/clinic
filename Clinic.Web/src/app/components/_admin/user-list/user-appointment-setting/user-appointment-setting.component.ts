@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { SharedModule } from '../../../share/shared.module';
+import { SharedModule } from '../../../../share/shared.module';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
-import { MainService } from '../../../_services/main.service';
-import { TreatmentsService } from '../../../_services/treatments.service';
+import { MainService } from '../../../../_services/main.service';
+import { TreatmentsService } from '../../../../_services/treatments.service';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({

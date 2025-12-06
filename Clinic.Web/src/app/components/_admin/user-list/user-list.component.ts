@@ -1,14 +1,14 @@
 import { Component } from '@angular/core';
 import { TableModule } from "primeng/table";
-import { UserService } from '../../_services/user.service';
+import { UserService } from '../../../_services/user.service';
 import { RouterLink } from "@angular/router";
 import { DialogModule } from "primeng/dialog";
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ToastrService } from 'ngx-toastr';
-import { MainService } from '../../_services/main.service';
+import { MainService } from '../../../_services/main.service';
 import { DropdownModule } from 'primeng/dropdown';
-import { AttendanceScheduleComponent } from "../attendance-schedule/attendance-schedule.component";
+import { AttendanceScheduleComponent } from "../../attendance-schedule/attendance-schedule.component";
 import { Subject } from 'rxjs';
 import swal from 'sweetalert2';
 
