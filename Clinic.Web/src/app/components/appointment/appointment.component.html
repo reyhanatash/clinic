@@ -1,6 +1,6 @@
 <div class="appContainer">
   <div class="col-12 text-right">
-    <h4> اوقات امروز</h4>
+    <h4> وقت دهی</h4>
   </div>
   <hr>
   <div *ngIf="checkAccess(1)" class="row px-0 d-lg-flex">
@@ -178,12 +178,17 @@
             </span>
           </div>
 
-          <ul class="dropdown-list" *ngIf="patientsList.length > 0">
+          <ul class="dropdown-list" *ngIf="patientsList.length > 0 && dropdownOpen">
             <li [ngClass]="{'dropdown-selected': newAppointmentModel.selectedPatient == item.patientCode}"
-              *ngFor="let item of patientsList" (click)="newAppointmentModel.selectedPatient =item.patientCode">{{
+              *ngFor="let item of patientsList" (click)="selectPatient(item)">{{
               item.name }}
               (ID: {{ item.patientCode }})</li>
           </ul>
+
+          <div *ngIf="selectedPatientName">
+            <p class="mt-2 text-center">بیمار انتخاب‌ شده: {{ selectedPatientName }}</p>
+          </div>
+
           <!-- <p *ngIf="searchControl && patientsList.length === 0">نتیجه‌ای یافت نشد</p> -->
           <!-- <p-dropdown [options]="patientsList" [(ngModel)]="newAppointmentModel.selectedPatient" optionLabel="name"
             placeholder="بیمار مورد نظر را انتخاب کنید" class="full-width text-right" /> -->
