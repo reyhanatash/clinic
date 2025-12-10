@@ -98,11 +98,13 @@ export class AppointmentComponent {
   }
 
   isBeforeNow: boolean;
-  isCalendarVisible = true;
+  isCalendarVisible: boolean = false;
   newPateint: any = [];
   doctorList: any = [];
   selectedDoctor: any = [];
   filteredHours: any = [];
+  dropdownOpen: boolean = false;
+  selectedPatientName: string = null;
 
   constructor(
     private userService: UserService,
@@ -130,7 +132,7 @@ export class AppointmentComponent {
   userAppointmentsSettings: any = [];
   searchControl = '';
   allowedLinks: any = [];
-  
+
   async ngOnInit() {
     this.allowedLinks = await this.objectService.getDataAccess();
     if (this.checkAccess(1)) {
@@ -170,23 +172,30 @@ export class AppointmentComponent {
 
 
   ngAfterViewInit() {
+    this.isCalendarVisible = true;
     const calendarEl = this.el.nativeElement.querySelector('#appointment');
-    const observer = new MutationObserver(() => {
-      const switchViewEl = document.querySelector('.switch-view.dp-btn');
-      const text = switchViewEl.textContent?.trim();
-      const parts = text?.split(' ');
-      this.utilService.getIranianHolidaysWithFridays(parts[1]).subscribe(days => {
-        this.holidays = days
-        this.addHoliday();
-        this.getDoctorSchedules(this.userType != 9 ? 1 : 2);
+    if (calendarEl) {
+      const observer = new MutationObserver(() => {
+        const switchViewEl = document.querySelector('.switch-view.dp-btn');
+        const text = switchViewEl?.textContent?.trim();
+        const parts = text?.split(' ');
+        if (parts?.[1]) {
+          this.utilService.getIranianHolidaysWithFridays(parts[1]).subscribe(days => {
+            this.holidays = days;
+            this.addHoliday();
+            this.getDoctorSchedules(this.userType != 9 ? 1 : 2);
+          });
+        }
       });
-    });
-
-    observer.observe(calendarEl, {
-      childList: true,
-      subtree: true
-    });
+      observer.observe(calendarEl, {
+        childList: true,
+        subtree: true
+      });
+    } else {
+      console.error('#appointment element not found');
+    }
   }
+
 
 
 
@@ -613,15 +622,21 @@ export class AppointmentComponent {
       Tuesday: 3,
       Wednesday: 4,
       Thursday: 5
-    }
-    const result = Object.entries(data)
-      .flatMap(([day, appointments]) =>
-        (appointments as any[]).map((appointment) => ({
+    };
+
+    const result = Object.entries(data).flatMap(([day, appointments]) => {
+      if (Array.isArray(appointments)) {
+        return appointments.map((appointment) => ({
           ...appointment,
           dayOfWeek: dayMap[day] ?? null,
-        }))
-      );
+        }));
+      } else {
+        return [];
+      }
+    });
+
     return result;
+
   }
 
 
@@ -835,8 +850,8 @@ export class AppointmentComponent {
   }
 
   async getFilteredPatient() {
+    this.selectedPatientName = null;
     try {
-
       let model = {
         value: this.searchControl,
       }
@@ -847,6 +862,7 @@ export class AppointmentComponent {
           element.name = element.firstName + " " + element.lastName;
 
         });
+        this.dropdownOpen = true;
       } else {
         this.patientsList = [];
       }
@@ -862,5 +878,12 @@ export class AppointmentComponent {
       return false
     }
   }
+
+  selectPatient(item: any) {
+    this.newAppointmentModel.selectedPatient = item.patientCode;
+    this.selectedPatientName = item.name;
+    this.dropdownOpen = false;
+  }
+
 
 }
