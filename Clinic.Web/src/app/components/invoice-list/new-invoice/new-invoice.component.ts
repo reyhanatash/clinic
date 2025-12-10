@@ -60,7 +60,7 @@ export class NewInvoiceComponent implements OnInit {
       this.selectedClinicId = this.activeRoute.snapshot.paramMap.get('clinicId') == 'n' ? null : +this.activeRoute.snapshot.paramMap.get('clinicId');
       this.selectedappointmentId = this.activeRoute.snapshot.paramMap.get('appointmentId') == 'n' ? null : +this.activeRoute.snapshot.paramMap.get('appointmentId');
       this.type = +this.activeRoute.snapshot.paramMap.get('type') || 2;
-      let accessList: any  = this.objectService.getItemAccess();
+      let accessList: any = await this.objectService.getItemAccess();
       let item = accessList.filter(x => x.id == 6);
       this.invoiceAccess = item[0]['itmes'];
       if (item[0]['itmes'][0]['clicked']) {

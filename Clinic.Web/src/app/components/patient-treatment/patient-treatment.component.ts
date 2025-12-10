@@ -62,7 +62,7 @@ export class PatientTreatmentComponent {
 
   async ngOnInit() {
     this.selectedId = this.activeRoute.snapshot.paramMap.get('id');
-    let accessList: any = this.objectService.getItemAccess();
+    let accessList: any = await this.objectService.getItemAccess();
     let item = accessList.filter(x => x.id == 3);
     this.patientTreatmentAccess = item[0]['itmes'];
     if (item[0]['itmes'][0]['clicked']) {

@@ -27,6 +27,7 @@ export class UserListComponent {
   clinicsList: any;
   roles: any;
   selectedScheduleUser: any;
+  allowedLinks: any = [];
 
   changeUser(id: number) {
     this.userId$.next(id);
@@ -40,9 +41,12 @@ export class UserListComponent {
   ) { }
 
   async ngOnInit() {
+    this.allowedLinks = await this.objectService.getDataAccess();
     if (this.checkAccess(1)) {
       await this.getRoles();
       this.getUsers();
+    } else {
+      this.toastR.error("شما دسترسی به این صفحه ندارید");
     }
   }
 
@@ -113,6 +117,12 @@ export class UserListComponent {
   }
 
   checkAccess(id) {
-    return this.objectService.checkAccess(id);
+    if (this.allowedLinks?.length > 0) {
+      const item = this.allowedLinks.find(x => x.id === id);
+      return item.clicked;
+    } else {
+      return false
+    }
   }
+
 }

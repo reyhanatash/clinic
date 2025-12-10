@@ -9,23 +9,26 @@ import { RouterModule } from '@angular/router';
 @Component({
   selector: 'app-user-role-list',
   standalone: true,
-  imports: [SharedModule,RouterModule],
+  imports: [SharedModule, RouterModule],
   templateUrl: './user-role-list.component.html',
   styleUrl: './user-role-list.component.css'
 })
 export class UserRoleListComponent {
 
   roles: any;
-
+  allowedLinks: any = [];
   constructor(
     private userService: UserService,
     private toastR: ToastrService,
     private objectService: ObjectService
   ) { }
 
-  ngOnInit() {
+  async ngOnInit() {
+    this.allowedLinks = await this.objectService.getDataAccess();
     if (this.checkAccess(1)) {
       this.getRoles();
+    } else {
+      this.toastR.error("شما دسترسی به این صفحه ندارید");
     }
   }
 
@@ -66,6 +69,12 @@ export class UserRoleListComponent {
   // }
 
   checkAccess(id) {
-    return this.objectService.checkAccess(id);
+    if (this.allowedLinks?.length > 0) {
+      const item = this.allowedLinks.find(x => x.id === id);
+      return item.clicked;
+    } else {
+      return false
+    }
   }
+
 }

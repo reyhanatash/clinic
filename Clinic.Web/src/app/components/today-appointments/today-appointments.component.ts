@@ -58,8 +58,10 @@ export class TodayAppointmentsComponent implements OnInit {
   appointmentInvoices: any = [];
   userType: any;
   isAdminOrDoctor: boolean;
-
+  allowedLinks: any = [];
+  
   async ngOnInit() {
+    this.allowedLinks = await this.objectService.getDataAccess();
     if (this.checkAccess(1)) {
       this.userType = this.utilService.checkUserType();
       this.isAdminOrDoctor = this.userType == 3 ? false : true;
@@ -70,6 +72,8 @@ export class TodayAppointmentsComponent implements OnInit {
       setTimeout(() => {
         this.getAppointment();
       }, 1000);
+    } else {
+      this.toastR.error("شما دسترسی به این صفحه ندارید");
     }
   }
 
@@ -249,9 +253,13 @@ export class TodayAppointmentsComponent implements OnInit {
   }
 
   checkAccess(id) {
-    return this.objectService.checkAccess(id);
+    if (this.allowedLinks?.length > 0) {
+      const item = this.allowedLinks.find(x => x.id === id);
+      return item.clicked;
+    } else {
+      return false
+    }
   }
-
 
   async invoiceItemIsDone(item) {
     if (!this.checkAccess(3)) {

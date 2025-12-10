@@ -23,10 +23,14 @@ export class ServiceGrouplistComponent implements OnInit {
   ) { }
 
   itemCategory: any = [];
-
-  ngOnInit(): void {
+  allowedLinks: any = [];
+  
+  async ngOnInit() {
+    this.allowedLinks = await this.objectService.getDataAccess();
     if (this.checkAccess(1)) {
       this.getItemCategory();
+    } else {
+      this.toastR.error("شما دسترسی به این صفحه ندارید");
     }
   }
 
@@ -64,6 +68,12 @@ export class ServiceGrouplistComponent implements OnInit {
   }
 
   checkAccess(id) {
-    return this.objectService.checkAccess(id);
+    if (this.allowedLinks?.length > 0) {
+      const item = this.allowedLinks.find(x => x.id === id);
+      return item.clicked;
+    } else {
+      return false
+    }
   }
+
 }

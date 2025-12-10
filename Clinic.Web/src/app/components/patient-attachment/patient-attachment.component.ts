@@ -135,8 +135,8 @@ export class PatientAttachmentComponent {
     this.base64 = null;
   }
 
-  getAttachmentAccess() {
-    let accessList: any = this.objectService.getItemAccess();
+  async getAttachmentAccess() {
+    let accessList: any = await this.objectService.getItemAccess();
     let item = accessList.filter(x => x.id == 4);
     this.attachmentAccess = item[0]['itmes'];
     if (item[0]['itmes'][0]['clicked']) {

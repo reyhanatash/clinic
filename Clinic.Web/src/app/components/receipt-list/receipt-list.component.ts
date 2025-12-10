@@ -36,9 +36,11 @@ export class ReceiptListComponent {
   checkRout: any;
   isPayment: boolean = false;
   tableData: any = [];
+  allowedLinks: any = [];
 
-  ngOnInit() {
+  async ngOnInit() {
     this.checkRout = this.activeRoute.snapshot.routeConfig.path;
+    this.allowedLinks = await this.objectService.getDataAccess();
     if (this.checkAccess(1)) {
       if (this.checkRout === "payment-list") {
         this.isPayment = true;
@@ -48,6 +50,8 @@ export class ReceiptListComponent {
         this.isPayment = false;
         this.getReceipts();
       }
+    } else {
+      this.toastR.error("شما دسترسی به این صفحه ندارید");
     }
   }
 
@@ -180,6 +184,12 @@ export class ReceiptListComponent {
   }
 
   checkAccess(id) {
-    return this.objectService.checkAccess(id);
+    if (this.allowedLinks?.length > 0) {
+      const item = this.allowedLinks.find(x => x.id === id);
+      return item.clicked;
+    } else {
+      return false
+    }
   }
+
 }

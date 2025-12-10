@@ -1,171 +1,172 @@
 <div class="appContainer">
-    <h4 class="text-right">استثنائات زمانی</h4>
+  <h4 class="text-right">استثنائات زمانی</h4>
+  <hr>
+  <div id="timeException" *ngIf="checkAccess(2)" class="col-12 d-flex flex-wrap">
+    <div class="col-md-4 col-12 mt-2 text-right">
+      <label>پزشک</label>
+      <p-dropdown [options]="doctorList" placeholder="پزشک" [(ngModel)]="newException.selectedDoctor" optionLabel="name"
+        dataKey="id" class="full-width text-right" />
+    </div>
+    <div class="col-md-4 col-12 mt-2 text-right">
+      <label>مکان</label>
+      <p-dropdown id="clinic" [options]="clinicsList" [(ngModel)]="newException.selectedClinic" optionLabel="name"
+        class="full-width text-right" />
+    </div>
+    <div class="col-md-4 col-12 mt-2 d-flex flex-column text-right">
+      <label for="date">تاریخ شروع</label>
+      <ng-persian-datepicker>
+        <input type="text" class="form-control" [formControl]="newException.startDate" />
+      </ng-persian-datepicker>
+    </div>
+    <div class="col-md-4 col-12 mt-2 text-right">
+      <label for="date">زمان شروع</label>
+      <ngx-timepicker-field [format]="24" (timeSet)="newException.startTime = $event"
+        [(ngModel)]="newException.startTime" [defaultTime]="'08:00'">
+      </ngx-timepicker-field>
+    </div>
+    <div class="col-md-4 col-12 mt-2 text-right">
+      <label for="date">زمان پایان</label>
+      <ngx-timepicker-field [format]="24" (timeSet)="newException.endTime = $event" [(ngModel)]="newException.endTime"
+        [defaultTime]="'08:00'">
+      </ngx-timepicker-field>
+    </div>
+    <div class="col-md-4 col-12 mt-2 text-right">
+      <label for="date">تکرار هر </label>
+      <input type="text" class="form-control" [(ngModel)]="newException.repeatEvery" />
+    </div>
+    <div class="col-md-4 col-12 mt-3 text-right">
+      <label for="date">پایان از</label>
+      <input type="text" class="form-control" [(ngModel)]="newException.endsAfter" />
+    </div>
+    <div class="col-md-4 col-12 mt-3 text-right">
+      <label for="date">مدت زمان</label>
+      <input type="text" class="form-control" [(ngModel)]="newException.duration" />
+    </div>
+    <div class="col-md-4 col-12 mt-3 text-right">
+      <label for="date">practitionerTimeExceptionId</label>
+      <input type="text" class="form-control" [(ngModel)]="newException.practitionerTimeExceptionId" />
+    </div>
+    <div class="col-md-4 col-12 mt-3 text-right">
+      <label for="date">خارج از نوبت</label>
+      <input type="text" class="form-control" [(ngModel)]="newException.outOfTurn" />
+    </div>
+    <div class="col-md-4 col-12 mt-3 text-right">
+      <label for="date">نوع وقت دهی پیشفرض</label>
+      <input type="text" class="form-control" [(ngModel)]="newException.defaultAppointmentTypeId" />
+    </div>
+    <div class="col-md-4 col-12 mt-3 text-right">
+      <label for="date">بازه زمانی</label>
+      <input type="text" class="form-control" [(ngModel)]="newException.timeSlotSize" />
+    </div>
+    <div class="d-flex justify-content-center align-items-center col-12 my-3">
+      <button class="btn btn-success " (click)="saveException()">ذخیره</button>
+    </div>
     <hr>
-    <div *ngIf="checkAccess(2)" class="col-12 d-flex flex-wrap">
-        <div class="col-md-4 col-12 mt-2 text-right">
-            <label for="exceptionDate">پزشک</label>
-            <p-dropdown id="doctor" [options]="doctorsList" [(ngModel)]="newException.doctor" optionLabel="name"
-                class="full-width text-right" />
-        </div>
-        <div class="col-md-4 col-12 mt-2 text-right">
-            <label for="exceptionDate">مکان</label>
-            <p-dropdown id="clinic" [options]="clinicsList" [(ngModel)]="newException.selectedClinic" optionLabel="name"
-                class="full-width text-right" />
-        </div>
-        <div class="col-md-4 col-12 d-flex flex-column text-right">
-            <label for="date">تاریخ شروع</label>
-            <ng-persian-datepicker>
-                <input type="text" class="form-control" [formControl]="newException.startDate" />
-            </ng-persian-datepicker>
-        </div>
-        <div class="col-md-4 col-12 mt-2 text-right">
-            <label for="date">زمان شروع</label>
-            <ngx-timepicker-field [format]="24" (timeSet)="newException.startTime = $event"
-                [(ngModel)]="newException.startTime" [defaultTime]="'08:00'">
-            </ngx-timepicker-field>
-        </div>
-        <div class="col-md-4 col-12 mt-2 text-right">
-            <label for="date">زمان پایان</label>
-            <ngx-timepicker-field [format]="24" (timeSet)="newException.endTime = $event"
-                [(ngModel)]="newException.endTime" [defaultTime]="'08:00'">
-            </ngx-timepicker-field>
-        </div>
-        <div class="col-md-4 col-12 mt-2 text-right">
-            <label for="date">repeat Every</label>
-            <input type="text" class="form-control" [(ngModel)]="newException.repeatEvery" />
-        </div>
-        <div class="col-md-4 col-12 mt-3 text-right">
-            <label for="date">endsAfter</label>
-            <input type="text" class="form-control" [(ngModel)]="newException.endsAfter" />
-        </div>
-        <div class="col-md-4 col-12 mt-3 text-right">
-            <label for="date">duration</label>
-            <input type="text" class="form-control" [(ngModel)]="newException.duration" />
-        </div>
-        <div class="col-md-4 col-12 mt-3 text-right">
-            <label for="date">practitionerTimeExceptionId</label>
-            <input type="text" class="form-control" [(ngModel)]="newException.practitionerTimeExceptionId" />
-        </div>
-        <div class="col-md-4 col-12 mt-3 text-right">
-            <label for="date">outOfTurn</label>
-            <input type="text" class="form-control" [(ngModel)]="newException.outOfTurn" />
-        </div>
-        <div class="col-md-4 col-12 mt-3 text-right">
-            <label for="date">defaultAppointmentTypeId</label>
-            <input type="text" class="form-control" [(ngModel)]="newException.defaultAppointmentTypeId" />
-        </div>
-        <div class="col-md-4 col-12 mt-3 text-right">
-            <label for="date">timeSlotSize</label>
-            <input type="text" class="form-control" [(ngModel)]="newException.timeSlotSize" />
-        </div>
-        <div class="d-flex justify-content-center align-items-center col-12 my-3">
-            <button class="btn btn-success " (click)="saveException()">ذخیره</button>
-        </div>
-        <hr>
-    </div>
-    <div *ngIf="checkAccess(1)" class="col-12">
-        <p-table #dt styleClass="p-datatable-gridlines" [value]="timeExceptions" [autoLayout]="true" [paginator]="true"
-            [rows]="10" [showCurrentPageReport]="true" currentPageReportTemplate="نمایش {first} تا {last} "
-            [rowsPerPageOptions]="[10,25,50]">
-            <ng-template pTemplate="header">
-                <tr>
-                    <th>#</th>
-                    <th>تاریخ شروع</th>
-                    <th>زمان شروع</th>
-                    <th>زمان پایان</th>
-                    <th>نام پزشک</th>
-                    <th>نوع استثنا</th>
-                    <th>تکرار هر</th>
-                    <th>Ends after</th>
-                    <th>مدت</th>
-                    <th>مکان</th>
-                    <th>خارج از نوبت</th>
-                    <th>time slot</th>
-                    <th *ngIf="checkAccess(3) || checkAccess(2)">عملیات</th>
-                </tr>
-                <tr>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th *ngIf="checkAccess(3) || checkAccess(2)"></th>
-                </tr>
-            </ng-template>
-            <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
-                <tr>
-                    <td class="px-2">
-                        <div class="py-2 widthClassPrime">
-                            <span>{{rowIndex + 1}}</span>
-                        </div>
-                    </td>
-                    <td class="px-2">
-                        <div class="py-2 widthClassPrime">
-                            <span>{{item.startDate | JustDateZone}}</span>
-                        </div>
-                    </td>
-                    <td class="px-2">
-                        <div class="py-2 widthClassPrime">
-                            <span>{{item.startTime}}</span>
-                        </div>
-                    </td>
-                    <td class="px-2">
-                        <div class="py-2 width  ClassPrime">
-                            <span>{{item.endTime}}</span>
-                        </div>
-                    </td>
-                    <td class="px-2">
-                        <div class="py-2 widthClassPrime">
-                            <span>{{item.practitionerName}}</span>
-                        </div>
-                    </td>
-                    <td class="px-2">
-                        <div class="py-2 widthClassPrime">
-                            <span>{{item.timeExceptionTypeId}}</span>
-                        </div>
-                    </td>
-                    <td class="px-2">
-                        <div class="py-2 widthClassPrime">
-                            <span>{{item.repeatEvery}}</span>
-                        </div>
-                    </td>
-                    <td class="px-2">
-                        <div class="py-2 widthClassPrime">
-                            <span>{{item.endsAfter}}</span>
-                        </div>
-                    </td>
-                    <td class="px-2">
-                        <div class="py-2 widthClassPrime">
-                            <span>{{item.duration}}</span>
-                        </div>
-                    </td>
-                    <td class="px-2">
-                        <div class="py-2 widthClassPrime">
-                            <span>{{item.clinicName}}</span>
-                        </div>
-                    </td>
-                    <td class="px-2">
-                        <div class="py-2 widthClassPrime">
-                            <span>{{item.outOfTurn}}</span>
-                        </div>
-                    </td>
-                    <td class="px-2">
-                        <div class="py-2 widthClassPrime">
-                            <span>{{item.timeSlotSize}}</span>
-                        </div>
-                    </td>
-                    <td class="px-2">
-                        <button *ngIf="checkAccess(2)" class="btn btn-outline-secondary" (click)="editException(item)">ویرایش</button>
-                    </td>
-                </tr>
-            </ng-template>
-        </p-table>
-    </div>
+  </div>
+  <div *ngIf="checkAccess(1)" class="col-12">
+    <p-table #dt styleClass="p-datatable-gridlines" [value]="timeExceptions" [autoLayout]="true" [paginator]="true"
+      [rows]="10" [showCurrentPageReport]="true" currentPageReportTemplate="نمایش {first} تا {last} "
+      [rowsPerPageOptions]="[10,25,50]">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>#</th>
+          <th>تاریخ شروع</th>
+          <th>زمان شروع</th>
+          <th>زمان پایان</th>
+          <th>نام پزشک</th>
+          <th>نوع استثنا</th>
+          <th>تکرار هر</th>
+          <th>Ends after</th>
+          <th>مدت</th>
+          <th>مکان</th>
+          <th>خارج از نوبت</th>
+          <th>time slot</th>
+          <th *ngIf="checkAccess(3) || checkAccess(2)">عملیات</th>
+        </tr>
+        <tr>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th *ngIf="checkAccess(3) || checkAccess(2)"></th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
+        <tr>
+          <td class="px-2">
+            <div class="py-2 widthClassPrime">
+              <span>{{rowIndex + 1}}</span>
+            </div>
+          </td>
+          <td class="px-2">
+            <div class="py-2 widthClassPrime">
+              <span>{{item.startDate | JustDateZone}}</span>
+            </div>
+          </td>
+          <td class="px-2">
+            <div class="py-2 widthClassPrime">
+              <span>{{item.startTime}}</span>
+            </div>
+          </td>
+          <td class="px-2">
+            <div class="py-2 width  ClassPrime">
+              <span>{{item.endTime}}</span>
+            </div>
+          </td>
+          <td class="px-2">
+            <div class="py-2 widthClassPrime">
+              <span>{{item.practitionerName}}</span>
+            </div>
+          </td>
+          <td class="px-2">
+            <div class="py-2 widthClassPrime">
+              <span>{{item.timeExceptionTypeId}}</span>
+            </div>
+          </td>
+          <td class="px-2">
+            <div class="py-2 widthClassPrime">
+              <span>{{item.repeatEvery}}</span>
+            </div>
+          </td>
+          <td class="px-2">
+            <div class="py-2 widthClassPrime">
+              <span>{{item.endsAfter}}</span>
+            </div>
+          </td>
+          <td class="px-2">
+            <div class="py-2 widthClassPrime">
+              <span>{{item.duration}}</span>
+            </div>
+          </td>
+          <td class="px-2">
+            <div class="py-2 widthClassPrime">
+              <span>{{item.clinicName}}</span>
+            </div>
+          </td>
+          <td class="px-2">
+            <div class="py-2 widthClassPrime">
+              <span>{{item.outOfTurn}}</span>
+            </div>
+          </td>
+          <td class="px-2">
+            <div class="py-2 widthClassPrime">
+              <span>{{item.timeSlotSize}}</span>
+            </div>
+          </td>
+          <td class="px-2">
+            <button *ngIf="checkAccess(2)" class="btn btn-outline-secondary"
+              (click)="editException(item)">ویرایش</button>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
 </div>

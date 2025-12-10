@@ -1,50 +1,50 @@
 <div class="schedule-container">
-    <div class="col-12 d-flex flex-column justify-content-center">
-        <label for="isActive" class="text-right">نقش</label>
-        <p-dropdown [options]="clinicsList" [(ngModel)]="newSchedule.clinic" optionLabel="name" dataKey="id"
-            class="full-width text-right" />
-        <hr>
-        <div *ngFor="let day of scheduleRows" class="d-flex flex-column align-items-between justify-content-center">
-            <div class="d-flex align-items-center justify-content-between">
-                <input class="col-1" type="checkbox" [(ngModel)]="day.active">
-                <p class="col-2 text-right m-0">{{day.day.name}}</p>
-                <p-dropdown class="col-4" [options]="hours" [(ngModel)]="day.fromTime" optionLabel="name"
-                    class="full-width text-right" />
-                <p class="m-0 mx-2 col-1">تا</p>
-                <p-dropdown class="col-4" [options]="hours" [(ngModel)]="day.toTime" optionLabel="name"
-                    class="full-width text-right" />
-                <button class="btn btn-secondary h-100" (click)="day.isBreak = true">تنظیم وقفه</button>
-            </div>
-            <div *ngIf="day.isBreak" class="d-flex align-items-center justify-content-between">
-                <p class="col-2 text-right m-0">وقفه</p>
-                <p-dropdown class="col-4" [options]="hours" [(ngModel)]="day.breakFromTime" optionLabel="name"
-                    class="full-width text-right" />
-                <p class="m-0 mx-2 col-1">تا</p>
-                <p-dropdown class="col-4" [options]="hours" [(ngModel)]="day.breakToTime" optionLabel="name"
-                    class="full-width text-right" />
-                <button class="btn btn-secondary h-100" (click)="day.isBreak = false">حذف</button>
-            </div>
-            <div *ngIf="day.hasBreak" class="d-flex align-items-center px-5 mt-2">
-                <div class="ml-2">وقفه ها : </div>
-                <div *ngFor="let break of day.breaks"
-                    class="d-flex align-items-center justify-content-between p-2 break-card mx-2 pointer"
-                    (mouseover)="hoveredBreak = break.id" (mouseleave)="hoveredBreak= ''">
-                    <div class="d-flex">
-                        <span>از</span>
-                        <span>{{break.fromTime.name}}</span>
-                        <span>تا</span>
-                        <span>{{break.toTime.name}}</span>
-                    </div>
-                    <span *ngIf="hoveredBreak == break.id" (click)="deleteSchedule(break.id)"
-                        class="delete-schedule d-flex justify-content-center align-items-center p-2"><i
-                            class="fa fa-times text-white" aria-hidden="true"></i>
-                    </span>
-                </div>
-            </div>
-            <hr>
+  <div class="col-12 d-flex flex-column justify-content-center">
+    <label for="isActive" class="text-right">مکان</label>
+    <p-dropdown [options]="clinicsList" [(ngModel)]="newSchedule.clinic" (ngModelChange)="handelByClinic()" optionLabel="name" dataKey="id"
+      class="full-width text-right" />
+    <hr>
+    <div *ngFor="let day of scheduleRows" class="d-flex flex-column align-items-between justify-content-center">
+      <div class="d-flex align-items-center justify-content-between">
+        <input class="col-1" type="checkbox" [(ngModel)]="day.active">
+        <p class="col-2 text-right m-0">{{day.day.name}}</p>
+        <p-dropdown class="col-4" [options]="hours" [(ngModel)]="day.fromTime" optionLabel="name"
+          class="full-width text-right" />
+        <p class="m-0 mx-2 col-1">تا</p>
+        <p-dropdown class="col-4" [options]="hours" [(ngModel)]="day.toTime" optionLabel="name"
+          class="full-width text-right" />
+        <button class="btn btn-secondary h-100" (click)="day.isBreak = true">تنظیم وقفه</button>
+      </div>
+      <div *ngIf="day.isBreak" class="d-flex align-items-center justify-content-between">
+        <p class="col-2 text-right m-0">وقفه</p>
+        <p-dropdown class="col-4" [options]="hours" [(ngModel)]="day.breakFromTime" optionLabel="name"
+          class="full-width text-right" />
+        <p class="m-0 mx-2 col-1">تا</p>
+        <p-dropdown class="col-4" [options]="hours" [(ngModel)]="day.breakToTime" optionLabel="name"
+          class="full-width text-right" />
+        <button class="btn btn-secondary h-100" (click)="day.isBreak = false">حذف</button>
+      </div>
+      <div *ngIf="day.hasBreak" class="d-flex align-items-center px-5 mt-2">
+        <div class="ml-2">وقفه ها : </div>
+        <div *ngFor="let break of day.breaks"
+          class="d-flex align-items-center justify-content-between p-2 break-card mx-2 pointer"
+          (mouseover)="hoveredBreak = break.id" (mouseleave)="hoveredBreak= ''">
+          <div class="d-flex">
+            <span>از</span>
+            <span>{{break.fromTime.name}}</span>
+            <span>تا</span>
+            <span>{{break.toTime.name}}</span>
+          </div>
+          <span *ngIf="hoveredBreak == break.id" (click)="deleteSchedule(break.id)"
+            class="delete-schedule d-flex justify-content-center align-items-center p-2"><i
+              class="fa fa-times text-white" aria-hidden="true"></i>
+          </span>
         </div>
-        <div class="col-12 d-flex justify-content-center mt-3">
-            <button class="btn btn-success px-4 py-2" (click)="saveAll()">ذخیره</button>
-        </div>
+      </div>
+      <hr>
     </div>
+    <div class="col-12 d-flex justify-content-center mt-3">
+      <button class="btn btn-success px-4 py-2" (click)="saveAll()">ذخیره</button>
+    </div>
+  </div>
 </div>

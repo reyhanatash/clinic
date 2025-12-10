@@ -695,12 +695,44 @@ namespace Clinic.Api.Infrastructure.Services
             }
         }
 
-        public async Task<IEnumerable<TimeExceptionsContext>> GetTimeExceptions()
+        public async Task<IEnumerable<GetTimeExceptionsResponse>> GetTimeExceptions()
         {
             try
             {
-                var timeExceptions = await _context.TimeExceptions.ToListAsync();
-                return timeExceptions;
+                var result = await (
+            from t in _context.TimeExceptions
+            join u in _context.Users
+                on t.PractitionerId equals u.Id
+            join b in _context.Businesses
+                on t.BusinessId equals b.Id
+            select new GetTimeExceptionsResponse
+            {
+                Id = t.Id,
+                StartDate = t.StartDate,
+                StartTime = t.StartTime,
+                EndTime = t.EndTime,
+                PractitionerId = t.PractitionerId,
+                TimeExceptionTypeId = t.TimeExceptionTypeId,
+                RepeatId = t.RepeatId,
+                RepeatEvery = t.RepeatEvery,
+                EndsAfter = t.EndsAfter,
+                ModifierId = t.ModifierId,
+                CreatedOn = t.CreatedOn,
+                LastUpdated = t.LastUpdated,
+                Duration = t.Duration,
+                GrigoryDate = t.GrigoryDate,
+                BusinessId = t.BusinessId,
+                CreatorId = t.CreatorId,
+                PractitionerTimeExceptionId = t.PractitionerTimeExceptionId,
+                OutOfTurn = t.OutOfTurn,
+                DefaultAppointmentTypeId = t.DefaultAppointmentTypeId,
+                TimeSlotSize = t.TimeSlotSize,
+                DoctorName = u.FirstName + " " + u.LastName,
+                BusinessName = b.Name
+            }
+        ).ToListAsync();
+
+                return result;
             }
             catch (Exception ex)
             {

@@ -187,7 +187,7 @@ export class ObjectService {
         { id: 9, link: '/payment-list', clicked: false, fieldName: 'paymentView' },
         { id: 10, link: '/expenses', clicked: false, fieldName: 'expenseView' },
         { id: 11, link: '/userlist', clicked: false, fieldName: 'userView' },
-        { id: 12, text: 'مشاهده', clicked: false, fieldName: 'roleView' },
+        { id: 12, link: '/user-role-list', clicked: false, fieldName: 'roleView' },
         { id: 13, link: '/appointment-types', clicked: false, fieldName: 'appointmentTypeView' },
         { id: 14, text: 'مشاهده', clicked: false, fieldName: 'holidayView' },
         { id: 15, link: '/time-exception', clicked: false, fieldName: 'timeExceptionView' },
@@ -385,20 +385,22 @@ export class ObjectService {
         // this.roleData = this.itemList;
     }
 
-    async checkAccess(id: number): Promise<boolean> {
-        // await new Promise<void>((resolve) => {
-        //     const interval = setInterval(() => {
-        //         if (this.accessData && this.accessData.length > 0) {
-        //             clearInterval(interval);
-        //             resolve();
-        //         }
-        //     }, 100);
-        // });
-
-        const item = this.accessData.find(x => x.id === id);
-        return item ? item.clicked : false;
+    checkAccess(id: number) {
+        if (this.accessData?.length > 0) {
+            const item = this.accessData.find(x => x.id === id);
+            return item.clicked;
+        } else {
+            return false
+        }
     }
 
+    getDataAccess() {
+        return new Promise((resolve) => {
+            setTimeout(() => {
+                resolve(this.accessData || []);
+            }, 1000);
+        });
+    }
 
 
     getNavbarAccess() {

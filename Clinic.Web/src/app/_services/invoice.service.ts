@@ -184,9 +184,21 @@ export class InvoiceService {
     return this.http.get(uri, httpOptions);
   }
 
-  invoiceItemIsDone(invoiceItemId,isDone) {
+  invoiceItemIsDone(invoiceItemId, isDone) {
     const token: any = localStorage.getItem("token");
     const uri = this.url + `api/Invoice/invoiceItemIsDone/${invoiceItemId}/${isDone}`;
+    const httpOptions = {
+      headers: new HttpHeaders({
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token,
+      }),
+    };
+    return this.http.get(uri, httpOptions);
+  }
+  
+  deleteExpense(id: any) {
+    const token: any = localStorage.getItem("token");
+    const uri = this.url + `api/Invoice/deleteExpense/${id}`;
     const httpOptions = {
       headers: new HttpHeaders({
         "Content-Type": "application/json",

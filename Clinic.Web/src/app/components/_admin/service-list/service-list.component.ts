@@ -23,10 +23,14 @@ export class ServiceListComponent implements OnInit {
   ) { }
 
   serviceList: any = [];
+  allowedLinks: any = [];
 
-  ngOnInit(): void {
+  async ngOnInit() {
+    this.allowedLinks = await this.objectService.getDataAccess();
     if (this.checkAccess(1)) {
       this.getBillableItems();
+    } else {
+      this.toastR.error("شما دسترسی به این صفحه ندارید");
     }
   }
 
@@ -68,6 +72,12 @@ export class ServiceListComponent implements OnInit {
   }
 
   checkAccess(id) {
-    return this.objectService.checkAccess(id);
+    if (this.allowedLinks?.length > 0) {
+      const item = this.allowedLinks.find(x => x.id === id);
+      return item.clicked;
+    } else {
+      return false
+    }
   }
+
 }

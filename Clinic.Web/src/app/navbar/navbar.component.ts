@@ -29,21 +29,21 @@ export const Menu: imenu[] = [
 ];
 
 export const settingMenu: imenu[] = [
-  { id: 0, text: "کلینیک", link: '', roleAccess: [], icon: 'fa fa-caret-left' },
-  { id: 1, text: "تنظیمات عمومی", link: '', roleAccess: [], icon: 'fa fa-caret-left' },
-  { id: 2, text: "مکان ها", link: '', roleAccess: [], icon: 'fa fa-caret-left' },
-  { id: 3, text: "کاربران", link: '/userlist', roleAccess: [], icon: 'fa fa-caret-left' },
-  { id: 4, text: "نقش ها و دسترسی ها", link: '/user-role-list', roleAccess: [], icon: 'fa fa-caret-left' },
+  { id: 10, text: "کلینیک", link: '', roleAccess: [], icon: 'fa fa-caret-left' },
+  { id: 11, text: "تنظیمات عمومی", link: '', roleAccess: [], icon: 'fa fa-caret-left' },
+  { id: 12, text: "مکان ها", link: '/business-List', roleAccess: [], icon: 'fa fa-caret-left' },
+  { id: 13, text: "کاربران", link: '/userlist', roleAccess: [], icon: 'fa fa-caret-left' },
+  { id: 14, text: "نقش ها و دسترسی ها", link: '/user-role-list', roleAccess: [], icon: 'fa fa-caret-left' },
 ];
 export const financialMenu: imenu[] = [
-  { id: 0, text: "خدمات", link: '/service-list', roleAccess: [], icon: 'fa fa-caret-left' },
-  { id: 1, text: "گروه خدمات", link: '/service-group-list', roleAccess: [], icon: 'fa fa-caret-left' },
+  { id: 15, text: "خدمات", link: '/service-list', roleAccess: [], icon: 'fa fa-caret-left' },
+  { id: 16, text: "گروه خدمات", link: '/service-group-list', roleAccess: [], icon: 'fa fa-caret-left' },
 ];
 export const appointmentMenu: imenu[] = [
-  { id: 0, text: "انواع وقت دهی", link: '/appointment-types', roleAccess: [], icon: 'fa fa-caret-left' },
-  { id: 1, text: "تعطیلات", link: '', roleAccess: [], icon: 'fa fa-caret-left' },
-  { id: 2, text: "استثنائات اوقات پزشکان", link: '/time-exception', roleAccess: [], icon: 'fa fa-caret-left' },
-  { id: 3, text: "استثنائات خارج از نوبت", link: '/outOfturnexceptions', roleAccess: [], icon: 'fa fa-caret-left' },
+  { id: 17, text: "انواع وقت دهی", link: '/appointment-types', roleAccess: [], icon: 'fa fa-caret-left' },
+  { id: 18, text: "تعطیلات", link: '', roleAccess: [], icon: 'fa fa-caret-left' },
+  { id: 19, text: "استثنائات اوقات پزشکان", link: '/time-exception', roleAccess: [], icon: 'fa fa-caret-left' },
+  { id: 20, text: "استثنائات خارج از نوبت", link: '/outOfturnexceptions', roleAccess: [], icon: 'fa fa-caret-left' },
 ];
 
 @Component({
@@ -69,11 +69,11 @@ export class NavbarComponent {
   openSidebar: boolean;
   showReportMenu: boolean = false;
   reportMenu: imenu[] = [
-    { id: 1, text: "گزارش خلاصه عملکرد", link: '/report/business-report', roleAccess: [], icon: 'fa fa-bar-chart' },
-    { id: 2, text: " گزارش صورتحسابهای سرپایی ", link: '/', roleAccess: [], icon: 'fa fa-bar-chart' },
-    { id: 4, text: "گزارش صورتحسابهای تغییر کرده", link: '/', roleAccess: [], icon: 'fa fa-bar-chart' },
-    { id: 5, text: "گزارش درآمد", link: '/', roleAccess: [], icon: 'fa fa-bar-chart' },
-    { id: 6, text: " گزارش بیماران مراجعه نکرده", link: '/', roleAccess: [], icon: 'fa fa-bar-chart' },
+    { id: 21, text: "گزارش خلاصه عملکرد", link: '/report/business-report', roleAccess: [], icon: 'fa fa-bar-chart' },
+    { id: 22, text: " گزارش صورتحسابهای سرپایی ", link: '', roleAccess: [], icon: 'fa fa-bar-chart' },
+    { id: 23, text: "گزارش صورتحسابهای تغییر کرده", link: '', roleAccess: [], icon: 'fa fa-bar-chart' },
+    { id: 24, text: "گزارش درآمد", link: '', roleAccess: [], icon: 'fa fa-bar-chart' },
+    { id: 25, text: " گزارش بیماران مراجعه نکرده", link: '', roleAccess: [], icon: 'fa fa-bar-chart' },
   ];
   selectedSideBarreportMenuItem: any;
   openSettingMenu: boolean = false;

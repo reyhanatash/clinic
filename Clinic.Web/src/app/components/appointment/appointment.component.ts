@@ -129,7 +129,10 @@ export class AppointmentComponent {
   userType: number;
   userAppointmentsSettings: any = [];
   searchControl = '';
+  allowedLinks: any = [];
+  
   async ngOnInit() {
+    this.allowedLinks = await this.objectService.getDataAccess();
     if (this.checkAccess(1)) {
       this.userType = this.utilService.checkUserType();
       if (this.userType == 9) {
@@ -160,6 +163,8 @@ export class AppointmentComponent {
         this.holidays = days
         this.addHoliday();
       });
+    } else {
+      this.toastR.error("شما دسترسی به این صفحه ندارید");
     }
   }
 
@@ -535,6 +540,9 @@ export class AppointmentComponent {
 
 
   async setWeeklyScheduleForDay(dayOfWeek: number, time: string) {
+    if (!this.selectedDoctor.code) {
+      return
+    }
     try {
       let res: any = await this.mainService.getDoctorSchedules(this.selectedDoctor.code).toPromise();
       if (!res) return false;
@@ -585,7 +593,7 @@ export class AppointmentComponent {
       let startIndex = this.hours.findIndex(h => h.time === appointment.time);
       this.weeklyTimetable[this.hours[startIndex].time][appointment.dayOfWeek].dayAppointments.push(appointment);
     });
-    console.log(this.weeklyTimetable);
+    // console.log(this.weeklyTimetable);
 
   }
 
@@ -771,6 +779,9 @@ export class AppointmentComponent {
   }
 
   async setDoctorScheduleBasedHours(filteredHours: any, selectedDate: any) {
+    if (!this.selectedDoctor.code) {
+      return
+    }
     try {
       let res: any = await this.mainService.getDoctorSchedules(this.selectedDoctor.code).toPromise();
       if (res.length > 0) {
@@ -788,8 +799,7 @@ export class AppointmentComponent {
           );
         });
       }
-      console.log(filteredHours);
-
+      // console.log(filteredHours);
     }
     catch { }
   }
@@ -845,7 +855,12 @@ export class AppointmentComponent {
   }
 
   checkAccess(id) {
-    return this.objectService.checkAccess(id);
+    if (this.allowedLinks?.length > 0) {
+      const item = this.allowedLinks.find(x => x.id === id);
+      return item.clicked;
+    } else {
+      return false
+    }
   }
 
 }

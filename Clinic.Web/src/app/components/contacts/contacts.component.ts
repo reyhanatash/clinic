@@ -41,8 +41,8 @@ export class ContactsComponent {
     private mainService: MainService
   ) { }
 
-  ngOnInit() {
-    this.getJobs();
+  async ngOnInit() {
+   await this.getJobs();
     this.getContacts();
   }
 
@@ -61,7 +61,7 @@ export class ContactsComponent {
         this.contactList.forEach(async contact => {
           contact.jobTitle = this.jobsList.filter(job => job.id == contact.jobId)[0].name;
           contact.phone = await this.getContactPhone(contact.id);
-          contact.phoneNum = contact.phone.number
+          contact.phoneNum = contact.phone?.number
         });
       }
       else {

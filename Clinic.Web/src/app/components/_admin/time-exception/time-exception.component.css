@@ -1,0 +1,3 @@
+::ng-deep #timeException .ngx-timepicker {
+  height: auto !important;
+}

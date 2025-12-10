@@ -29,14 +29,18 @@ export class OutOfTurnExceptionsComponent implements OnInit {
   itemList: any = [];
   clinicsList: any = [];
   doctorList: any = [];
-
-  ngOnInit(): void {
+  allowedLinks: any = [];
+  
+  async ngOnInit(): Promise<void> {
+    this.allowedLinks = await this.objectService.getDataAccess();
     if (this.checkAccess(1)) {
       this.getOutOfTurnExceptions();
       this.getUsers();
       this.getClinics();
       this.form.selectedDate = new FormControl(moment().format('jYYYY/jMM/jDD'));
       this.form.editOrNew = -1;
+    } else {
+      this.toastR.error("شما دسترسی به این صفحه ندارید");
     }
   }
 
@@ -124,7 +128,12 @@ export class OutOfTurnExceptionsComponent implements OnInit {
   }
 
   checkAccess(id) {
-    return this.objectService.checkAccess(id);
+    if (this.allowedLinks?.length > 0) {
+      const item = this.allowedLinks.find(x => x.id === id);
+      return item.clicked;
+    } else {
+      return false
+    }
   }
 
 }

@@ -63,6 +63,8 @@ export class PatientsComponent {
   patientPhoneList = [];
   displayDialog: boolean;
   userType: any;
+  allowedLinks: any = [];
+  
   constructor(
     private patientService: PatientService,
     private mainService: MainService,
@@ -74,11 +76,14 @@ export class PatientsComponent {
   ) {
   }
 
-  ngOnInit() {
+  async ngOnInit() {
+    this.allowedLinks = await this.objectService.getDataAccess();
     this.userType = this.utilService.checkUserType();
-    this.getPatients();
-    this.getJobs();
-    this.getContacts();
+    if (this.checkAccess(1)) {
+      this.getPatients();
+      this.getJobs();
+      this.getContacts();
+    }
   }
   async getPatients() {
     let res: any = await this.patientService.getPatients().toPromise();
@@ -125,15 +130,20 @@ export class PatientsComponent {
       editOrNew: this.editpatientMode ? this.newPatient.id : -1,
       mobile: this.newPatient.mobile
     }
-    let res: any = await firstValueFrom(this.patientService.savePatient(model));
-    if (res) {
-      this.toastR.success('با موفقیت ثبت شد!');
-      this.getPatients();
-      if (invoiceStatus) {
-        this.router.navigate(['patient/invoice/' + this.newPatient.id])
+    try {
+      let res: any = await firstValueFrom(this.patientService.savePatient(model));
+      if (res) {
+        this.toastR.success('با موفقیت ثبت شد!');
+        this.getPatients();
+        if (invoiceStatus) {
+          this.router.navigate(['patient/invoice/' + this.newPatient.id])
+        }
+        this.closeCreatePatientModal();
       }
-      this.closeCreatePatientModal();
+    } catch (error) {
+      this.toastR.error('خطایی رخ داد', 'خطا!')
     }
+
   }
 
   async getJobs() {
@@ -299,8 +309,12 @@ export class PatientsComponent {
   }
 
   checkAccess(id) {
-    return this.objectService.checkAccess(id);
+    if (this.allowedLinks?.length > 0) {
+      const item = this.allowedLinks.find(x => x.id === id);
+      return item.clicked;
+    } else {
+      return false
+    }
   }
-
 
 }

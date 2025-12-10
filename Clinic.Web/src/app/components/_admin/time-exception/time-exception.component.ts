@@ -27,6 +27,7 @@ export class TimeExceptionComponent {
   selectedClinic: any = [];
   doctorList: any = [];
   selectedDoctor: any = [];
+  allowedLinks: any = [];
 
   constructor(
     private toastR: ToastrService,
@@ -35,27 +36,27 @@ export class TimeExceptionComponent {
     private objectService: ObjectService
   ) { }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.newException.startDate = new FormControl(moment().format('jYYYY/jMM/jDD'));
     this.newException.startTime = '00:00';
     this.newException.endTime = '23:00';
+    this.allowedLinks = await this.objectService.getDataAccess();
     if (this.checkAccess(1)) {
       this.getDoctors();
       this.getClinics();
       this.getExceptions();
+    } else {
+      this.toastR.error("شما دسترسی به این صفحه ندارید");
     }
   }
 
   async getDoctors() {
     try {
-      let res: any = await this.userService.getDoctors().toPromise();
-      if (res.length > 0) {
-        this.doctorsList = res;
-        this.doctorsList.forEach(doctor => {
-          doctor.code = doctor.id;
-          doctor.name = doctor.firstName + ' ' + doctor.lastName;
-        });
-      }
+      let res: any = await this.userService.getAllUsers().toPromise();
+      this.doctorList = res.filter(x => x.roleId == 9);
+      this.doctorList.forEach(user => {
+        user.name = user.firstName + ' ' + user.lastName;
+      });
     }
     catch { }
   }
@@ -75,19 +76,18 @@ export class TimeExceptionComponent {
   }
 
   async saveException() {
-    console.log(this.newException);
 
     let model =
     {
       "startDate": moment(this.newException.startDate.value, 'jYYYY/jMM/jDD').add(3.5, 'hours').toDate(),
       "startTime": this.convertTimeToUTC(this.newException.startTime),
       "endTime": this.convertTimeToUTC(this.newException.endTime),
-      // "practitionerId": this.newException.selectedDoctor['code'] || 0,
+      "practitionerId": this.newException.selectedDoctor?.code || 0,
       "timeExceptionTypeId": 0,
       "repeatEvery": this.newException.repeatEvery,
       "endsAfter": this.newException.endsAfter,
       "duration": this.newException.duration,
-      "businessId": this.newException.selectedClinic.code || null,
+      "businessId": this.newException.selectedClinic?.code || null,
       "practitionerTimeExceptionId": this.newException.practitionerTimeExceptionId,
       "outOfTurn": this.newException.outOfTurn,
       "defaultAppointmentTypeId": this.newException.defaultAppointmentTypeId,
@@ -118,7 +118,7 @@ export class TimeExceptionComponent {
       0
     ));
     const timePart = date.toISOString().split("T")[1];
-    return timePart.replace("Z", "");
+    return timePart.split(".")[0];
   }
 
   async getExceptions() {
@@ -146,8 +146,14 @@ export class TimeExceptionComponent {
     this.newException.selectedClinic = this.clinicsList.filter((clinic: any) => clinic.id == exception.businessId)[0];
     this.newException.id = exception.id;
   }
+
   checkAccess(id) {
-    return this.objectService.checkAccess(id);
+    if (this.allowedLinks?.length > 0) {
+      const item = this.allowedLinks.find(x => x.id === id);
+      return item.clicked;
+    } else {
+      return false
+    }
   }
 
 }

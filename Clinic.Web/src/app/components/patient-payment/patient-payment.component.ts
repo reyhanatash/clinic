@@ -33,7 +33,7 @@ export class PatientPaymentComponent {
   async ngOnInit() {
     this.pationId = +this.activeRoute.snapshot.paramMap.get('id');
     await this.getPatientById();
-    let accessList: any  = this.objectService.getItemAccess();
+    let accessList: any = await this.objectService.getItemAccess();
     let item = accessList.filter(x => x.id == 8);
     this.paymentAccess = item[0]['itmes'];
     if (item[0]['itmes'][0]['clicked']) {
