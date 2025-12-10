@@ -22,5 +22,7 @@ namespace Clinic.Api.Application.Interfaces
         Task<IEnumerable<GetInvoiceDetailsResponse>> GetInvoiceDetails(int appointmentId);
         Task<GlobalResponse> CancelInvoice(int invoiceId);
         Task<GlobalResponse> ApproveDiscount(int invoiceId);
+        Task<GlobalResponse> InvoiceItemIsDone(int invoiceItemId,bool isDone);
+        Task<GlobalResponse> DeleteExpense(int id);
     }
 }

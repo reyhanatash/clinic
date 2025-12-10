@@ -17,7 +17,7 @@ namespace Clinic.Api.Controllers
         }
 
         [HttpPost("savePayment")]
-        [Authorize("Admin", "Doctor", "Secretary-Reception")]
+        [Authorize]
         public async Task<IActionResult> SavePayment(SavePaymentDto model)
         {
             var result = await _paymentService.SavePayment(model);
@@ -25,7 +25,7 @@ namespace Clinic.Api.Controllers
         }
 
         [HttpGet("getAllPayments")]
-        [Authorize("Admin", "Doctor", "Secretary-Reception")]
+        [Authorize]
         public async Task<IActionResult> GetAllPayments()
         {
             var result = await _paymentService.GetAllPayments();
@@ -33,7 +33,7 @@ namespace Clinic.Api.Controllers
         }
 
         [HttpGet("getPayment/{patientId}")]
-        [Authorize("Admin", "Doctor", "Secretary-Reception")]
+        [Authorize]
         public async Task<IActionResult> GetPayment(int patientId)
         {
             var result = await _paymentService.GetPayment(patientId);
@@ -41,7 +41,7 @@ namespace Clinic.Api.Controllers
         }
 
         [HttpGet("deletePayment/{id}")]
-        [Authorize("Admin", "Doctor")]
+        [Authorize]
         public async Task<IActionResult> DeletePayment(int id)
         {
             var result = await _paymentService.DeletePayment(id);

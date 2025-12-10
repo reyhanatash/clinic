@@ -5,7 +5,8 @@
       <h4 class="m-0">{{patientName}}</h4>
     </div>
     <div class="col-md-8 col-12 d-flex justify-content-end">
-      <button class="btn main-btn mx-1 p-1" [routerLink]="'/new-invoice/n/' + patientId +'/n/n/2'">صدور صورتحساب</button>
+      <button class="btn main-btn mx-1 p-1" [routerLink]="'/new-invoice/n/' + patientId +'/n/n/2'">صدور
+        صورتحساب</button>
       <app-pdf-maker [_patientData]="patientInfo" [type]="1"></app-pdf-maker>
       <!-- <button class="btn main-btn mx-1" routerLink="">ویرایش</button> -->
       <!-- <button class="btn btn-secondary mx-1" routerLink="">مجوز وقت دهی</button> -->
@@ -17,13 +18,13 @@
       <div *ngFor="let note of patientsNote" class="note-item p-2 mx-1 my-1 pointer" (click)="editNote(note)"
         (mouseover)="hoveredNote = note.noteId" (mouseleave)="hoveredNote= ''">
         {{note.note}}
-        <span *ngIf="hoveredNote == note.noteId" (click)="deleteNote($event,note.noteId)"
+        <span *ngIf="(hoveredNote == note.noteId) && checkNoteAccess(9)" (click)="deleteNote($event,note.noteId)"
           class="bg-danger delete-note p-1 d-flex justify-content-center align-items-center">
           <i class="fa fa-times text-white"></i>
         </span>
       </div>
     </div>
-    <btn *ngIf="!openNoteInput" class="add-note-btn rounded p-1 pointer d-flex align-items-center"
+    <btn *ngIf="!openNoteInput && checkNoteAccess(7)" class="add-note-btn rounded p-1 pointer d-flex align-items-center"
       (click)="openNoteInput = true">افزودن یادداشت</btn>
     <div [ngClass]="{'closed-note-container' : !openNoteInput}" class="note-input-container d-flex">
       <input type="text" name="note" id="patient-note" class="note-input form-control mr-2 h-100"

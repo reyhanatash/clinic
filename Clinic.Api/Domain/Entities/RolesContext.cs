@@ -121,5 +121,6 @@
         public bool? InvoiceItemChangeReport { get; set; }
         public bool? MedicalAlertUpdate { get; set; }
         public bool? MergePatients { get; set; }
+        public string? Secret { get; set; }
     }
 }

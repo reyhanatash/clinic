@@ -21,5 +21,8 @@ namespace Clinic.Api.Application.Interfaces
         Task<IEnumerable<FileAttachmentsContext>> GetAttachment(int patientId);
         Task<GlobalResponse> DeleteAttachment(int id);
         Task<GlobalResponse> GetFilteredPatients(GetFilteredPatientsDto model);
+        Task<GlobalResponse> SavePatientField(SavePatientFieldDto model);
+        Task<IEnumerable<PatientFieldsContext>> GetPatientField(int patientId);
+        Task<IEnumerable<PatientFieldsContext>> GetPatientFields();
     }
 }

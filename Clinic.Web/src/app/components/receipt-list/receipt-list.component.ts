@@ -10,6 +10,7 @@ import { ToastrService } from 'ngx-toastr';
 import { InvoiceService } from '../../_services/invoice.service';
 import { PaymentService } from '../../_services/payment.service';
 import Swal from 'sweetalert2';
+import { ObjectService } from '../../_services/store.service';
 
 @Component({
   selector: 'app-receipt-list',
@@ -24,6 +25,7 @@ export class ReceiptListComponent {
     private invoiceService: InvoiceService,
     private activeRoute: ActivatedRoute,
     private paymentService: PaymentService,
+    private objectService: ObjectService
   ) { }
   receiptsList: any = [];
   paymentList: any = [];
@@ -37,13 +39,15 @@ export class ReceiptListComponent {
 
   ngOnInit() {
     this.checkRout = this.activeRoute.snapshot.routeConfig.path;
-    if (this.checkRout === "payment-list") {
-      this.isPayment = true;
-      this.getAllPayments();
-    }
-    else {
-      this.isPayment = false;
-      this.getReceipts();
+    if (this.checkAccess(1)) {
+      if (this.checkRout === "payment-list") {
+        this.isPayment = true;
+        this.getAllPayments();
+      }
+      else {
+        this.isPayment = false;
+        this.getReceipts();
+      }
     }
   }
 
@@ -170,7 +174,12 @@ export class ReceiptListComponent {
     this.editReceiptsModel.sum = null;
     this.showReceiptsModal = false;
   }
+
   sumNumber() {
     this.editReceiptsModel.sum = (this.editReceiptsModel.eftPos | 0) + (this.editReceiptsModel.cash | 0);
+  }
+
+  checkAccess(id) {
+    return this.objectService.checkAccess(id);
   }
 }

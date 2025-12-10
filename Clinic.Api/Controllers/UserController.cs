@@ -27,11 +27,11 @@ public class UserController : ControllerBase
     }
 
     [HttpGet("getAllUsers")]
-    [Authorize("Admin","Secretary-Reception")]
+    [Authorize]
     public async Task<IActionResult> GetAll() => Ok(await _svc.GetAllAsync());
 
     [HttpGet("getUserById/{id}")]
-    [Authorize("Admin", "Secretary-Reception")]
+    [Authorize]
     public async Task<IActionResult> GetById(int id)
     {
         var result = await _svc.GetByIdAsync(id);
@@ -39,7 +39,7 @@ public class UserController : ControllerBase
     }
 
     [HttpGet("getUsers/{roleId}")]
-    [Authorize("Admin","Secretary-Reception","Doctor")]
+    [Authorize]
     public async Task<IActionResult> GetUsers(int roleId)
     {
         var result = await _svc.GetUsers(roleId);
@@ -63,7 +63,7 @@ public class UserController : ControllerBase
     }
 
     [HttpPut("updateUser")]
-    [Authorize("Admin", "Secretary-Reception")]
+    [Authorize]
     public async Task<IActionResult> UpdateUser(UpdateUserDto model)
     {
         var result = await _svc.UpdateUserAsync(model);
@@ -71,7 +71,7 @@ public class UserController : ControllerBase
     }
 
     [HttpPut("assignRole")]
-    [Authorize("Admin", "Secretary-Reception")]
+    [Authorize]
     public async Task<IActionResult> AssignRoleToUser(AssignRoleDto model)
     {
         var result = await _svc.AssignRoleAsync(model.UserId, model.RoleId);
@@ -86,7 +86,7 @@ public class UserController : ControllerBase
     }
 
     [HttpPost("saveUserBusiness")]
-    [Authorize("Admin","Secretary-Reception")]
+    [Authorize]
     public async Task<IActionResult> SaveUserBusiness(SaveUserBusinessDto model)
     {
         var result = await _svc.SaveUserBusiness(model);
@@ -94,7 +94,7 @@ public class UserController : ControllerBase
     }
 
     [HttpGet("getUserBusiness/{userId}")]
-    [Authorize("Admin", "Secretary-Reception")]
+    [Authorize]
     public async Task<IActionResult> GetUserBusiness(int userId)
     {
         var result = await _svc.GetUserBusiness(userId);

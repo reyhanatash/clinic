@@ -17,7 +17,7 @@ namespace Clinic.Api.Controllers
         }
 
         [HttpPost("saveInvoice")]
-        [Authorize("Admin", "Doctor", "Secretary-Reception")]
+        [Authorize]
         public async Task<IActionResult> SaveInvoice(SaveInvoiceDto model)
         {
             var result = await _invoicesService.SaveInvoice(model);
@@ -25,7 +25,7 @@ namespace Clinic.Api.Controllers
         }
 
         [HttpGet("deleteInvoice/{id}")]
-        [Authorize("Admin", "Doctor")]
+        [Authorize]
         public async Task<IActionResult> DeleteInvoice(int id)
         {
             var result = await _invoicesService.DeleteInvoice(id);
@@ -33,7 +33,7 @@ namespace Clinic.Api.Controllers
         }
 
         [HttpGet("getInvoices")]
-        [Authorize("Admin", "Doctor", "Secretary-Reception")]
+        [Authorize]
         public async Task<IActionResult> GetInvoices()
         {
             var result = await _invoicesService.GetInvoices();
@@ -41,7 +41,7 @@ namespace Clinic.Api.Controllers
         }
 
         [HttpPost("saveInvoiceItem")]
-        [Authorize("Admin", "Doctor", "Secretary-Reception")]
+        [Authorize]
         public async Task<IActionResult> SaveInvoiceItem(SaveInvoiceItemDto model)
         {
             var result = await _invoicesService.SaveInvoiceItem(model);
@@ -49,7 +49,7 @@ namespace Clinic.Api.Controllers
         }
 
         [HttpGet("deleteInvoiceItem/{id}")]
-        [Authorize("Admin", "Doctor")]
+        [Authorize]
         public async Task<IActionResult> DeleteInvoiceItem(int id)
         {
             var result = await _invoicesService.DeleteInvoiceItem(id);
@@ -57,7 +57,7 @@ namespace Clinic.Api.Controllers
         }
 
         [HttpGet("getInvoiceItems/{invoiceId}")]
-        [Authorize("Admin", "Doctor", "Secretary-Reception")]
+        [Authorize]
         public async Task<IActionResult> GetInvoiceItems(int invoiceId)
         {
             var result = await _invoicesService.GetInvoiceItems(invoiceId);
@@ -65,7 +65,7 @@ namespace Clinic.Api.Controllers
         }
 
         [HttpPost("saveReceipt")]
-        [Authorize("Admin", "Doctor", "Secretary-Reception")]
+        [Authorize]
         public async Task<IActionResult> SaveReceipt(SaveReceiptDto model)
         {
             var result = await _invoicesService.SaveReceipt(model);
@@ -73,7 +73,7 @@ namespace Clinic.Api.Controllers
         }
 
         [HttpGet("getReceipt/{patientId?}")]
-        [Authorize("Admin", "Doctor", "Secretary-Reception")]
+        [Authorize]
         public async Task<IActionResult> GetReceipts(int? patientId)
         {
             var result = await _invoicesService.GetReceipts(patientId);
@@ -81,7 +81,7 @@ namespace Clinic.Api.Controllers
         }
 
         [HttpGet("getReceipts")]
-        [Authorize("Admin", "Doctor", "Secretary-Reception")]
+        [Authorize]
         public async Task<IActionResult> GetReceipts()
         {
             var result = await _invoicesService.GetReceipts();
@@ -89,7 +89,7 @@ namespace Clinic.Api.Controllers
         }
 
         [HttpGet("deleteReceipt/{patientId}")]
-        [Authorize("Admin", "Doctor")]
+        [Authorize]
         public async Task<IActionResult> DeleteReceipt(int patientId)
         {
             var result = await _invoicesService.DeleteReceipt(patientId);
@@ -97,7 +97,7 @@ namespace Clinic.Api.Controllers
         }
 
         [HttpPost("saveExpense")]
-        [Authorize("Admin", "Doctor", "Secretary-Reception")]
+        [Authorize]
         public async Task<IActionResult> SaveExpense(SaveExpenseDto model)
         {
             var result = await _invoicesService.SaveExpense(model);
@@ -105,15 +105,23 @@ namespace Clinic.Api.Controllers
         }
 
         [HttpGet("getExpenses")]
-        [Authorize("Admin", "Doctor", "Secretary-Reception")]
+        [Authorize]
         public async Task<IActionResult> GetExpenses()
         {
             var result = await _invoicesService.GetExpenses();
             return Ok(result);
         }
 
+        [HttpGet("deleteExpense/{id}")]
+        [Authorize]
+        public async Task<IActionResult> DeleteExpense(int id)
+        {
+            var result = await _invoicesService.DeleteExpense(id);
+            return Ok(result);
+        }
+
         [HttpPost("saveInvoiceDiscount")]
-        [Authorize("Admin", "Doctor", "Secretary-Reception")]
+        [Authorize]
         public async Task<IActionResult> SaveInvoiceDiscount(SaveInvoiceDiscountDto model)
         {
             var result = await _invoicesService.SaveInvoiceDiscount(model);
@@ -121,7 +129,7 @@ namespace Clinic.Api.Controllers
         }
 
         [HttpGet("getInvoiceDetails/{appointmentId}")]
-        [Authorize("Admin", "Doctor", "Secretary-Reception")]
+        [Authorize]
         public async Task<IActionResult> GetInvoiceDetails(int appointmentId)
         {
             var result = await _invoicesService.GetInvoiceDetails(appointmentId);
@@ -129,7 +137,7 @@ namespace Clinic.Api.Controllers
         }
 
         [HttpGet("cancelInvoice/{invoiceId}")]
-        [Authorize("Admin", "Doctor", "Secretary-Reception")]
+        [Authorize]
         public async Task<IActionResult> CancelInvoice(int invoiceId)
         {
             var result = await _invoicesService.CancelInvoice(invoiceId);
@@ -137,10 +145,18 @@ namespace Clinic.Api.Controllers
         }
 
         [HttpGet("approveDiscount/{invoiceId}")]
-        [Authorize("Admin","Doctor","Secretary-Reception")]
+        [Authorize]
         public async Task<IActionResult> ApproveDiscount(int invoiceId)
         {
             var result = await _invoicesService.ApproveDiscount(invoiceId);
+            return Ok(result);
+        }
+
+        [HttpGet("invoiceItemIsDone/{invoiceItemId}/{isDone}")]
+        [Authorize]
+        public async Task<IActionResult> InvoiceItemIsDone(int invoiceItemId, bool isDone)
+        {
+            var result = await _invoicesService.InvoiceItemIsDone(invoiceItemId, isDone);
             return Ok(result);
         }
     }

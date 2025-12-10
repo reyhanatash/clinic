@@ -4,7 +4,6 @@ using Clinic.Api.Application.DTOs.Users;
 using Clinic.Api.Application.Interfaces;
 using Clinic.Api.Domain.Entities;
 using Clinic.Api.Infrastructure.Data;
-using Clinic.Api.Middlwares;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -78,28 +77,42 @@ namespace Clinic.Api.Infrastructure.Services
         {
             try
             {
-                var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == model.Username);
-                if (user == null ||
-                    _passwordHasher.VerifyHashedPassword(user, user.Password, model.Password) != PasswordVerificationResult.Success)
+                var user = await _context.Users
+              .FirstOrDefaultAsync(u => u.Email == model.Username);
+
+                if (user == null)
+                    throw new Exception("Invalid username or password.");
+
+                var verify = _passwordHasher.VerifyHashedPassword(
+                    user,
+                    user.Password,
+                    model.Password
+                );
+
+                if (verify != PasswordVerificationResult.Success)
                     throw new Exception("Invalid username or password.");
 
                 var roleName = await _context.Roles
-                      .Where(r => r.Id == user.RoleId)
-                      .Select(r => r.Name)
-                      .FirstOrDefaultAsync() ?? string.Empty;
+                    .Where(r => r.Id == user.RoleId)
+                    .Select(r => r.Name)
+                    .FirstOrDefaultAsync() ?? string.Empty;
+
+                var secret = await _context.Roles
+                    .Where(r => r.Id == user.RoleId)
+                    .Select(r => r.Secret)
+                    .FirstOrDefaultAsync() ?? string.Empty;
 
                 var token = _token.CreateToken(user, roleName);
-                var roleHandler = UserMapper.MapRole(user.RoleId.ToString());
-                string secret = roleHandler[1];
-                string role = roleHandler[0];
 
                 await SaveLoginHistory(model.Username);
+
                 return new LoginResponseDto
                 {
                     Token = token,
                     SecretCode = secret,
-                    Role = role,
-                    UserName = user.FirstName + " " + user.LastName,
+                    Role = roleName,
+                    UserName = $"{user.FirstName} {user.LastName}",
+                    Secret = secret
                 };
             }
             catch (Exception ex)
@@ -152,17 +165,15 @@ namespace Clinic.Api.Infrastructure.Services
 
             try
             {
-                var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == model.Username);
+                var existingUser = await _context.Users
+              .FirstOrDefaultAsync(u => u.Email == model.Username);
+
                 if (existingUser != null)
                     throw new Exception("Email already exists.");
 
-                var hasher = new PasswordHasher<object>();
-                var hashedPassword = hasher.HashPassword(null, model.Password);
-
                 var user = new UserContext
                 {
-                    Email = model.Email,
-                    Password = hashedPassword,
+                    Email = model.Username,
                     FirstName = model.FirstName,
                     LastName = model.LastName,
                     RoleId = model.RoleId,
@@ -181,6 +192,8 @@ namespace Clinic.Api.Infrastructure.Services
                     CanConfirmInvoice = model.CanConfirmInvoice
                 };
 
+                user.Password = _passwordHasher.HashPassword(user, model.Password);
+
                 await _uow.Users.AddAsync(user);
                 await _uow.SaveAsync();
 
@@ -190,12 +203,12 @@ namespace Clinic.Api.Infrastructure.Services
                 {
                     var businessIds = model.BusinessIds
                         .Split(',', StringSplitOptions.RemoveEmptyEntries)
-                        .Select(id => int.Parse(id.Trim()))
+                        .Select(int.Parse)
                         .ToList();
 
                     foreach (var businessId in businessIds)
                     {
-                        var userBusiness = new UserBusinessesContext
+                        var ub = new UserBusinessesContext
                         {
                             BusinessId = businessId,
                             User_Id = user.Id,
@@ -203,20 +216,21 @@ namespace Clinic.Api.Infrastructure.Services
                             CreatedOn = DateTime.Now,
                             IsActive = true
                         };
-                        await _context.UserBusinesses.AddAsync(userBusiness);
+
+                        await _context.UserBusinesses.AddAsync(ub);
                     }
                 }
 
                 if (!string.IsNullOrEmpty(model.AppointmentTypesIds))
                 {
-                    var appointmentTypeIds = model.AppointmentTypesIds
+                    var typeIds = model.AppointmentTypesIds
                         .Split(',', StringSplitOptions.RemoveEmptyEntries)
-                        .Select(id => int.Parse(id.Trim()))
+                        .Select(int.Parse)
                         .ToList();
 
-                    foreach (var typeId in appointmentTypeIds)
+                    foreach (var typeId in typeIds)
                     {
-                        var practitionerType = new AppointmentTypePractitionersContext
+                        var pt = new AppointmentTypePractitionersContext
                         {
                             AppointmentTypeId = typeId,
                             PractitionerId = user.Id,
@@ -224,7 +238,8 @@ namespace Clinic.Api.Infrastructure.Services
                             CreatedOn = DateTime.Now,
                             IsActive = true
                         };
-                        await _context.AppointmentTypePractitioners.AddAsync(practitionerType);
+
+                        await _context.AppointmentTypePractitioners.AddAsync(pt);
                     }
                 }
 
@@ -292,6 +307,19 @@ namespace Clinic.Api.Infrastructure.Services
                         await _context.AppointmentTypePractitioners.AddAsync(practitionerType);
                     }
                 }
+
+                _mapper.Map(model, user);
+
+                if (!string.IsNullOrWhiteSpace(model.Username))
+                {
+                    user.Email = model.Username.Trim();
+                }
+                else
+                {
+                    _context.Entry(user).Property(x => x.Email).IsModified = false;
+                }
+
+                user.Password = _passwordHasher.HashPassword(user, model.Password);
                 _context.Users.Update(user);
                 await _uow.SaveAsync();
 

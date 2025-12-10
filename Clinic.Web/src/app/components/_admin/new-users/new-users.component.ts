@@ -61,6 +61,10 @@ export class NewUsersComponent {
   }
 
   async createUser() {
+    if (!this.newUser.userName) {
+      this.toastR.error("لطفا نام کاربری را وارد کنید");
+      return
+    }
     let model = {
       "username": this.newUser.userName,
       "password": this.newUser.password,
@@ -190,7 +194,6 @@ export class NewUsersComponent {
         this.newUser.isActive = userData.isActive;
         this.newUser.role = this.roles.filter(role => role.id == userData.roleId)[0];
         this.newUser.title = this.titleList.filter(title => title.code == userData.titleId)[0];
-        this.newUser.userName = userData.email;
         this.newUser.isDoctor = userData.isPractitioner;
         this.newUser.ShowTreatment = userData.showTreatmentOnClickPatientName;
         this.newUser.showOldTreatments = userData.canChangeOldTreatment;

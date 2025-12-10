@@ -11,6 +11,7 @@ import moment from 'moment-jalaali';
 import { MainService } from '../../../_services/main.service';
 import Swal from 'sweetalert2';
 import { PaymentService } from '../../../_services/payment.service';
+import { ObjectService } from '../../../_services/store.service';
 
 @Component({
   selector: 'app-new-invoice',
@@ -29,7 +30,8 @@ export class NewInvoiceComponent implements OnInit {
     private activeRoute: ActivatedRoute,
     private router: Router,
     private mainService: MainService,
-    private paymentService: PaymentService
+    private paymentService: PaymentService,
+    private objectService: ObjectService
   ) { }
 
   patientsList: any = [];
@@ -49,6 +51,7 @@ export class NewInvoiceComponent implements OnInit {
   patientId: any;
   @ViewChild(InvoiceItemsComponent) invoiceItemsComponent: InvoiceItemsComponent;
   isCanceled: boolean = false;
+  invoiceAccess: any = [];
 
   async ngOnInit() {
     this.activeRoute.params.subscribe(async () => {
@@ -57,26 +60,30 @@ export class NewInvoiceComponent implements OnInit {
       this.selectedClinicId = this.activeRoute.snapshot.paramMap.get('clinicId') == 'n' ? null : +this.activeRoute.snapshot.paramMap.get('clinicId');
       this.selectedappointmentId = this.activeRoute.snapshot.paramMap.get('appointmentId') == 'n' ? null : +this.activeRoute.snapshot.paramMap.get('appointmentId');
       this.type = +this.activeRoute.snapshot.paramMap.get('type') || 2;
-
-      await this.getPatients();
-      if (this.patientId != null) {
-        this.selectedPatient = this.patientsList.filter(patient => patient.id == this.patientId)[0];
-        await this.getPatientAppointments();
-        if (this.selectedappointmentId != null) {
-          this.selectedPatientAppointment = this.patientAppointmentsList.filter(item => item.id == this.selectedappointmentId)[0];
+      let accessList: any  = this.objectService.getItemAccess();
+      let item = accessList.filter(x => x.id == 6);
+      this.invoiceAccess = item[0]['itmes'];
+      if (item[0]['itmes'][0]['clicked']) {
+        await this.getPatients();
+        if (this.patientId != null) {
+          this.selectedPatient = this.patientsList.filter(patient => patient.id == this.patientId)[0];
+          await this.getPatientAppointments();
+          if (this.selectedappointmentId != null) {
+            this.selectedPatientAppointment = this.patientAppointmentsList.filter(item => item.id == this.selectedappointmentId)[0];
+          }
         }
-      }
 
-      await this.getClinics();
-      if (this.selectedClinicId != null) {
-        this.selectedClinic = this.clinicsList.filter(clinic => clinic.id == this.selectedClinicId)[0];
-      }
+        await this.getClinics();
+        if (this.selectedClinicId != null) {
+          this.selectedClinic = this.clinicsList.filter(clinic => clinic.id == this.selectedClinicId)[0];
+        }
 
-      if (this.editOrNew != -1) {
-        this.getInvoices();
-        this.setSelectedPatient(this.editOrNew);
+        if (this.editOrNew != -1) {
+          this.getInvoices();
+          this.setSelectedPatient(this.editOrNew);
+        }
+        await this.getPatientAppointments();
       }
-      await this.getPatientAppointments();
     });
   }
 
@@ -237,5 +244,10 @@ export class NewInvoiceComponent implements OnInit {
         this.toastR.error('خطایی رخ داد', 'خطا!');
       }
     })
+  }
+
+  checklInvoiceAccess(id) {
+    const item = this.invoiceAccess.find(x => x.id === id);
+    return item ? item.clicked : false;
   }
 }

@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { TableModule } from "primeng/table";
 import { UserService } from '../../../_services/user.service';
-import { RouterLink } from "@angular/router";
+import { RouterLink, RouterModule } from "@angular/router";
 import { DialogModule } from "primeng/dialog";
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -11,11 +11,12 @@ import { DropdownModule } from 'primeng/dropdown';
 import { AttendanceScheduleComponent } from "../../attendance-schedule/attendance-schedule.component";
 import { Subject } from 'rxjs';
 import swal from 'sweetalert2';
+import { ObjectService } from '../../../_services/store.service';
 
 @Component({
   selector: 'app-user-list',
   standalone: true,
-  imports: [TableModule, RouterLink, DialogModule, FormsModule, CommonModule, DropdownModule, AttendanceScheduleComponent],
+  imports: [TableModule, RouterLink, DialogModule, FormsModule, CommonModule, DropdownModule, AttendanceScheduleComponent, RouterModule],
   templateUrl: './user-list.component.html',
   styleUrl: './user-list.component.css'
 })
@@ -35,17 +36,24 @@ export class UserListComponent {
     private userService: UserService,
     private toastR: ToastrService,
     private mainService: MainService,
+    private objectService: ObjectService
   ) { }
-  ngOnInit() {
-    this.getRoles();
-    this.getUsers();
+
+  async ngOnInit() {
+    if (this.checkAccess(1)) {
+      await this.getRoles();
+      this.getUsers();
+    }
   }
 
   async getUsers() {
     let res: any = await this.userService.getAllUsers().toPromise();
     this.usersList = res;
     this.usersList.forEach(user => {
-      user.roleName = this.roles.filter(role => role.id == user.roleId)[0]['name'];
+      let role: any[] = this.roles.filter(role => role.id == user.roleId);
+      if (role.length > 0) {
+        user.roleName = role[0]['name'];
+      }
     });
   }
 
@@ -102,5 +110,9 @@ export class UserListComponent {
         this.toastR.error('خطایی رخ داد', 'خطا!');
       }
     })
+  }
+
+  checkAccess(id) {
+    return this.objectService.checkAccess(id);
   }
 }

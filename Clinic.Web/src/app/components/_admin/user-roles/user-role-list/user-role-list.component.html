@@ -1,0 +1,38 @@
+<div class="appContainer">
+  <h4 class="text-right">لیست نقش ها</h4>
+  <hr>
+  <div *ngIf="checkAccess(1)" class="col-12">
+    <p-table id="usersTable" #dt styleClass="" class="contacts-table" [value]="roles" [pageLinks]="20"
+      [autoLayout]="true" [paginator]="true" [rows]="10" [showCurrentPageReport]="true"
+      currentPageReportTemplate="نمایش {first} تا {last} " [rowsPerPageOptions]="[10,25,50]">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>#</th>
+          <th>نام </th>
+          <th>عملیات</th>
+        </tr>
+        <tr>
+          <th></th>
+          <th>
+            <input type="text" (input)="dt.filter($event.target?.value, 'name', 'contains')" class="form-control">
+          </th>
+          <th></th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-user let-rowIndex="rowIndex">
+        <tr>
+          <td> {{rowIndex+1}}</td>
+          <td class="text-center">
+            {{user.name}}
+          </td>
+          <td class="text-center">
+            <button *ngIf="checkAccess(2)" class="btn btn-outline-secondary mx-1"
+              [routerLink]="['/user-roles/' + user.id]">ویرایش</button>
+            <!-- <button *ngIf="checkAccess(3)" class="btn btn-outline-danger" (click)="deleteUser(user.id)">حذف</button> -->
+          </td>
+
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>

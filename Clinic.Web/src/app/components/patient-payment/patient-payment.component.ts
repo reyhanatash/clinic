@@ -6,6 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { DialogModule } from 'primeng/dialog';
 import { CommonModule } from '@angular/common';
 import { SharedModule } from '../../share/shared.module';
+import { ObjectService } from '../../_services/store.service';
 
 @Component({
   selector: 'app-patient-payment',
@@ -15,10 +16,11 @@ import { SharedModule } from '../../share/shared.module';
   styleUrl: './patient-payment.component.css'
 })
 export class PatientPaymentComponent {
-constructor(
+  constructor(
     private activeRoute: ActivatedRoute,
     private patientService: PatientService,
     private router: Router,
+    private objectService: ObjectService
 
   ) { }
   pationId: any;
@@ -26,12 +28,17 @@ constructor(
   patientInfo: any = [];
   patientName: string;
   patientCode: string;
-
+  paymentAccess: any = [];
 
   async ngOnInit() {
     this.pationId = +this.activeRoute.snapshot.paramMap.get('id');
     await this.getPatientById();
-    await this.getPatientPayments();
+    let accessList: any  = this.objectService.getItemAccess();
+    let item = accessList.filter(x => x.id == 8);
+    this.paymentAccess = item[0]['itmes'];
+    if (item[0]['itmes'][0]['clicked']) {
+      await this.getPatientPayments();
+    }
   }
 
   async getPatientPayments() {
@@ -53,7 +60,12 @@ constructor(
     }
   }
 
-    ceatReceipt() {
-    this.router.navigate(['/patient/receipt/' + this.pationId])
+  ceatReceipt() {
+    this.router.navigate(['/patient/payment/' + this.pationId])
+  }
+
+  checklPaymentAccess(id) {
+    const item = this.paymentAccess.find(x => x.id === id);
+    return item ? item.clicked : false;
   }
 }

@@ -6,5 +6,6 @@
         public string SecretCode { get; set; } = string.Empty;
         public string Role { get; set; } = string.Empty;
         public string UserName { get; set; }
+        public string Secret { get; set; }
     }
 }

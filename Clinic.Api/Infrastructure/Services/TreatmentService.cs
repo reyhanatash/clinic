@@ -243,6 +243,7 @@ namespace Clinic.Api.Infrastructure.Services
                                 ).ToListAsync();
                     var appointmentIds = result.Select(r => r.Appointment.Id).ToList();
                     var invoiceItemsbillIds = result.Select(r => r.InvoiceItems.ItemId).ToList();
+                    var invoiceItemDone = result.Select(d => d.InvoiceItems.Done).ToList();
                     var appointmentIdsNullable = appointmentIds.Select(id => (int?)id).ToList();
                     var invoiceItemsbillIdsNullable = invoiceItemsbillIds.Select(id => (int?)id).ToList();
 
@@ -265,11 +266,17 @@ namespace Clinic.Api.Infrastructure.Services
                         var relatedTreatments = treatments.Where(t => t.AppointmentId == appointmentId).ToList();
                         var hasTreatment = relatedTreatments.Any();
 
-                        var relatedBillableNames = billableItems
-                            .Where(b => b.Id != null && invoiceItemsbillIdsNullable.Contains(b.Id))
-                            .Select(b => b.Name)
-                            .Distinct()
-                            .ToList();
+                        var relatedBillableItems = (
+      from bi in billableItems
+      join ii in result.Where(x => x.Appointment.Id == appointmentId).Select(x => x.InvoiceItems)
+          on bi.Id equals ii.ItemId
+      select new BillableItemDoneDto
+      {
+          InvoiceItemId = ii.Id,
+          Name = bi.Name,
+          Done = ii.Done
+      }
+  ).ToList();
 
                         return new GetTodayAppointmentsInfoDto
                         {
@@ -280,7 +287,7 @@ namespace Clinic.Api.Infrastructure.Services
                             PatientId = r.Patient.Id,
                             PractitionerName = (r.Practitioner.FirstName + " " + r.Practitioner.LastName).Trim(),
                             AppointmentTypeName = r.AppointmentType.Name,
-                            BillableItemNames = relatedBillableNames,
+                            BillableItems = relatedBillableItems,
                             Status = !hasInvoice && !hasTreatment ? 1 :
                                      hasInvoice && !hasTreatment ? 2 :
                                      hasInvoice && hasTreatment ? 3 : 0,
@@ -348,12 +355,17 @@ namespace Clinic.Api.Infrastructure.Services
                         var relatedTreatments = treatments.Where(t => t.AppointmentId == appointmentId).ToList();
                         var hasTreatment = relatedTreatments.Any();
 
-                        var relatedBillableNames = billableItems
-                            .Where(b => b.Id != null && invoiceItemsbillIdsNullable.Contains(b.Id))
-                            .Select(b => b.Name)
-                            .Distinct()
-                            .ToList();
-
+                        var relatedBillableItems = (
+         from bi in billableItems
+         join ii in result.Where(x => x.Appointment.Id == appointmentId).Select(x => x.InvoiceItems)
+             on bi.Id equals ii.ItemId
+         select new BillableItemDoneDto
+         {
+             InvoiceItemId = ii.Id,
+             Name = bi.Name,
+             Done = ii.Done
+         }
+     ).ToList();
                         return new GetTodayAppointmentsInfoDto
                         {
                             Id = appointmentId,
@@ -363,7 +375,7 @@ namespace Clinic.Api.Infrastructure.Services
                             PatientId = r.Patient.Id,
                             PractitionerName = (r.Practitioner.FirstName + " " + r.Practitioner.LastName).Trim(),
                             AppointmentTypeName = r.AppointmentType.Name,
-                            BillableItemNames = relatedBillableNames,
+                            BillableItems = relatedBillableItems,
                             Status = !hasInvoice && !hasTreatment ? 1 :
                                      hasInvoice && !hasTreatment ? 2 :
                                      hasInvoice && hasTreatment ? 3 : 0,
@@ -381,6 +393,7 @@ namespace Clinic.Api.Infrastructure.Services
                             .Where(i => i.AppointmentId == appointmentId && (i.IsCanceled == false || i.IsCanceled == null))
                             .Select(i => i.Receipt)
                             .FirstOrDefault()
+
                         };
                     }).ToList();
                     return final;

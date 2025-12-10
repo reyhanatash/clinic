@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { InvoiceService } from '../../_services/invoice.service';
 import { SharedModule } from '../../share/shared.module';
 import { Router, RouterLink } from "@angular/router";
+import { ObjectService } from '../../_services/store.service';
 
 @Component({
   selector: 'app-invoice-list',
@@ -14,7 +15,8 @@ export class InvoiceListComponent implements OnInit {
 
   constructor(
     private InvoiceService: InvoiceService,
-    private router: Router
+    private router: Router,
+    private objectService: ObjectService
   ) { }
 
   InvoiceList: any = [];
@@ -28,7 +30,7 @@ export class InvoiceListComponent implements OnInit {
       let res: any = await this.InvoiceService.getInvoices().toPromise();
       this.InvoiceList = res;
       this.InvoiceList.sort((a, b) =>
-       new Date(b.createdOn).getTime() - new Date(a.createdOn).getTime()
+        new Date(b.createdOn).getTime() - new Date(a.createdOn).getTime()
       )
     }
     catch { }
@@ -37,5 +39,10 @@ export class InvoiceListComponent implements OnInit {
 
   goToEditPage(id, type) {
     this.router.navigate(['/new-invoice', id, "n", "n", "n", type]);
+  }
+
+
+  checkAccess(id) {
+    return this.objectService.checkAccess(id);
   }
 }

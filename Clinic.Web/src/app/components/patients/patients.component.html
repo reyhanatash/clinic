@@ -1,22 +1,27 @@
 <div class="appContainer">
   <div class="col-12 d-flex justify-content-between align-items-center">
     <h4>بیماران</h4>
-    <button class="btn new-appointment-btn px-3 py-1 d-flex align-items-center justify-content-center"
+    <button *ngIf="checkAccess(2)"
+      class="btn new-appointment-btn px-3 py-1 d-flex align-items-center justify-content-center"
       (click)="createPatientModal()">
       +
     </button>
   </div>
   <hr>
-  <div class="col-12 mt-5">
+  <div *ngIf="checkAccess(1)" class="col-12 mt-5">
     <p-table id="patientsTable" #dt styleClass="" class="patients-table" [value]="patientsList" [pageLinks]="20"
       [autoLayout]="true" [paginator]="true" [rows]="10" [showCurrentPageReport]="true"
       currentPageReportTemplate="نمایش {first} تا {last} " [rowsPerPageOptions]="[10,25,50]">
       <ng-template pTemplate="header">
         <tr>
           <th>ردیف</th>
-          <th pSortableColumn="fullName"><p-sortIcon field="fullName"></p-sortIcon> نام و نام خانوادگی</th>
+          <th pSortableColumn="fullName">
+            <p-sortIcon field="fullName"></p-sortIcon> نام و نام خانوادگی
+          </th>
           <th>نام پدر</th>
-          <th pSortableColumn="mobile"><p-sortIcon field="mobile"></p-sortIcon> شماره همراه</th>
+          <th pSortableColumn="mobile">
+            <p-sortIcon field="mobile"></p-sortIcon> شماره همراه
+          </th>
           <th>کد ملی</th>
           <th>توضیحات</th>
           <th>عملیات</th>
@@ -60,10 +65,11 @@
             <button class="btn main-btn mx-1" *ngIf="!patient.phoneNum"
               (click)="openAddPhoneNumModal(patient.id)">افزودن شماره
               تلفن</button>
-            <button class="btn main-btn" *ngIf="patient.phoneNum" (click)="editPhoneNum(patient.patientPhone)">ویرایش
+            <button class="btn main-btn" *ngIf="patient.phoneNum && checkAccess(2)"
+              (click)="editPhoneNum(patient.patientPhone)">ویرایش
               شماره تلفن</button>
             <button class="btn main-outline-btn mx-1" (click)="editPatient(patient)">ویرایش</button>
-            <button class="btn btn-outline-danger mx-1" *ngIf="userType == 1"
+            <button class="btn btn-outline-danger mx-1" *ngIf="userType == 1 && checkAccess(3)"
               (click)="deletePatient(patient.id)">حذف</button>
           </td>
         </tr>

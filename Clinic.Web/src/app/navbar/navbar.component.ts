@@ -6,6 +6,7 @@ import { PatientService } from '../_services/patient.service';
 import { ToastrService } from 'ngx-toastr';
 import swal from 'sweetalert2';
 import { PatientMenuComponent } from "../components/patient-menu/patient-menu.component";
+import { ObjectService } from '../_services/store.service';
 export interface imenu {
   id: number;
   text: string;
@@ -32,16 +33,16 @@ export const settingMenu: imenu[] = [
   { id: 1, text: "تنظیمات عمومی", link: '', roleAccess: [], icon: 'fa fa-caret-left' },
   { id: 2, text: "مکان ها", link: '', roleAccess: [], icon: 'fa fa-caret-left' },
   { id: 3, text: "کاربران", link: '/userlist', roleAccess: [], icon: 'fa fa-caret-left' },
-  { id: 4, text: "نقش ها و دسترسی ها", link: '/user-list', roleAccess: [], icon: 'fa fa-caret-left' },
+  { id: 4, text: "نقش ها و دسترسی ها", link: '/user-role-list', roleAccess: [], icon: 'fa fa-caret-left' },
 ];
 export const financialMenu: imenu[] = [
-  { id: 0, text: "خدمات", link: '', roleAccess: [], icon: 'fa fa-caret-left' },
-  { id: 1, text: "گروه خدمات", link: '', roleAccess: [], icon: 'fa fa-caret-left' },
+  { id: 0, text: "خدمات", link: '/service-list', roleAccess: [], icon: 'fa fa-caret-left' },
+  { id: 1, text: "گروه خدمات", link: '/service-group-list', roleAccess: [], icon: 'fa fa-caret-left' },
 ];
 export const appointmentMenu: imenu[] = [
-  { id: 0, text: "انواع وقت دهی", link: '', roleAccess: [], icon: 'fa fa-caret-left' },
+  { id: 0, text: "انواع وقت دهی", link: '/appointment-types', roleAccess: [], icon: 'fa fa-caret-left' },
   { id: 1, text: "تعطیلات", link: '', roleAccess: [], icon: 'fa fa-caret-left' },
-  { id: 2, text: "استثنائات اوقات پزشکان", link: '/exception-time', roleAccess: [], icon: 'fa fa-caret-left' },
+  { id: 2, text: "استثنائات اوقات پزشکان", link: '/time-exception', roleAccess: [], icon: 'fa fa-caret-left' },
   { id: 3, text: "استثنائات خارج از نوبت", link: '/outOfturnexceptions', roleAccess: [], icon: 'fa fa-caret-left' },
 ];
 
@@ -78,13 +79,15 @@ export class NavbarComponent {
   openSettingMenu: boolean = false;
   openFinancialMenu: boolean = false;
   openAppointmentMenu: boolean = false;
+  userName: string;
 
   constructor(
     private authService: AuthService,
     private router: Router,
     private activeRoute: ActivatedRoute,
     private patientService: PatientService,
-    private toastR: ToastrService
+    private toastR: ToastrService,
+    private ObjectService: ObjectService
   ) {
     router.events.subscribe((event: Event) => {
       let url = location.pathname.split('?')[0];
@@ -109,7 +112,7 @@ export class NavbarComponent {
     })
 
   }
-  ngOnInit() {
+  async ngOnInit() {
     let url = location.pathname;
     this.isMobileSize = window.innerWidth <= 768 && window.innerHeight <= 1024;
     if (this.isMobileSize) {
@@ -118,10 +121,11 @@ export class NavbarComponent {
     else {
       this.openSidebar = true;
     }
-    this.sidebarMenu = Menu;
-    this.settingMenu = settingMenu;
-    this.financialMenu = financialMenu;
-    this.appointmentMenu = appointmentMenu
+    let allowedLinks = await this.ObjectService.getNavbarAccess();
+    this.sidebarMenu = this.filterMenu(Menu, allowedLinks);
+    this.settingMenu = this.filterMenu(settingMenu, allowedLinks);;
+    this.financialMenu = this.filterMenu(financialMenu, allowedLinks);;
+    this.appointmentMenu = this.filterMenu(appointmentMenu, allowedLinks);
     if ((url.startsWith('/patient/'))) {
       this.hasPatientMenu = true;
       this.patientId = url.split('/').pop();
@@ -130,6 +134,8 @@ export class NavbarComponent {
     this.showReportMenu = (url.startsWith('/report/')) == true ? true : false;
     const matchedItem = this.reportMenu.find(item => item.link === url);
     this.selectedSideBarreportMenuItem = matchedItem?.id ?? null;
+    this.userName = localStorage.getItem('fullName');
+
   }
 
   logOut() {
@@ -182,7 +188,19 @@ export class NavbarComponent {
     }
   }
 
-
-
+  filterMenu(menu, accessList) {
+    const result = [];
+    menu.forEach(menuItem => {
+      const found = accessList.find(acc => acc.link === menuItem.link);
+      if (found) {
+        if (found.clicked) {
+          result.push(menuItem);
+        }
+      } else {
+        result.push(menuItem);
+      }
+    });
+    return result;
+  }
 }
 

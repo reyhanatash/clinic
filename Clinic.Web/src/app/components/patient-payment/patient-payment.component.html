@@ -5,9 +5,9 @@
                 <h5 class="m-0">{{patientName}} / پرداخت ها</h5>
                 <p class="mb-0 mt-2">{{patientCode}}</p>
             </div>
-            <button class="btn main-btn" (click)="ceatReceipt()">پرداخت جدید</button>
+            <button *ngIf="checklPaymentAccess(2)" class="btn main-btn" (click)="ceatReceipt()">پرداخت جدید</button>
         </div>
-        <p-table id="patientPaymentTable" #dt styleClass="" class="patientPayment-table" [value]="patientPaymentList"
+        <p-table *ngIf="checklPaymentAccess(1)" id="patientPaymentTable" #dt styleClass="" class="patientPayment-table" [value]="patientPaymentList"
             [pageLinks]="20" [autoLayout]="true" [paginator]="true" [rows]="10" [showCurrentPageReport]="true"
             currentPageReportTemplate="نمایش {first} تا {last} " [rowsPerPageOptions]="[10,25,50]">
             <ng-template pTemplate="header">

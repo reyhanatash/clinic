@@ -15,6 +15,7 @@ import { firstValueFrom } from 'rxjs';
 import swal from 'sweetalert2';
 import { NewContactComponent } from '../contacts/new-contact/new-contact.component';
 import { UtilService } from '../../_services/util.service';
+import { ObjectService } from '../../_services/store.service';
 @Component({
   selector: 'app-patients',
   standalone: true,
@@ -68,7 +69,8 @@ export class PatientsComponent {
     private contactService: ContactService,
     private toastR: ToastrService,
     private router: Router,
-    private utilService: UtilService
+    private utilService: UtilService,
+    private objectService: ObjectService
   ) {
   }
 
@@ -295,5 +297,10 @@ export class PatientsComponent {
     await this.getContacts();
     this.newPatient.referringContactId = this.contactsList.filter(x => x.firstName == data.firstName)[0];
   }
+
+  checkAccess(id) {
+    return this.objectService.checkAccess(id);
+  }
+
 
 }

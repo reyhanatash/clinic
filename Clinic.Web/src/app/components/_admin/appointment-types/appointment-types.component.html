@@ -3,7 +3,7 @@
         <h4>نوع وقت دهی</h4>
     </div>
     <hr>
-    <div class="col-12 d-flex flex-wrap">
+    <div *ngIf="checkAccess(2)" class="col-12 d-flex flex-wrap">
         <div class="col-md-4 col-12 mt-2 text-right">
             <label for="name">نام</label>
             <input name="name" type="text" [(ngModel)]="newType.name" class="form-control">
@@ -59,10 +59,10 @@
             <label for="thirdProduct" class="mr-2 w-100">رنگ</label>
             <p-colorPicker [(ngModel)]="newType.typeColor" [ngModelOptions]="{standalone: true}" [inline]="true" />
         </div>
+        <div class="text-center col-12 mb-3"><button class="btn btn-success" (click)="saveAppointmentType()">ذخیره</button></div>
+        <hr>
     </div>
-    <div class="text-center"><button class="btn btn-success" (click)="saveAppointmentType()">ذخیره</button></div>
-    <hr>
-    <div class="col-12">
+    <div  *ngIf="checkAccess(1)" class="col-12">
         <p-table #dt styleClass="p-datatable-gridlines" [value]="appointmentTypes" [autoLayout]="true"
             [paginator]="true" [rows]="10" [showCurrentPageReport]="true"
             currentPageReportTemplate="نمایش {first} تا {last} " [rowsPerPageOptions]="[10,25,50]">
@@ -70,6 +70,17 @@
                 <tr>
                     <th>#</th>
                     <th>عنوان</th>
+                    <th>توضیحات</th>
+                    <th>مدت زمان</th>
+                    <th>خدمت مرتبط اول</th>
+                    <th>خدمت مرتبط دوم</th>
+                    <th>خدمت مرتبط سوم</th>
+                    <th>فرم بالینی پیش فرض</th>
+                    <th>کالای مرتبط اول</th>
+                    <th>کالای مرتبط دوم</th>
+                    <th>کالای مرتبط سوم</th>
+                    <th> نمایش در وقت دهی آنلاین</th>
+                    <th>رنگ</th>
                     <th>عملیات</th>
                 </tr>
                 <tr>
@@ -78,6 +89,17 @@
                         <input type="text" (input)="dt.filter($event.target?.value, 'name', 'contains')"
                             class="form-control">
                     </th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
                     <th></th>
                 </tr>
             </ng-template>
@@ -94,7 +116,68 @@
                         </div>
                     </td>
                     <td class="px-2">
-                        <button class="btn btn-outline-danger mx-2" (click)="deleteType(item.id)">حذف</button>
+                        <div class="py-2 widthClassPrime">
+                            <span>{{item.description}}</span>
+                        </div>
+                    </td>
+                    <td class="px-2">
+                        <div class="py-2 widthClassPrime">
+                            <span>{{item.duration}}</span>
+                        </div>
+                    </td>
+                    <td class="px-2">
+                        <div class="py-2 widthClassPrime">
+                            <span>{{item.relatedService1Name}}</span>
+                        </div>
+                    </td>
+                    <td class="px-2">
+                        <div class="py-2 widthClassPrime">
+                            <span>{{item.relatedService2Name}}</span>
+                        </div>
+                    </td>
+                    <td class="px-2">
+                        <div class="py-2 widthClassPrime">
+                            <span>{{item.relatedService3Name}}</span>
+                        </div>
+                    </td>
+                    <td class="px-2">
+                        <div class="py-2 widthClassPrime">
+                            <span>{{item.defaultTreatmentNoteTemplateName}}</span>
+                        </div>
+                    </td>
+                    <td class="px-2">
+                        <div class="py-2 widthClassPrime">
+                            <span>{{item.relatedProduct1Name}}</span>
+                        </div>
+                    </td>
+                    <td class="px-2">
+                        <div class="py-2 widthClassPrime">
+                            <span>{{item.relatedProduct2Name}}</span>
+                        </div>
+                    </td>
+                    <td class="px-2">
+                        <div class="py-2 widthClassPrime">
+                            <span>{{item.relatedProduct3Name}}</span>
+                        </div>
+                    </td>
+                    <td class="px-2">
+                        <div class="py-2 widthClassPrime">
+                            <span>{{item.showInOnlineBookings ? 'بله' : 'خیر'}}</span>
+                        </div>
+                    </td>
+                    <td class="px-2">
+                        <div class="py-2 widthClassPrime">
+                            <span>
+                                <div class="d-flex align-items-center">
+                                    <div class="type-color-box mr-2" [ngStyle]="{'background-color': item.color}"></div>
+                                    <span>{{item.color}}</span>
+                                </div>
+                            </span>
+                        </div>
+                    </td>
+                    <td class="px-2">
+                        <button *ngIf="checkAccess(3)" class="btn btn-outline-danger mx-2" (click)="deleteType(item.id)">حذف</button>
+                        <button *ngIf="checkAccess(2)" class="btn btn-outline-secondary mx-2" (click)="editType(item)">ویرایش</button>
                     </td>
                 </tr>
             </ng-template>

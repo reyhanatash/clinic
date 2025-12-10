@@ -12,12 +12,13 @@ import { DialogModule } from 'primeng/dialog';
 import moment from 'moment-jalaali';
 import { FormControl } from '@angular/forms';
 import { InputMaskModule } from 'primeng/inputmask';
+import { ObjectService } from '../../../_services/store.service';
 
 @Component({
   selector: 'app-expenses',
   standalone: true,
   imports: [TableModule, CommonModule, DropdownModule, FormsModule, SelectButtonModule, SharedModule, DialogModule, InputMaskModule],
-  templateUrl: './expenses.component.html',
+templateUrl: './expenses.component.html',
   styleUrl: './expenses.component.css'
 })
 export class ExpensesComponent {
@@ -32,13 +33,16 @@ export class ExpensesComponent {
   constructor(
     private invoiceService: InvoiceService,
     private mainService: MainService,
-    private toastR: ToastrService
+    private toastR: ToastrService,
+    private objectService: ObjectService
   ) { }
 
   async ngOnInit() {
     this.selectedDatefrom = new FormControl(moment().format('jYYYY/jMM/jDD'));
-    await this.getClinics();
-    this.getExpenses();
+    if(this.checkAccess(1)){
+      await this.getClinics();
+      this.getExpenses();
+    }
   }
 
 
@@ -103,6 +107,10 @@ export class ExpensesComponent {
     this.newExpense.id = expense.id;
     this.showAddExpense = true;
 
+  }
+  
+  checkAccess(id) {
+   return this.objectService.checkAccess(id);
   }
 
 }

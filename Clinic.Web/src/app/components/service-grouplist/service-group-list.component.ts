@@ -4,6 +4,7 @@ import { ToastrService } from 'ngx-toastr';
 import Swal from 'sweetalert2';
 import { TreatmentsService } from '../../_services/treatments.service';
 import { SharedModule } from '../../share/shared.module';
+import { ObjectService } from '../../_services/store.service';
 
 @Component({
   selector: 'app-service-grouplist',
@@ -17,13 +18,16 @@ export class ServiceGrouplistComponent implements OnInit {
   constructor(
     private router: Router,
     private treatmentsService: TreatmentsService,
-    private toastR: ToastrService
+    private toastR: ToastrService,
+    private objectService: ObjectService,
   ) { }
 
   itemCategory: any = [];
 
   ngOnInit(): void {
-    this.getItemCategory();
+    if (this.checkAccess(1)) {
+      this.getItemCategory();
+    }
   }
 
   async getItemCategory() {
@@ -57,5 +61,9 @@ export class ServiceGrouplistComponent implements OnInit {
         this.toastR.error('خطایی رخ داد', 'خطا!')
       }
     })
+  }
+
+  checkAccess(id) {
+    return this.objectService.checkAccess(id);
   }
 }

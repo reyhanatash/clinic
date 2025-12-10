@@ -1,39 +1,39 @@
 <div class="patientAppContainer">
-    <div class="col-12 text-right">
-        <h4>پیوست بیمار</h4>
-        <hr>
-    </div>
-    <div class="col-12 d-flex flex-wrap justify-content-center">
-        <div class="col-4 d-flex flex-column align-items-center">
-            <div class="dashed_upload p-5 pointer" (click)="fileInput.click()">
-                <div class="wrapper">
-                    <div class="drop">
-                        <div class="cont col-12 d-flex flex-column align-items-center">
-                            <i class="fa fa-cloud-upload"></i>
-                            <div class="">
-                                <h3>
-                                    بکشید و رها کنید
-                                </h3>
-                            </div>
-                            <div class="desc my-2">
-                                یا
-                            </div>
-                            <div>
-                                برای انتخاب فایل کلیک کنید
-                            </div>
-                            <small class="my-3">
-                                فرمت های مجاز :pdf, jpg, jpeg, png
-                            </small>
-                        </div>
-                        <output id="list"></output><input #fileInput id="files" class="d-none" type="file"
-                            (change)="handleFileInput($event.target.files)">
-                    </div>
-                </div>
-                <div *ngIf="fileName" class="d-flex align-items-center justify-content-center">
-                    <small>{{fileName}}</small>
-                    <a (click)='removeFile($event)' class='pointer text-danger mx-2'><i class='fa fa-trash'></i></a>
-                </div>
-                <!-- <ng-template #fileList>
+  <div class="col-12 text-right">
+    <h4>پیوست بیمار</h4>
+    <hr>
+  </div>
+  <div *ngIf="checkAttachmentAccess(2)" class="col-12 d-flex flex-wrap justify-content-center">
+    <div class="col-4 d-flex flex-column align-items-center">
+      <div class="dashed_upload p-5 pointer" (click)="fileInput.click()">
+        <div class="wrapper">
+          <div class="drop">
+            <div class="cont col-12 d-flex flex-column align-items-center">
+              <i class="fa fa-cloud-upload"></i>
+              <div class="">
+                <h3>
+                  بکشید و رها کنید
+                </h3>
+              </div>
+              <div class="desc my-2">
+                یا
+              </div>
+              <div>
+                برای انتخاب فایل کلیک کنید
+              </div>
+              <small class="my-3">
+                فرمت های مجاز :pdf, jpg, jpeg, png
+              </small>
+            </div>
+            <output id="list"></output><input #fileInput id="files" class="d-none" type="file"
+              (change)="handleFileInput($event.target.files)">
+          </div>
+        </div>
+        <div *ngIf="fileName" class="d-flex align-items-center justify-content-center">
+          <small>{{fileName}}</small>
+          <a (click)='removeFile($event)' class='pointer text-danger mx-2'><i class='fa fa-trash'></i></a>
+        </div>
+        <!-- <ng-template #fileList>
                     <table class='table'>
                         <tr>
                             <td>{{fileName}}</td>
@@ -42,40 +42,44 @@
                         </tr>
                     </table>
                 </ng-template> -->
-            </div>
-            <button class="btn main-btn mt-3" (click)="saveAttachment()">ذخیره</button>
-        </div>
+      </div>
+      <button class="btn main-btn mt-3" (click)="saveAttachment()">ذخیره</button>
     </div>
+  </div>
 
-    <div class="col-12 mt-5">
-        <p-table id="patientAttachmentTable" #dt styleClass="" class="attachment-table" [value]="patientAttachmentList"
-            [pageLinks]="20" [autoLayout]="true" [paginator]="true" [rows]="10" [showCurrentPageReport]="true"
-            currentPageReportTemplate="نمایش {first} تا {last} " [rowsPerPageOptions]="[10,25,50]">
-            <ng-template pTemplate="header">
-                <tr>
-                    <th>ردیف</th>
-                    <th>پیش نمایش</th>
-                    <th pSortableColumn="createdOn"><p-sortIcon field="createdOn"></p-sortIcon>تاریخ ثبت</th>
-                    <th>عملیات</th>
-                </tr>
-            </ng-template>
-            <ng-template pTemplate="body" let-attachment let-rowIndex="rowIndex">
-                <tr>
-                    <td class="text-center"> {{rowIndex+1}}</td>
-                    <td class="text-center">
-                        <img *ngIf="attachment.fileType == 1" [src]="attachment.fileName" alt="" width="50">
-                        <i *ngIf="attachment.fileType == 0" class="fa fa-2x fa-file-pdf-o" aria-hidden="true"></i>
+  <div *ngIf="checkAttachmentAccess(1)" class="col-12 mt-5">
+    <p-table id="patientAttachmentTable" #dt styleClass="" class="attachment-table" [value]="patientAttachmentList"
+      [pageLinks]="20" [autoLayout]="true" [paginator]="true" [rows]="10" [showCurrentPageReport]="true"
+      currentPageReportTemplate="نمایش {first} تا {last} " [rowsPerPageOptions]="[10,25,50]">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>ردیف</th>
+          <th>پیش نمایش</th>
+          <th pSortableColumn="createdOn">
+            <p-sortIcon field="createdOn"></p-sortIcon>تاریخ ثبت
+          </th>
+          <th>عملیات</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-attachment let-rowIndex="rowIndex">
+        <tr>
+          <td class="text-center"> {{rowIndex+1}}</td>
+          <td class="text-center">
+            <img *ngIf="attachment.fileType == 1" [src]="attachment.fileName" alt="" width="50">
+            <i *ngIf="attachment.fileType == 0" class="fa fa-2x fa-file-pdf-o" aria-hidden="true"></i>
 
-                    </td>
-                    <td class="text-center">
-                        {{attachment.createdOn | JustDateZone}}
-                    </td>
-                    <td><button class="btn btn-secondary" (click)="deleteAttachment(attachment.id)">حذف</button>
-                        <a class="btn main-btn-outline mr-1" download [href]="attachment.fileName"><i
-                                class="fa fa-download"></i></a>
-                    </td>
-                </tr>
-            </ng-template>
-        </p-table>
-    </div>
+          </td>
+          <td class="text-center">
+            {{attachment.createdOn | JustDateZone}}
+          </td>
+          <td>
+            <button *ngIf="checkAttachmentAccess(3)" class="btn btn-secondary"
+              (click)="deleteAttachment(attachment.id)">حذف</button>
+            <a class="btn main-btn-outline mr-1" download [href]="attachment.fileName"><i
+                class="fa fa-download"></i></a>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
 </div>

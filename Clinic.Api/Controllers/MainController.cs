@@ -17,7 +17,7 @@ namespace Clinic.Api.Controllers
         }
 
         [HttpGet("getSections")]
-        [Authorize("Admin", "Doctor", "Secretary-Reception")]
+        [Authorize]
         public async Task<IActionResult> GetSections()
         {
             var result = await _mainService.GetSections();
@@ -25,7 +25,7 @@ namespace Clinic.Api.Controllers
         }
 
         [HttpGet("getClinics")]
-        [Authorize("Admin", "Doctor", "Secretary-Reception")]
+        [Authorize]
         public async Task<IActionResult> GetClinics()
         {
             var result = await _mainService.GetClinics();
@@ -33,7 +33,7 @@ namespace Clinic.Api.Controllers
         }
 
         [HttpPost("saveJob")]
-        [Authorize("Admin", "Doctor", "Secretary-Reception")]
+        [Authorize]
         public async Task<IActionResult> SaveJob(SaveJobDto model)
         {
             var result = await _mainService.SaveJob(model);
@@ -41,7 +41,7 @@ namespace Clinic.Api.Controllers
         }
 
         [HttpGet("getJobs")]
-        [Authorize("Admin", "Doctor", "Secretary-Reception")]
+        [Authorize]
         public async Task<IActionResult> GetJobs()
         {
             var result = await _mainService.GetJobs();
@@ -49,7 +49,7 @@ namespace Clinic.Api.Controllers
         }
 
         [HttpGet("deleteJob/{id}")]
-        [Authorize("Admin")]
+        [Authorize]
         public async Task<IActionResult> DeleteJob(int id)
         {
             var result = await _mainService.DeleteJob(id);
@@ -57,7 +57,7 @@ namespace Clinic.Api.Controllers
         }
 
         [HttpGet("getCountries")]
-        [Authorize("Admin", "Doctor", "Secretary-Reception")]
+        [Authorize]
         public async Task<IActionResult> GetCountries()
         {
             var result = await _mainService.GetCountries();
@@ -65,7 +65,7 @@ namespace Clinic.Api.Controllers
         }
 
         [HttpPost("saveProduct")]
-        [Authorize("Admin", "Doctor", "Secretary-Reception")]
+        [Authorize]
         public async Task<IActionResult> SaveProduct(SaveProductDto model)
         {
             var result = await _mainService.SaveProduct(model);
@@ -73,7 +73,7 @@ namespace Clinic.Api.Controllers
         }
 
         [HttpGet("getProducts")]
-        [Authorize("Admin", "Doctor", "Secretary-Reception")]
+        [Authorize]
         public async Task<IActionResult> GetProducts()
         {
             var result = await _mainService.GetProducts();
@@ -81,7 +81,7 @@ namespace Clinic.Api.Controllers
         }
 
         [HttpGet("deleteProduct/{id}")]
-        [Authorize("Admin", "Doctor")]
+        [Authorize]
         public async Task<IActionResult> DeleteProduct(int id)
         {
             var result = await _mainService.DeleteProduct(id);
@@ -89,7 +89,7 @@ namespace Clinic.Api.Controllers
         }
 
         [HttpPost("saveNote")]
-        [Authorize("Admin", "Doctor", "Secretary-Reception")]
+        [Authorize]
         public async Task<IActionResult> SaveNote(SaveNoteDto model)
         {
             var result = await _mainService.SaveNote(model);
@@ -97,7 +97,7 @@ namespace Clinic.Api.Controllers
         }
 
         [HttpGet("getNotes/{patientId}")]
-        [Authorize("Admin", "Doctor", "Secretary-Reception")]
+        [Authorize]
         public async Task<IActionResult> GetNotes(int patientId)
         {
             var result = await _mainService.GetNotes(patientId);
@@ -105,7 +105,7 @@ namespace Clinic.Api.Controllers
         }
 
         [HttpGet("deleteNote/{noteId}")]
-        [Authorize("Admin", "Doctor")]
+        [Authorize]
         public async Task<IActionResult> DeleteNote(int noteId)
         {
             var result = await _mainService.DeleteNote(noteId);
@@ -113,7 +113,7 @@ namespace Clinic.Api.Controllers
         }
 
         [HttpPost("saveDoctorSchedule")]
-        [Authorize("Admin", "Doctor", "Secretary-Reception")]
+        [Authorize]
         public async Task<IActionResult> SaveDoctorSchedule(SaveDoctorScheduleDto model)
         {
             var result = await _mainService.SaveDoctorSchedule(model);
@@ -121,7 +121,7 @@ namespace Clinic.Api.Controllers
         }
 
         [HttpGet("getDoctorSchedules/{userId?}")]
-        [Authorize("Admin", "Doctor", "Secretary-Reception")]
+        [Authorize]
         public async Task<IActionResult> GetDoctorSchedules(int? userId)
         {
             var result = await _mainService.GetDoctorSchedules(userId);
@@ -129,7 +129,7 @@ namespace Clinic.Api.Controllers
         }
 
         [HttpGet("deleteDoctorSchedule/{scheduleId}")]
-        [Authorize("Admin", "Doctor")]
+        [Authorize]
         public async Task<IActionResult> DeleteDoctorSchedule(int scheduleId)
         {
             var result = await _mainService.DeleteDoctorSchedule(scheduleId);
@@ -137,7 +137,7 @@ namespace Clinic.Api.Controllers
         }
 
         [HttpPost("saveUserAppointmentsSettings")]
-        [Authorize("Admin", "Doctor", "Secretary-Reception")]
+        [Authorize]
         public async Task<IActionResult> SaveUserAppointmentsSettings(SaveUserAppointmentsSettingsDto model)
         {
             var result = await _mainService.SaveUserAppointmentsSettings(model);
@@ -145,7 +145,7 @@ namespace Clinic.Api.Controllers
         }
 
         [HttpPost("getUserAppointmentsSettings")]
-        [Authorize("Admin", "Doctor", "Secretary-Reception")]
+        [Authorize]
         public async Task<IActionResult> GetUserAppointmentsSettings(GetUserAppointmentsSettingsDto model)
         {
             var result = await _mainService.GetUserAppointmentsSettings(model);
@@ -221,6 +221,14 @@ namespace Clinic.Api.Controllers
         public async Task<IActionResult> DeleteOutOfTurnException(int id)
         {
             var result = await _mainService.DeleteOutOfTurnException(id);
+            return Ok(result);
+        }
+
+        [HttpPost("updateSmsSettings")]
+        [Authorize]
+        public async Task<IActionResult> UpdateSmsSettings(UpdateSmsSettingsDto model)
+        {
+            var result = await _mainService.UpdateSmsSettings(model);
             return Ok(result);
         }
     }

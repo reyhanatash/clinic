@@ -1,7 +1,7 @@
 <div class="appContainer">
     <h4 class="text-right">لیست کاربران</h4>
     <hr>
-    <div class="col-12">
+    <div *ngIf="checkAccess(1)" class="col-12">
         <p-table id="usersTable" #dt styleClass="" class="contacts-table" [value]="usersList" [pageLinks]="20"
             [autoLayout]="true" [paginator]="true" [rows]="10" [showCurrentPageReport]="true"
             currentPageReportTemplate="نمایش {first} تا {last} " [rowsPerPageOptions]="[10,25,50]">
@@ -51,9 +51,9 @@
                     </td>
                     <td class="text-center">
                         <button class="btn main-btn" (click)="showtimeSchedule(user)">تنظیم زمان ها</button>
-                        <button class="btn btn-outline-secondary mx-1"
+                        <button *ngIf="checkAccess(2)" class="btn btn-outline-secondary mx-1"
                             [routerLink]="['/user/new/' + user.id]">ویرایش</button>
-                        <button class="btn btn-outline-danger" (click)="deleteUser(user.id)">حذف</button>
+                        <button *ngIf="checkAccess(3)" class="btn btn-outline-danger" (click)="deleteUser(user.id)">حذف</button>
                     </td>
 
                 </tr>

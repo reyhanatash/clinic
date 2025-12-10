@@ -3,7 +3,7 @@
     <h4> اوقات امروز</h4>
   </div>
   <hr>
-  <div class="row px-0 d-lg-flex">
+  <div *ngIf="checkAccess(1)" class="row px-0 d-lg-flex">
     <div class="col-lg-2 col-12 pr-2 my-2">
       <div class="mt-md-0 mt-3">
         <div class="col-12 p-0">

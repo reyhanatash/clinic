@@ -8,7 +8,7 @@
         <hr>
     </div>
     <div>
-        <p-table id="expensesTable" #dt styleClass="" class="expenses-table" [value]="expensesList" [pageLinks]="20"
+        <p-table *ngIf="checkAccess(1)" id="expensesTable" #dt styleClass="" class="expenses-table" [value]="expensesList" [pageLinks]="20"
             [autoLayout]="true" [paginator]="true" [rows]="10" [showCurrentPageReport]="true"
             currentPageReportTemplate="نمایش {first} تا {last} " [rowsPerPageOptions]="[10,25,50]">
             <ng-template pTemplate="header">
@@ -19,7 +19,7 @@
                     <th pSortableColumn="amount"><p-sortIcon field="amount"></p-sortIcon> مبلغ</th>
                     <th>فروشنده</th>
                     <th>گروه</th>
-                    <th>عملیات</th>
+                    <th *ngIf="checkAccess(3) || checkAccess(2)" >عملیات</th>
                 </tr>
             </ng-template>
             <ng-template pTemplate="body" let-expense let-rowIndex="rowIndex">
@@ -41,15 +41,13 @@
                         {{expense.category}}
                     </td>
                     <td class="text-center">
-                        <button class="btn main-outline-btn mx-1 main-btn-outline"
+                        <button *ngIf="checkAccess(2)" class="btn main-outline-btn mx-1 main-btn-outline"
                             (click)="editExpense(expense)">ویرایش</button>
                     </td>
                 </tr>
             </ng-template>
         </p-table>
     </div>
-
-
 
     <p-dialog id="create-expense-modal" [(visible)]="showAddExpense" [closable]="false"
         [ngClass]="{'modalShadow' : showAddExpense}" class="p-2">

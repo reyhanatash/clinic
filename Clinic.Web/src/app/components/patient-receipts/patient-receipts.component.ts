@@ -6,6 +6,7 @@ import { DialogModule } from 'primeng/dialog';
 import { FormsModule } from '@angular/forms';
 import { TableModule } from 'primeng/table';
 import { SharedModule } from '../../share/shared.module';
+import { ObjectService } from '../../_services/store.service';
 
 @Component({
   selector: 'app-patient-receipts',
@@ -19,19 +20,24 @@ export class PatientReceiptsComponent {
     private activeRoute: ActivatedRoute,
     private patientService: PatientService,
     private router: Router,
-
+    private objectService: ObjectService
   ) { }
   pationId: any;
   patientRecceiptList: any = [];
   patientInfo: any = [];
   patientName: string;
   patientCode: string;
-
+  receiptAccess: any = [];
 
   async ngOnInit() {
     this.pationId = +this.activeRoute.snapshot.paramMap.get('id');
-    await this.getPatientReceipts();
-    await this.getPatientById();
+    let accessList: any  = this.objectService.getItemAccess();
+    let item = accessList.filter(x => x.id == 7);
+    this.receiptAccess = item[0]['itmes'];
+    if (item[0]['itmes'][0]['clicked']) {
+      await this.getPatientReceipts();
+      await this.getPatientById();
+    }
   }
 
   async getPatientById() {
@@ -52,7 +58,13 @@ export class PatientReceiptsComponent {
       });
     }
   }
+
   ceatReceipt() {
     this.router.navigate(['/patient/receipt/' + this.pationId])
+  }
+
+  checklReceiptAccess(id) {
+    const item = this.receiptAccess.find(x => x.id === id);
+    return item ? item.clicked : false;
   }
 }

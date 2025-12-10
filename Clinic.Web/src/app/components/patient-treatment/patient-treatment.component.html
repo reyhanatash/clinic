@@ -12,7 +12,8 @@
             "-"}}</strong></div>
       </div>
     </div>
-    <button *ngIf="selectedService?.['type'] == 1" (click)="getAllValues()" class="btn btn-sm btn-pink">save</button>
+    <button *ngIf="selectedService?.['type'] == 1 && checkPatientTreatmentAccess(2) " (click)="getAllValues()"
+      class="btn btn-sm btn-pink">save</button>
   </div>
   <div id="p-accordion" class="col-12 d-lg-flex align-items-start mt-4">
     <div id="p-t-accordion" class="col-lg-2 col-12 ">
@@ -34,7 +35,7 @@
         </p-accordionTab>
       </p-accordion>
     </div>
-    <div id="v-t-accordion" class="col-lg-4 col-12">
+    <div id="v-t-accordion" [ngClass]="checkPatientTreatmentAccess(2)? 'col-lg-4':'col-lg-10'" class=" col-12">
       <p-accordion *ngFor="let item of patientServiceListTab, let index= index">
         <p-accordionTab [selected]="true">
           <ng-template pTemplate="header">
@@ -44,7 +45,7 @@
                 <div class="text-muted">{{ item.createdDate | JustDateZone }}</div>
               </div>
               <div class="mt-2 d-flex gap-2">
-                <button class="btn btn-sm btn-pink mx-1" (click)="onClick($event,item,1)">edit</button>
+                <button class="btn btn-sm btn-pink mx-1" *ngIf="checkPatientTreatmentAccess(2)" (click)="onClick($event,item,1)">edit</button>
                 <button class="btn btn-sm btn-info mx-1"
                   (click)="handelCallMetodInPdfMaker($event,item,1)">print</button>
                 <button class="btn btn-sm btn-light mx-1"
@@ -86,7 +87,7 @@
         </p-accordionTab>
       </p-accordion>
     </div>
-    <div class="col-lg-6 col-12 ">
+    <div *ngIf="checkPatientTreatmentAccess(2)" class="col-lg-6 col-12 ">
       <p-accordion id="v-t-accordion" *ngIf="selectedService?.['type'] == 1">
         <p-accordionTab [selected]="true">
           <ng-template pTemplate="header">

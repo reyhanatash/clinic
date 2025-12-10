@@ -31,11 +31,13 @@ export class OutOfTurnExceptionsComponent implements OnInit {
   doctorList: any = [];
 
   ngOnInit(): void {
-    this.getOutOfTurnExceptions();
-    this.getUsers();
-    this.getClinics();
-    this.form.selectedDate = new FormControl(moment().format('jYYYY/jMM/jDD'));
-    this.form.editOrNew = -1;
+    if (this.checkAccess(1)) {
+      this.getOutOfTurnExceptions();
+      this.getUsers();
+      this.getClinics();
+      this.form.selectedDate = new FormControl(moment().format('jYYYY/jMM/jDD'));
+      this.form.editOrNew = -1;
+    }
   }
 
   async getOutOfTurnExceptions() {

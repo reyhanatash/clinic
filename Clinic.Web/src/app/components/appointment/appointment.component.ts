@@ -13,6 +13,7 @@ import { PatientService } from '../../_services/patient.service';
 import { TreatmentsService } from '../../_services/treatments.service';
 import { firstValueFrom } from 'rxjs';
 import { UtilService } from '../../_services/util.service';
+import { ObjectService } from '../../_services/store.service';
 @Component({
   selector: 'app-appointment',
   standalone: true,
@@ -100,7 +101,7 @@ export class AppointmentComponent {
   isCalendarVisible = true;
   newPateint: any = [];
   doctorList: any = [];
-  selectedDoctor: any;
+  selectedDoctor: any = [];
   filteredHours: any = [];
 
   constructor(
@@ -111,7 +112,8 @@ export class AppointmentComponent {
     private mainService: MainService,
     private utilService: UtilService,
     private renderer: Renderer2,
-    private el: ElementRef
+    private el: ElementRef,
+    private objectService: ObjectService
   ) {
   }
 
@@ -128,33 +130,37 @@ export class AppointmentComponent {
   userAppointmentsSettings: any = [];
   searchControl = '';
   async ngOnInit() {
-    this.userType = this.utilService.checkUserType();
-    this.getWeeklyAppointments();
-    this.dateNew = new FormControl(moment().format('jYYYY/jMM/jDD'));
-    this.dateNew.valueChanges.subscribe(date => {
-      this.onDateSelect(date);
-    });
+    if (this.checkAccess(1)) {
+      this.userType = this.utilService.checkUserType();
+      if (this.userType == 9) {
+        this.selectedDoctor.code = this.userType;
+      }
+      this.getWeeklyAppointments();
+      this.dateNew = new FormControl(moment().format('jYYYY/jMM/jDD'));
+      this.dateNew.valueChanges.subscribe(date => {
+        this.onDateSelect(date);
+      });
 
-    this.today = moment();
-    if (this.userType != 9) {
-      await this.getUsers();
-    } else {
-      this.getDoctorSchedules(2);
+      this.today = moment();
+      if (this.userType != 9) {
+        await this.getUsers();
+      } else {
+        this.getDoctorSchedules(2);
+      }
+      // this.selectedDate = this.today;
+      await this.getPatients();
+      await this.getAppointmentTypes();
+      await this.getClinics();
+      await this.getAppointment(this.today);
+      this.today = this.today._d;
+      this.getCurrentWeek(1);
+      this.getWeeklyAppointments();
+      const jalaliYear = moment().format('jYYYY');
+      this.utilService.getIranianHolidaysWithFridays(jalaliYear).subscribe(days => {
+        this.holidays = days
+        this.addHoliday();
+      });
     }
-    // this.selectedDate = this.today;
-    await this.getPatients();
-    await this.getAppointmentTypes();
-    await this.getClinics();
-    await this.getAppointment(this.today);
-    this.today = this.today._d;
-    this.getCurrentWeek(1);
-    this.getWeeklyAppointments();
-    const jalaliYear = moment().format('jYYYY');
-    this.utilService.getIranianHolidaysWithFridays(jalaliYear).subscribe(days => {
-      this.holidays = days
-      this.addHoliday();
-    });
-
   }
 
 
@@ -376,6 +382,8 @@ export class AppointmentComponent {
   }
 
   setNewAppointment(time: any) {
+    if (!this.checkAccess(2)) { return }
+
     if (this.isBeforeNow || this.timeIsBeforeNow(this.appointmentDate, time.time)) {
       this.toastR.error('ثبت وقت برای ساعت های پیشین ممکن نیست! ')
       return
@@ -485,9 +493,9 @@ export class AppointmentComponent {
     let currentDate = moment(this.appointmentDate);
     let weekStart: any = currentDate.clone().locale('fa').startOf('week');
     let daysOfWeek = [];
+    let isInSchedule = await this.setWeeklyScheduleForDay(weekStart.day(), time);
 
     for (let i = 0; i < 6; i++) {
-      let isInSchedule = await this.setWeeklyScheduleForDay(weekStart.day(), time);
       daysOfWeek.push({
         dayName: weekStart.locale('fa').format('dddd'),
         dayNumber: weekStart.format('jDD'),
@@ -816,7 +824,6 @@ export class AppointmentComponent {
     }
   }
 
-
   async getFilteredPatient() {
     try {
 
@@ -837,6 +844,8 @@ export class AppointmentComponent {
     catch { }
   }
 
-
+  checkAccess(id) {
+    return this.objectService.checkAccess(id);
+  }
 
 }

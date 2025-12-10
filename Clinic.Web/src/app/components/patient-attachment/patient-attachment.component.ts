@@ -8,6 +8,7 @@ import { CommonModule } from '@angular/common';
 import { SharedModule } from '../../share/shared.module';
 import { environment } from '../../../environments/environment';
 import swal from 'sweetalert2';
+import { ObjectService } from '../../_services/store.service';
 
 export const ValidFormat = ['pdf', 'jpg', 'jpeg', 'png'];
 
@@ -26,19 +27,21 @@ export class PatientAttachmentComponent {
   patientId: string;
   patientAttachmentList: any;
   server: any;
+  attachmentAccess: any = [];
 
   constructor(
     private patientService: PatientService,
     private toastR: ToastrService,
     private utilService: UtilService,
     private activeRoute: ActivatedRoute,
+    private objectService: ObjectService
   ) {
     this.server = environment.url;
   }
 
   ngOnInit() {
     this.patientId = this.activeRoute.snapshot.paramMap.get('id');
-    this.getAttachment();
+    this.getAttachmentAccess();
   }
 
 
@@ -130,5 +133,19 @@ export class PatientAttachmentComponent {
     this.fileType = '';
     this.fileToUpload = null;
     this.base64 = null;
+  }
+
+  getAttachmentAccess() {
+    let accessList: any = this.objectService.getItemAccess();
+    let item = accessList.filter(x => x.id == 4);
+    this.attachmentAccess = item[0]['itmes'];
+    if (item[0]['itmes'][0]['clicked']) {
+      this.getAttachment();
+    }
+  }
+
+  checkAttachmentAccess(id) {
+    const item = this.attachmentAccess.find(x => x.id === id);
+    return item ? item.clicked : false;
   }
 }

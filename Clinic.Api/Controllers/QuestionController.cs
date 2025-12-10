@@ -17,7 +17,7 @@ namespace Clinic.Api.Controllers
         }
 
         [HttpGet("getQuestions")]
-        [Authorize("Admin", "Doctor", "Secretary-Reception")]
+        [Authorize]
         public async Task<IActionResult> GetQuestions()
         {
             var result = await _questionsService.GetQuestions();
@@ -25,7 +25,7 @@ namespace Clinic.Api.Controllers
         }
 
         [HttpPost("saveQuestionValue")]
-        [Authorize("Admin", "Doctor", "Secretary-Reception")]
+        [Authorize]
         public async Task<IActionResult> SaveQuestionValue(SaveQuestionValueDto model)
         {
             var result = await _questionsService.SaveQuestionValue(model);
@@ -33,7 +33,7 @@ namespace Clinic.Api.Controllers
         }
 
         [HttpGet("deleteQuestionValue/{id}")]
-        [Authorize("Admin", "Doctor")]
+        [Authorize]
         public async Task<IActionResult> DeleteQuestionValue(int id)
         {
             var result = await _questionsService.DeleteQuestionValue(id);

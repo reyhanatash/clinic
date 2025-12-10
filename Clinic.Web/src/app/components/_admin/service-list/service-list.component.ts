@@ -4,6 +4,7 @@ import { TreatmentsService } from './../../../_services/treatments.service';
 import Swal from 'sweetalert2';
 import { ToastrService } from 'ngx-toastr';
 import { SharedModule } from '../../../share/shared.module';
+import { ObjectService } from '../../../_services/store.service';
 
 @Component({
   selector: 'app-service-list',
@@ -17,13 +18,16 @@ export class ServiceListComponent implements OnInit {
   constructor(
     private router: Router,
     private treatmentsService: TreatmentsService,
-    private toastR: ToastrService
+    private toastR: ToastrService,
+    private objectService: ObjectService
   ) { }
 
   serviceList: any = [];
 
   ngOnInit(): void {
-    this.getBillableItems();
+    if (this.checkAccess(1)) {
+      this.getBillableItems();
+    }
   }
 
   async getBillableItems() {
@@ -61,5 +65,9 @@ export class ServiceListComponent implements OnInit {
         this.toastR.error('خطایی رخ داد', 'خطا!')
       }
     })
+  }
+
+  checkAccess(id) {
+    return this.objectService.checkAccess(id);
   }
 }

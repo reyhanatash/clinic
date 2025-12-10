@@ -4,11 +4,11 @@
   </div>
   <hr>
   <div class="col-12">
-    <button class="btn btn-danger mb-3" routerLink="/new-service"> خدمت جدید
+    <button *ngIf="checkAccess(2)" class="btn btn-danger mb-3" routerLink="/new-service"> خدمت جدید
       <!-- <i class="fa fa-plus" aria-hidden="true"></i> -->
     </button>
 
-    <p-table #dt styleClass="p-datatable-gridlines" [value]="serviceList" [autoLayout]="true" [paginator]="true"
+    <p-table *ngIf="checkAccess(1)" #dt styleClass="p-datatable-gridlines" [value]="serviceList" [autoLayout]="true" [paginator]="true"
       [rows]="10" [showCurrentPageReport]="true" currentPageReportTemplate="نمایش {first} تا {last} "
       [rowsPerPageOptions]="[10,25,50]">
       <ng-template pTemplate="header">
@@ -18,7 +18,7 @@
           <th> قیمت</th>
           <th>مدت زمان</th>
           <th> نام پرونده بالینی</th>
-          <th> عملیات</th>
+          <th *ngIf="checkAccess(3) || checkAccess(2)"> عملیات</th>
         </tr>
         <tr>
 
@@ -29,7 +29,7 @@
           <th></th>
           <th></th>
           <th></th>
-          <th></th>
+          <th *ngIf="checkAccess(3) || checkAccess(2)"></th>
 
         </tr>
       </ng-template>
@@ -60,9 +60,9 @@
               <span>{{item.templateName}}</span>
             </div>
           </td>
-          <td class="px-2">
-            <button class="btn btn-warning" (click)="goToNewService(item.id)">ویرایش</button>
-            <button class="btn btn-outline-danger mx-2" (click)="deleteBillableItem(item.id)">حذف</button>
+          <td *ngIf="checkAccess(3) || checkAccess(2)" class="px-2">
+            <button *ngIf="checkAccess(2)" class="btn btn-warning" (click)="goToNewService(item.id)">ویرایش</button>
+            <button *ngIf="checkAccess(3)" class="btn btn-outline-danger mx-2" (click)="deleteBillableItem(item.id)">حذف</button>
           </td>
         </tr>
       </ng-template>

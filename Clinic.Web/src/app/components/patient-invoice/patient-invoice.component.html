@@ -1,60 +1,74 @@
 <div class="patientAppContainer">
-    <div class="col-12">
-        <h4 class="text-right">صورت حساب ها</h4>
-        <hr>
-    </div>
-    <div class="col-12">
-        <p-table id="contactsTable" #dt styleClass="" class="contacts-table" [value]="invoiceList" [pageLinks]="20"
-            [autoLayout]="true" [paginator]="true" [rows]="10" [showCurrentPageReport]="true"
-            currentPageReportTemplate="نمایش {first} تا {last} " [rowsPerPageOptions]="[10,25,50]">
-            <ng-template pTemplate="header">
-                <tr>
-                    <th>ردیف</th>
-                    <th pSortableColumn="createdOn"><p-sortIcon field="createdOn"></p-sortIcon>زمان</th>
-                    <th pSortableColumn="id"><p-sortIcon field="id"></p-sortIcon>شماره</th>
-                    <th>مکان</th>
-                    <th pSortableColumn="amount"><p-sortIcon field="amount"></p-sortIcon>مبلغ</th>
-                    <th pSortableColumn="totalDiscount"><p-sortIcon field="totalDiscount"></p-sortIcon>تخفیف</th>
-                    <th pSortableColumn="mobile"><p-sortIcon field="mobile"></p-sortIcon>دریافتی</th>
-                    <th pSortableColumn="mobile"><p-sortIcon field="mobile"></p-sortIcon>پرداختی</th>
-                    <th pSortableColumn="mobile"><p-sortIcon field="mobile"></p-sortIcon>مانده</th>
-                    <th>پزشک</th>
-                    <th>عملیات</th>
-                </tr>
-            </ng-template>
-            <ng-template pTemplate="body" let-invoice let-rowIndex="rowIndex">
-                <tr>
-                    <td> {{rowIndex+1}}</td>
-                    <td class="text-center">
-                        {{invoice.createdOn | JustDateZone}}
-                    </td>
-                    <td class="text-center">
-                        {{invoice.id}}
-                    </td>
-                    <td class="text-center">
-                        {{invoice.clinicName}}
-                    </td>
-                    <td class="text-center">
-                        {{invoice.amount}}
-                    </td>
-                    <td class="text-center">
-                        {{invoice.totalDiscount}}
-                    </td>
-                    <td class="text-center">
-                    </td>
-                    <td class="text-center">
-                    </td>
-                    <td class="text-center">
-                    </td>
-                    <td class="text-center">
-                    </td>
-                    <td class="text-center">
-                        <button class="btn main-btn"
-                            [routerLink]="'/new-invoice/' + invoice.id + '/n/n/n/1'">مشاهده</button>
-                    </td>
+  <div class="col-12">
+    <h4 class="text-right">صورت حساب ها</h4>
+    <hr>
+  </div>
+  <div class="col-12">
+    <p-table id="contactsTable" #dt styleClass="" class="contacts-table" [value]="invoiceList" [pageLinks]="20"
+      [autoLayout]="true" [paginator]="true" [rows]="10" [showCurrentPageReport]="true"
+      currentPageReportTemplate="نمایش {first} تا {last} " [rowsPerPageOptions]="[10,25,50]">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>ردیف</th>
+          <th pSortableColumn="createdOn">
+            <p-sortIcon field="createdOn"></p-sortIcon>زمان
+          </th>
+          <th pSortableColumn="id">
+            <p-sortIcon field="id"></p-sortIcon>شماره
+          </th>
+          <th>مکان</th>
+          <th pSortableColumn="amount">
+            <p-sortIcon field="amount"></p-sortIcon>مبلغ
+          </th>
+          <th pSortableColumn="totalDiscount">
+            <p-sortIcon field="totalDiscount"></p-sortIcon>تخفیف
+          </th>
+          <th pSortableColumn="mobile">
+            <p-sortIcon field="mobile"></p-sortIcon>دریافتی
+          </th>
+          <th pSortableColumn="mobile">
+            <p-sortIcon field="mobile"></p-sortIcon>پرداختی
+          </th>
+          <th pSortableColumn="mobile">
+            <p-sortIcon field="mobile"></p-sortIcon>مانده
+          </th>
+          <th>پزشک</th>
+          <th>عملیات</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-invoice let-rowIndex="rowIndex">
+        <tr>
+          <td> {{rowIndex+1}}</td>
+          <td class="text-center">
+            {{invoice.createdOn | JustDateZone}}
+          </td>
+          <td class="text-center">
+            {{invoice.id}}
+          </td>
+          <td class="text-center">
+            {{invoice.clinicName}}
+          </td>
+          <td class="text-center">
+            {{invoice.amount}}
+          </td>
+          <td class="text-center">
+            {{invoice.totalDiscount}}
+          </td>
+          <td class="text-center">
+          </td>
+          <td class="text-center">
+          </td>
+          <td class="text-center">
+          </td>
+          <td class="text-center">
+          </td>
+          <td class="text-center">
+            <button *ngIf="checklInvoiceAccess(1)" class="btn main-btn"
+              [routerLink]="'/new-invoice/' + invoice.id + '/n/n/n/1'">مشاهده</button>
+          </td>
 
-                </tr>
-            </ng-template>
-        </p-table>
-    </div>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
 </div>

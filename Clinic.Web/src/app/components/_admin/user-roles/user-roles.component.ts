@@ -3,6 +3,7 @@ import { firstValueFrom } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 import { SharedModule } from '../../../share/shared.module';
 import { UserService } from '../../../_services/user.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-user-roles',
@@ -15,7 +16,8 @@ export class UserRolesComponent implements OnInit {
 
   constructor(
     private userService: UserService,
-    private toastR: ToastrService
+    private toastR: ToastrService,
+    private activeRoute: ActivatedRoute
   ) { }
 
   itemList: any = [
@@ -170,7 +172,33 @@ export class UserRolesComponent implements OnInit {
   ]
 
   roleName: any;
+  editOrNew: number;
+
   ngOnInit(): void {
+    this.editOrNew = +this.activeRoute.snapshot.paramMap.get('id') || -1;
+    if (this.editOrNew != -1) {
+      this.getRoles();
+    }
+
+  }
+
+  async getRoles() {
+    try {
+      let res: any = await this.userService.getRoles().toPromise();
+      if (res.length > 0) {
+        let role = res.filter(x => x.id == this.editOrNew)[0];
+        this.itemList.forEach(section => {
+          section.itmes.forEach(item => {
+            if (item.fieldName && role.hasOwnProperty(item.fieldName)) {
+              item.clicked = role[item.fieldName];
+            }
+          });
+        })
+
+      }
+
+    }
+    catch { }
   }
 
   async saveUserRole() {
@@ -250,7 +278,7 @@ export class UserRolesComponent implements OnInit {
       roleCreateAndUpdate: this.itemList[10]['itmes'][1]['clicked'],
       roleDelete: this.itemList[10]['itmes'][2]['clicked'],
       roleView: this.itemList[10]['itmes'][0]['clicked'],
-      editOrNew: -1
+      editOrNew: this.editOrNew
     }
     try {
       let res: any = await firstValueFrom(this.userService.saveUserRole(model));

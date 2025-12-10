@@ -98,11 +98,11 @@ export const routes: Routes = [
         loadComponent: () => import('./components/patient-treatment/patient-treatment.component').then(m => m.PatientTreatmentComponent),
         canActivate: [AuthGuard]
     },
-    {
-        path: 'patient-treatment/:id',
-        loadComponent: () => import('./components/patient-treatment/patient-treatment.component').then(m => m.PatientTreatmentComponent),
-        canActivate: [AuthGuard]
-    },
+    // {
+    //     path: 'patient-treatment/:id',
+    //     loadComponent: () => import('./components/patient-treatment/patient-treatment.component').then(m => m.PatientTreatmentComponent),
+    //     canActivate: [AuthGuard]
+    // },
     {
         path: 'payment',
         loadComponent: () => import('./components/receipt/receipt.component').then(m => m.ReceiptComponent),
@@ -199,6 +199,11 @@ export const routes: Routes = [
         canActivate: [AuthGuard]
     },
     {
+        path: 'user-roles/:id',
+        loadComponent: () => import('./components/_admin/user-roles/user-roles.component').then(m => m.UserRolesComponent),
+        canActivate: [AuthGuard]
+    },
+    {
         path: 'service-group-list',
         loadComponent: () => import('./components/service-grouplist/service-group-list.component').then(m => m.ServiceGrouplistComponent),
         canActivate: [AuthGuard]
@@ -214,14 +219,24 @@ export const routes: Routes = [
         canActivate: [AuthGuard]
     },
     {
-        path: 'exception-time',
+        path: 'time-exception',
         loadComponent: () => import('./components/_admin/time-exception/time-exception.component').then(m => m.TimeExceptionComponent),
+        canActivate: [AuthGuard]
+    },
+    {
+        path: 'expenses',
+        loadComponent: () => import('./components/_admin/expenses/expenses.component').then(m => m.ExpensesComponent),
         canActivate: [AuthGuard]
     },
     {
         path: 'outOfturnexceptions',
         loadComponent: () => import('./components/_admin/out-of-turn-exceptions/out-of-turn-exceptions.component').then(m => m.OutOfTurnExceptionsComponent),
         canActivate: [AuthGuard]
-    }
+    },
+    {
+        path: 'user-role-list',
+        loadComponent: () => import('./components/_admin/user-roles/user-role-list/user-role-list.component').then(m => m.UserRoleListComponent),
+        canActivate: [AuthGuard]
+    },
 
 ];

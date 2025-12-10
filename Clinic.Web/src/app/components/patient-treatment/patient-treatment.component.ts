@@ -13,6 +13,7 @@ import { PdfMakerComponent } from '../../share/pdf-maker/pdf-maker.component';
 import { UtilService } from '../../_services/util.service';
 export const ValidFormat = ['pdf', 'jpg', 'jpeg', 'png'];
 import { environment } from './../../../environments/environment';
+import { ObjectService } from '../../_services/store.service';
 @Component({
   selector: 'app-patient-treatment',
   standalone: true,
@@ -43,7 +44,9 @@ export class PatientTreatmentComponent {
     private activeRoute: ActivatedRoute,
     private treatmentService: TreatmentsService,
     private questionService: QuestionService,
-    private utilService: UtilService
+    private utilService: UtilService,
+    private objectService: ObjectService
+
 
   ) { }
   titleList: any[] = [
@@ -54,11 +57,19 @@ export class PatientTreatmentComponent {
     { name: "پروفسور", code: "5" },
     { name: "مهندس", code: "6" },
   ];
+
+  patientTreatmentAccess: any = [];
+
   async ngOnInit() {
     this.selectedId = this.activeRoute.snapshot.paramMap.get('id');
-    await this.getPatientById();
-    await this.getPatientServices();
-    await this.getPatientTreatments();
+    let accessList: any = this.objectService.getItemAccess();
+    let item = accessList.filter(x => x.id == 3);
+    this.patientTreatmentAccess = item[0]['itmes'];
+    if (item[0]['itmes'][0]['clicked']) {
+      await this.getPatientById();
+      await this.getPatientServices();
+      await this.getPatientTreatments();
+    }
   }
 
   async getPatientById() {
@@ -129,6 +140,9 @@ export class PatientTreatmentComponent {
 
   onClick(event: MouseEvent, service, type) {
     event.stopPropagation();
+    if (!this.checkPatientTreatmentAccess(2)) {
+      return
+    }
     this.selectedService = service;
     switch (type) {
       case 1:
@@ -379,4 +393,11 @@ export class PatientTreatmentComponent {
       }
     })
   }
+
+
+  checkPatientTreatmentAccess(id) {
+    const item = this.patientTreatmentAccess.find(x => x.id === id);
+    return item ? item.clicked : false;
+  }
+
 }

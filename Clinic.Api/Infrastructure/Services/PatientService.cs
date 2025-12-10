@@ -123,7 +123,7 @@ namespace Clinic.Api.Infrastructure.Services
                 var userId = _token.GetUserId();
 
                 var patients = await _context.Patients.Where(p => p.CreatorId == userId
-                &&  p.CreatorId != p.Id).OrderBy(p=> p.CreatedOn).ToListAsync();
+                && p.CreatorId != p.Id).OrderBy(p => p.CreatedOn).ToListAsync();
 
                 return patients;
             }
@@ -471,6 +471,75 @@ namespace Clinic.Api.Infrastructure.Services
                 result.Message = "Success";
                 result.Data = list;
                 return result;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<GlobalResponse> SavePatientField(SavePatientFieldDto model)
+        {
+            var result = new GlobalResponse();
+
+            try
+            {
+                var userId = _token.GetUserId();
+                if (model.EditOrNew == -1)
+                {
+                    var patientField = _mapper.Map<PatientFieldsContext>(model);
+                    patientField.CreatorId = userId;
+                    patientField.CreatedOn = DateTime.Now;
+                    _context.PatientFields.Add(patientField);
+                    await _context.SaveChangesAsync();
+                    result.Message = "Patient Field Saved Successfully";
+                    result.Status = 0;
+                    return result;
+                }
+                else
+                {
+                    var existingPatientField = await _context.PatientFields.FirstOrDefaultAsync(p => p.Id == model.EditOrNew);
+
+                    if (existingPatientField == null)
+                    {
+                        throw new Exception("Patient Field Not Found");
+                    }
+
+                    _mapper.Map(model, existingPatientField);
+                    existingPatientField.ModifierId = userId;
+                    existingPatientField.LastUpdated = DateTime.Now;
+                    _context.PatientFields.Update(existingPatientField);
+                    await _context.SaveChangesAsync();
+                    result.Message = "Patient Field Updated Successfully";
+                    result.Status = 0;
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<IEnumerable<PatientFieldsContext>> GetPatientField(int patientId)
+        {
+            try
+            {
+                var res = await _context.PatientFields.Where(p => p.ReferringPatientId == patientId).ToListAsync();
+                return res;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<IEnumerable<PatientFieldsContext>> GetPatientFields()
+        {
+            try
+            {
+                var res = await _context.PatientFields.ToListAsync();
+                return res;
             }
             catch (Exception ex)
             {

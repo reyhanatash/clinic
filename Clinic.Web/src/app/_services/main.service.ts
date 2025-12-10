@@ -249,9 +249,9 @@ export class MainService {
     return this.http.post(uri, data, httpOptions);
   }
 
-  getTimeException(scheduleId) {
+  getTimeException() {
     const token: any = localStorage.getItem("token");
-    const uri = this.url + `api/main/getTimeException`;
+    const uri = this.url + `api/main/getTimeExceptions`;
     const httpOptions = {
       headers: new HttpHeaders({
         "Content-Type": "application/json",

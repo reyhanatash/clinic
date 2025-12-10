@@ -828,5 +828,31 @@ namespace Clinic.Api.Infrastructure.Services
                 throw new Exception(ex.Message);
             }
         }
+
+        public async Task<GlobalResponse> UpdateSmsSettings(UpdateSmsSettingsDto model)
+        {
+            var result = new GlobalResponse();
+
+            try
+            {
+                var existingSmsSettings = await _context.SMSSettings.FirstOrDefaultAsync(p => p.Id == model.Id);
+
+                if (existingSmsSettings == null)
+                {
+                    throw new Exception("Sms Settings Not Found");
+                }
+
+                _mapper.Map(model, existingSmsSettings);
+                _context.SMSSettings.Update(existingSmsSettings);
+                await _context.SaveChangesAsync();
+                result.Message = "Sms Settings Updated Successfully";
+                result.Status = 0;
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }
