@@ -337,8 +337,8 @@ export class AppointmentComponent {
       let res: any = await this.treatmentService.getAppointments(model).toPromise();
       this.appointmentsData = res;
       this.appointmentsData.forEach((appointment: any) => {
-        appointment.typeName = this.appointmentTypes.filter((type: any) => type.id == appointment.appointmentTypeId)[0].name;
-        appointment.patientName = this.patientsList.filter((patient: any) => patient.id == appointment.patientId)[0].name;
+        appointment.typeName = this.appointmentTypes.filter((type: any) => type.id == appointment.appointmentTypeId)[0]?.name;
+        appointment.patientName = this.patientsList.filter((patient: any) => patient.id == appointment.patientId)[0]?.name;
         appointment.showStartTime = shamsiTimePipe.transform(appointment.start);
         // let startIndex = this.hours.indexOf(appointment.showStartTime);
         let startIndex = this.hours.findIndex(h => h.time === appointment.showStartTime);
