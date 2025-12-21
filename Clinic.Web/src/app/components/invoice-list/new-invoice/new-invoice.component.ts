@@ -66,7 +66,7 @@ export class NewInvoiceComponent implements OnInit {
       if (item[0]['itmes'][0]['clicked']) {
         await this.getPatients();
         if (this.patientId != null) {
-          this.selectedPatient = this.patientsList.filter(patient => patient.id == this.patientId)[0];
+          // this.selectedPatient = this.patientsList.filter(patient => patient.id == this.patientId)[0];
           await this.getPatientAppointments();
           if (this.selectedappointmentId != null) {
             this.selectedPatientAppointment = this.patientAppointmentsList.filter(item => item.id == this.selectedappointmentId)[0];
@@ -161,7 +161,10 @@ export class NewInvoiceComponent implements OnInit {
       let item = res.filter(x => x.id == this.editOrNew);
       this.selectedClinic = this.clinicsList.filter(x => x.id == item[0]['businessId'])[0];
       this.selectedClinicTitle = item[0]['businessName'];
-      this.selectedPatient = this.patientsList.filter(x => x.id == item[0]['patientId'])[0];
+      // this.selectedPatient = this.patientsList.filter(x => x.id == item[0]['patientId'])[0];
+      this.selectedPatient = {
+        code: this.patientId
+      };
       this.selectedPatientTitle = item[0]['patientName'];
       this.note = item[0]['notes'];
       this.selectedPatientAppointment = this.patientAppointmentsList.filter(x => x.id == item[0]['appointmentId'])[0];
@@ -183,45 +186,62 @@ export class NewInvoiceComponent implements OnInit {
       this.toastR.error('خطا', 'بیمار مورد نظر را انتخاب کنید');
       return;
     }
-    let model;
-    if (type == 1) {
-      model = {
-        receiptNo: null,
-        patientId: this.selectedPatient.code,
-        cash: +this.invoiceItemsComponent.totalAmount,
-        eftPos: null,
-        other: null,
-        notes: this.note,
-        allowEdit: true,
-        receiptTypeId: 0
-      }
-    } else {
-      model = {
-        receiptNo: null,
-        patientId: this.selectedPatient.code,
-        cash: +this.invoiceItemsComponent.totalAmount,
-        eftPos: null,
-        other: null,
-        notes: this.note,
-        allowEdit: true,
-        receiptTypeId: 0,
-        editOrNew: -1
-      }
-    }
+    let typeTitle = type == 1 ? 'دریافت' : 'پرداخت';
+    Swal.fire({
+      title: `آیا از ${typeTitle} این صورتحساب مطمئن هستید ؟`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "بله انجام بده",
+      cancelButtonText: "منصرف شدم",
+      reverseButtons: false,
+    }).then(async (result) => {
+      if (result.value) {
+        if (type == 1) {
+          this.router.navigate(['/patient/receipt/' + this.selectedPatient.code]);
+        } else {
+          this.router.navigate(['/patient/payment/' + this.selectedPatient.code]);
+        }
 
-    try {
-      let data;
-      if (type == 1) {
-        data = await this.invoiceService.saveReceipt(model).toPromise();
-      } else {
-        data = await this.paymentService.savePayment(model).toPromise();
+        //   let model;
+        //   if (type == 1) {
+        //     model = {
+        //       receiptNo: null,
+        //       patientId: this.selectedPatient.code,
+        //       cash: +this.invoiceItemsComponent.totalAmount,
+        //       eftPos: null,
+        //       other: null,
+        //       notes: this.note,
+        //       allowEdit: true,
+        //       receiptTypeId: 0
+        //     }
+        //   } else {
+        //     model = {
+        //       receiptNo: null,
+        //       patientId: this.selectedPatient.code,
+        //       cash: +this.invoiceItemsComponent.totalAmount,
+        //       eftPos: null,
+        //       other: null,
+        //       notes: this.note,
+        //       allowEdit: true,
+        //       receiptTypeId: 0,
+        //       editOrNew: -1
+        //     }
+        //   }
+        //   try {
+        //     let data;
+        //     if (type == 1) {
+        //       data = await this.invoiceService.saveReceipt(model).toPromise();
+        //     } else {
+        //       data = await this.paymentService.savePayment(model).toPromise();
+        //     }
+        //     if (data['status'] == 0) {
+        //       this.toastR.success('با موفقیت ثبت شد!');
+        //     }
+        //   } catch {
+        //     this.toastR.error('خطا', 'خطا در انجام عملیات')
+        //   }
       }
-      if (data['status'] == 0) {
-        this.toastR.success('با موفقیت ثبت شد!');
-      }
-    } catch {
-      this.toastR.error('خطا', 'خطا در انجام عملیات')
-    }
+    })
   }
 
   async cancelInvoice(id) {
@@ -233,15 +253,17 @@ export class NewInvoiceComponent implements OnInit {
       cancelButtonText: "منصرف شدم",
       reverseButtons: false,
     }).then(async (result) => {
-      try {
-        let res: any = await this.invoiceService.cancelInvoice(this.editOrNew).toPromise();
-        if (res['status'] == 0) {
-          this.toastR.success('با موفقیت ابطال گردید');
-          this.isCanceled = true;
+      if (result.value) {
+        try {
+          let res: any = await this.invoiceService.cancelInvoice(this.editOrNew).toPromise();
+          if (res['status'] == 0) {
+            this.toastR.success('با موفقیت ابطال گردید');
+            this.isCanceled = true;
+          }
         }
-      }
-      catch {
-        this.toastR.error('خطایی رخ داد', 'خطا!');
+        catch {
+          this.toastR.error('خطایی رخ داد', 'خطا!');
+        }
       }
     })
   }

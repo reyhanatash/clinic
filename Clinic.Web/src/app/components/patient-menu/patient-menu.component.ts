@@ -69,6 +69,8 @@ export class PatientMenuComponent {
       this.getPatientById(this.patientId);
       this.getNoteAccess();
       this.getNavbarAccess();
+      const menuItem = PatientMenu.find(item => url.includes(item.link));
+      this.selectedSideBarItem = menuItem ? menuItem.id : null;
     }
   }
 
@@ -199,7 +201,7 @@ export class PatientMenuComponent {
   }
 
   async getNoteAccess() {
-    let accessList: any  = await this.objectService.getItemAccess();
+    let accessList: any = await this.objectService.getItemAccess();
     let item = accessList.filter(x => x.id == 2);
     if (item[0]['itmes'][6]['clicked']) {
       this.getNotes();

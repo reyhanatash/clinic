@@ -2,7 +2,7 @@
 {
     public class GetUserAppointmentsSettingsDto
     {
-        public int? UserId { get; set; }
+        public string? UserId { get; set; }
         public int? BusinessId { get; set; }
     }
 }

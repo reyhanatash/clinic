@@ -23,7 +23,7 @@ export class InvoiceListComponent implements OnInit {
   allowedLinks: any = [];
 
   async ngOnInit() {
-    
+
     this.allowedLinks = await this.objectService.getDataAccess();
     if (this.checkAccess(1)) {
       this.getInvoices()
@@ -42,8 +42,8 @@ export class InvoiceListComponent implements OnInit {
 
   }
 
-  goToEditPage(id, type) {
-    this.router.navigate(['/new-invoice', id, "n", "n", "n", type]);
+  goToEditPage(item, type) {
+    this.router.navigate(['/new-invoice', item.id, item.patientId, "n", "n", type]);
   }
 
 

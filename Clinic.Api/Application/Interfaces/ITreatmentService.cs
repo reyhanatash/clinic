@@ -8,14 +8,14 @@ namespace Clinic.Api.Application.Interfaces
     {
         Task<GlobalResponse> CreateAppointmentAsync(CreateAppointmentDto model);
         Task<GlobalResponse> DeleteAppointment(int id);
-        Task<IEnumerable<AppointmentsContext>> GetAppointments(GetAppointmentsDto model);
+        Task<IEnumerable<GetAppointmentsResponse>> GetAppointments(GetAppointmentsDto model);
         Task<IEnumerable<TreatmentsContext>> GetTreatments(int appointmentId);
         Task<GlobalResponse> DeleteTreatment(int id);
         Task<IEnumerable<GetTodayAppointmentsInfoDto>> GetTodayAppointments(GetTodayAppointmentsDto model);
         Task<GlobalResponse> SaveAppointmentType(SaveAppointmentTypeDto model);
-        Task<IEnumerable<AppointmentTypesContext>> GetAppointmentTypes();
+        Task<IEnumerable<GetAppointmentTypesResponse>> GetAppointmentTypes();
         Task<GlobalResponse> DeleteAppointmentType(int id);
-        Task<List<GetTodayAppointmentsInfoDto>> GetWeekAppointments();
+        Task<List<GetTodayAppointmentsInfoDto>> GetWeekAppointments(GetAppointmentsDto model);
         Task<IEnumerable<GetBillableItemsResponse>> GetBillableItems();
         Task<GlobalResponse> SaveBillableItem(SaveBillableItemsDto model);
         Task<GlobalResponse> DeleteBillableItem(int id);
@@ -29,5 +29,9 @@ namespace Clinic.Api.Application.Interfaces
         Task<GlobalResponse> DeleteItemCategory(int id);
         Task<IEnumerable<TreatmentTemplatesContext>> GetTreatmentTemplates(GetTreatmentTemplateDto model);
         Task<GlobalResponse> SavePatientArrived(int appointmentId);
+        Task<GlobalResponse> CancelAppointment(int appointmentId);
+        Task<GlobalResponse> SaveTreatmentTemplate(SaveTreatmentTemplateDto model);
+        Task<IEnumerable<TreatmentTemplatesContext>> GetTreatmentTemplates();
+        Task<GlobalResponse> DeleteTreatmentTemplate(int id);
     }
 }

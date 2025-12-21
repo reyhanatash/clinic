@@ -78,8 +78,8 @@
             </div>
           </td>
           <td class="px-2">
-            <button *ngIf="checkAccess(1)" class="btn btn-danger mx-2" (click)="goToEditPage(item.id , 1)">مشاهده</button>
-            <button *ngIf="checkAccess(2)" class="btn btn-warning" (click)="goToEditPage(item.id ,2)">ویرایش</button>
+            <button *ngIf="checkAccess(1)" class="btn btn-danger mx-2" (click)="goToEditPage(item , 1)">مشاهده</button>
+            <button *ngIf="checkAccess(2)" class="btn btn-warning" (click)="goToEditPage(item ,2)">ویرایش</button>
           </td>
         </tr>
       </ng-template>

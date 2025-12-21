@@ -8,11 +8,12 @@ import { DropdownModule } from 'primeng/dropdown';
 import { InvoiceService } from '../../_services/invoice.service';
 import { ActivatedRoute } from '@angular/router';
 import { PaymentService } from '../../_services/payment.service';
+import { SharedModule } from '../../share/shared.module';
 
 @Component({
   selector: 'app-receipt',
   standalone: true,
-  imports: [FormsModule, CommonModule, DropdownModule],
+  imports: [FormsModule, CommonModule, DropdownModule,SharedModule],
   templateUrl: './receipt.component.html',
   styleUrl: './receipt.component.css'
 })
@@ -36,6 +37,7 @@ export class ReceiptComponent {
   patientSelected: any;
   isPatientReceipt: boolean = false;
   patientId: any;
+  invoiceList: any = [];
 
   async ngOnInit() {
     this.checkRout = this.activeRoute.snapshot.routeConfig.path;
@@ -65,7 +67,7 @@ export class ReceiptComponent {
       this.toastR.error('خطا!', 'خطا در دریافت اطلاعات')
     }
   }
-  
+
   async savereceipt() {
     if (this.newReceiptModel.selectedPatient == null) {
       this.toastR.error('خطا', 'بیمار مورد نظر را انتخاب کنید');

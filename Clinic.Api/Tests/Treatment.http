@@ -1,4 +1,4 @@
-@Clinic_Api_Host = https://localhost:8585
+@Clinic_Api_Host = https://localhost:8586
 
 ### Create Appointment
 POST {{Clinic_Api_Host}}/api/treatment/createAppointment
@@ -33,11 +33,12 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjE1NzAwM
 
 ### Get appointments with date
 POST {{Clinic_Api_Host}}/api/treatment/getAppointments
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyIiwidXNlcm5hbWUiOiJuaW1hIiwicm9sZSI6IkFkbWluIiwiZXhwIjoxNzU1NDI5OTMwLCJpc3MiOiJDbGluaWMuQXBpIiwiYXVkIjoiQ2xpbmljLkFwaS5Vc2VycyJ9.f4r_G_wCuE1JQi-ZV1T0c0ZrGRQATltfv2laPiZDOjU
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjYyOTk0NTYsImlhdCI6MTc2NTY5NDY1NiwidXNlcklkIjoiMiIsInVzZXJuYW1lIjoibmltYSIsInVzZXJSb2xlIjoiQWRtaW4iLCJuYmYiOjE3NjU2OTQ2NTZ9.jwUwNOTkWQlAY7UswKP52TbB0iO7TKKQCDkeKqHHkjY
+Content-Type: application/json
 {
-  "clinicId": 1,
-  "Date": "2025-08-25",
-  "doctorId": null
+  "clinicId": 7795,
+  "Date": "2025-09-02",
+  "doctorId": "1156,1163,6"
 }
 
 
@@ -62,7 +63,7 @@ Content-Type: application/json
 
 ### Get Week Appointments
 GET {{Clinic_Api_Host}}/api/treatment/getWeeklyAppointments
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NTg3MTgzMjksImlhdCI6MTc1ODExMzUyOSwidXNlcklkIjoiMiIsInVzZXJuYW1lIjoibmltYSIsInVzZXJSb2xlIjoiQWRtaW4iLCJuYmYiOjE3NTgxMTM1Mjl9.AMFg58a7xg8wMW0XzHYGvbSTlRj29g_KYVXXuU1d9I0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjYyOTk0NTYsImlhdCI6MTc2NTY5NDY1NiwidXNlcklkIjoiMiIsInVzZXJuYW1lIjoibmltYSIsInVzZXJSb2xlIjoiQWRtaW4iLCJuYmYiOjE3NjU2OTQ2NTZ9.jwUwNOTkWQlAY7UswKP52TbB0iO7TKKQCDkeKqHHkjY 
 Content-Type: application/json
 
 ### Save BillableItems

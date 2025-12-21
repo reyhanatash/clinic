@@ -11,6 +11,8 @@
       (click)="goToEditPage()">ویرایش</button>
     <button *ngIf="editOrNew != -1 && checklInvoiceAccess(2)" class="btn btn-warning mx-2"
       (click)="savereceipt(1)">ذخیره دریافت</button>
+    <button *ngIf="editOrNew != -1 && checklInvoiceAccess(2)" class="btn btn-warning mx-2"
+      (click)="savereceipt(2)">ذخیره پرداخت</button>
     <button *ngIf="editOrNew != -1 && checklInvoiceAccess(4)" class="btn btn-danger" (click)="cancelInvoice()">
       ابطال</button>
   </div>

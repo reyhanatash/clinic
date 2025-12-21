@@ -4,6 +4,6 @@
     {
         public int? ClinicId { get; set; }
         public DateTime? Date { get; set; }
-        public int? DoctorId { get; set; }
+        public string? DoctorId { get; set; }
     }
 }

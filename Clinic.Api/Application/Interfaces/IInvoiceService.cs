@@ -24,5 +24,6 @@ namespace Clinic.Api.Application.Interfaces
         Task<GlobalResponse> ApproveDiscount(int invoiceId);
         Task<GlobalResponse> InvoiceItemIsDone(int invoiceItemId,bool isDone);
         Task<GlobalResponse> DeleteExpense(int id);
+        Task<List<GetInvoicesWithoutReceipt>> GetInvoicesWithoutReceipt(int patientId);
     }
 }

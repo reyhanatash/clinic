@@ -1,50 +1,56 @@
 <div [ngClass]="{  'appContainer' :!isPatientReceipt, 'patientAppContainer' :isPatientReceipt}" class="appContainer">
-    <div class="col-12">
-        <h4 *ngIf="!isPayment" class="col-12 text-right">دریافتی ها</h4>
-        <h4 *ngIf="isPayment" class="col-12 text-right">پرداخت ها</h4>
-        <hr>
-        <div class="col-12 flex-wrap d-flex mt-3">
-            <div class="col-12 mb-3 text-right">
-                <label for="patienType" class="text-right">نوع مراجعه</label>
-                <div id="patienType" class="d-flex mode-selector p-0 my-2">
-                    <div class="ml-1 p-2 pointer text-center" [ngClass]="{  'selected-mode' :!receiptType}"
-                        (click)="receiptType = false">
-                        سر پایی</div>
-                    <div class="mr-1 p-2 pointer text-center" [ngClass]="{  'selected-mode' :receiptType}"
-                        (click)="receiptType = true">
-                        بستری</div>
-                </div>
-            </div>
-            <div class="col-8 d-flex flex-column justify-content-center my-3">
-                <label for="patient" class="text-right">بیمار</label>
-                <p-dropdown id="patient" [options]="patientsList" [(ngModel)]="newReceiptModel.selectedPatient"
-                    optionLabel="name" placeholder="بیمار مورد نظر را انتخاب کنید" class="full-width text-right" />
-            </div>
-            <div class="col-12 text-right my-3">
-                <h5 class="mt-3">محل و میزان دریافت</h5>
-            </div>
-            <div class="col-8 d-flex flex-column justify-content-center my-3">
-                <label for="name" class="text-right">نقد</label>
-                <input (input)="sumNumber()" class="form-control" type="text" id="name"
-                    [(ngModel)]="newReceiptModel.cash">
-            </div>
-            <div class="col-8 d-flex flex-column justify-content-center my-3">
-                <label for="serialnumber" class="text-right">کارت بانکی</label>
-                <input (input)="sumNumber()" class="form-control" OnlyNumber="true" type="text" id="serialnumber"
-                    [(ngModel)]="newReceiptModel.eftPos">
-            </div>
-            <div class="col-8 d-flex flex-column justify-content-center my-3">
-                <label for="supplier" class="text-right">جمع کل دریافتی</label>
-                <input class="form-control" [disabled]="true" type="text" id="supplier"
-                    [(ngModel)]="newReceiptModel.sum">
-            </div>
-            <div class="col-8 d-flex flex-column justify-content-center my-3">
-                <label for="note" class="text-right">یادداشت</label>
-                <textarea name="note" id="note" [(ngModel)]="newReceiptModel.note"></textarea>
-            </div>
+  <div class="col-12">
+    <h4 *ngIf="!isPayment" class="col-12 text-right">دریافتی ها</h4>
+    <h4 *ngIf="isPayment" class="col-12 text-right">پرداخت ها</h4>
+    <hr>
+    <div class="col-12 flex-wrap d-flex mt-3">
+      <div class="col-12 mb-3 text-right">
+        <label for="patienType" class="text-right">نوع مراجعه</label>
+        <div id="patienType" class="d-flex mode-selector p-0 my-2">
+          <div class="ml-1 p-2 pointer text-center" [ngClass]="{  'selected-mode' :!receiptType}"
+            (click)="receiptType = false">
+            سر پایی</div>
+          <div class="mr-1 p-2 pointer text-center" [ngClass]="{  'selected-mode' :receiptType}"
+            (click)="receiptType = true">
+            بستری</div>
         </div>
-        <div class="col-12 d-flex justify-content-center p-4 mt-4">
-            <button (click)="savereceipt()" class="btn main-btn px-4 py-2">ثبت</button>
-        </div>
+      </div>
+      <div class="col-8 d-flex flex-column justify-content-center my-3">
+        <label for="patient" class="text-right">بیمار</label>
+        <p-dropdown id="patient" [options]="patientsList" [(ngModel)]="newReceiptModel.selectedPatient"
+          optionLabel="name" placeholder="بیمار مورد نظر را انتخاب کنید" class="full-width text-right" />
+      </div>
+      <div class="col-8 d-flex flex-column justify-content-center my-3">
+        <label for="invoice" class="text-right">اعمال صورتحساب ها</label>
+        <p-multiSelect [options]="invoiceList" optionLabel="name" dataKey="id"
+          [(ngModel)]="newReceiptModel.selectedInvoice" [ngModelOptions]="{standalone: true}"
+          [ngModelOptions]="{ standalone: true }" class="full-width text-right">
+        </p-multiSelect>
+      </div>
+
+      <div class="col-12 text-right my-3">
+        <h5 class="mt-3">محل و میزان دریافت</h5>
+      </div>
+      <div class="col-8 d-flex flex-column justify-content-center my-3">
+        <label for="name" class="text-right">نقد</label>
+        <input (input)="sumNumber()" class="form-control" type="text" id="name" [(ngModel)]="newReceiptModel.cash">
+      </div>
+      <div class="col-8 d-flex flex-column justify-content-center my-3">
+        <label for="serialnumber" class="text-right">کارت بانکی</label>
+        <input (input)="sumNumber()" class="form-control" OnlyNumber="true" type="text" id="serialnumber"
+          [(ngModel)]="newReceiptModel.eftPos">
+      </div>
+      <div class="col-8 d-flex flex-column justify-content-center my-3">
+        <label for="supplier" class="text-right">جمع کل دریافتی</label>
+        <input class="form-control" [disabled]="true" type="text" id="supplier" [(ngModel)]="newReceiptModel.sum">
+      </div>
+      <div class="col-8 d-flex flex-column justify-content-center my-3">
+        <label for="note" class="text-right">یادداشت</label>
+        <textarea name="note" id="note" [(ngModel)]="newReceiptModel.note"></textarea>
+      </div>
     </div>
+    <div class="col-12 d-flex justify-content-center p-4 mt-4">
+      <button (click)="savereceipt()" class="btn main-btn px-4 py-2">ثبت</button>
+    </div>
+  </div>
 </div>

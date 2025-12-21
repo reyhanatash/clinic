@@ -96,10 +96,18 @@
 }
 
 .appointment {
-  background-color: #63C7B2;
+  /* background-color: #63C7B2; */
+  position: relative;
   color: #ffffff;
   border-radius: 10px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.fa-times {
+  position: absolute;
+  left: 5px;
+  top: 3px;
+  cursor: pointer;
 }
 
 .appointments-container .appointment:not(:first-child) {

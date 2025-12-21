@@ -4,16 +4,20 @@
   </div>
   <hr>
   <div *ngIf="checkAccess(1)" class="row px-0 d-lg-flex">
+    <div class="col-12 d-flex">
+      <div class="col-lg-4 col-12  p-2">
+        <p-dropdown [options]="clinicsList" [(ngModel)]="selectedClinic" optionLabel="name"
+          class="full-width text-right" (onChange)="getAppointment(appointmentDate)" />
+      </div>
+      <div *ngIf="userType != 9" class="col-lg-8 col-12 p-2">
+        <p-multiSelect [options]="doctorList" optionLabel="name" dataKey="id" [(ngModel)]="selectedDoctorList"
+          [ngModelOptions]="{standalone: true}" [ngModelOptions]="{ standalone: true }" defaultLabel="پزشک"
+          (onChange)="getDetailOfDoctore()" class="full-width text-right">
+        </p-multiSelect>
+      </div>
+    </div>
     <div class="col-lg-2 col-12 pr-2 my-2">
       <div class="mt-md-0 mt-3">
-        <div class="col-12 p-0">
-          <p-dropdown [options]="clinicsList" [(ngModel)]="selectedClinic" optionLabel="name"
-            class="full-width text-right" (onChange)="getAppointment(appointmentDate)" />
-        </div>
-        <div *ngIf="userType != 9" class="col-12 p-0 mt-2">
-          <p-dropdown [options]="doctorList" [(ngModel)]="selectedDoctor" optionLabel="name"
-            class="full-width text-right" (onChange)="getDetailOfDoctore()" />
-        </div>
         <div class="col-12 p-0 mt-2 text-right">
           <div>برو به</div>
           <div class="date-navigator col-12 d-flex justify-content-center align-items-center p-0">
@@ -80,16 +84,20 @@
                 <tr class="d-flex" *ngFor="let time of filteredHours">
                   <td class="col-2 d-flex justify-content-center align-items-center">{{time.time}}
                   </td>
-                  <td class="col-10 p-2 d-flex appointments-container"
-                    [ngClass]="{'bg-muted text-secondary': isBeforeNow || (!isBeforeNow && timeIsBeforeNow(appointmentDate, time.time)), 'bg-not-in-schedule' : !time.isInSchedule}"
-                    (click)="setNewAppointment(time)">
-                    <div *ngFor="let appointment of timeSheetData[time.time]" class="appointment text-right p-2 pointer"
-                      (click)="editAppointment(appointment)">
-                      <div class="mt-2">نوع وقت : {{appointment.typeName}}</div>
-                      <div class="mt-2">نام بیمار : {{appointment.patientName}}</div>
-                      <div class="mt-2">توضیحات : {{appointment.note}}</div>
-                      <div class="mt-2">کنسل <span *ngIf="appointment.cancelled">شده</span><span
-                          *ngIf="!appointment.cancelled">نشده</span></div>
+                  <td (click)="setNewAppointment(time)" class="col-10 p-2  d-flex appointments-container"
+                    [ngClass]="{'bg-muted text-secondary': isBeforeNow || (!isBeforeNow && timeIsBeforeNow(appointmentDate, time.time)), 'bg-not-in-schedule' : !time.isInSchedule}">
+                    <div *ngFor="let appointment of timeSheetData[time.time]" 
+                      class="appointment text-right px-2 py-3 mx-2 pointer"
+                      [ngStyle]="{'background-color': appointment.color != null ? appointment.color : '#63C7B2'}">
+                      <i class="fa fa-times" (click)="cancelAppointment(appointment.id)" aria-hidden="true"></i>
+                      <div (click)="editAppointment(appointment)">
+                        <!-- <div class="mt-2">نوع وقت : {{appointment.typeName}}</div> -->
+                        <div class="mt-2"> {{appointment.patientName}}</div>
+                        <div class="mt-2"> {{appointment.note}}</div>
+                        <!-- <div class="mt-2">کنسل <span *ngIf="appointment.cancelled">شده</span><span
+                            *ngIf="!appointment.cancelled">نشده</span></div> -->
+
+                      </div>
                     </div>
                   </td>
                 </tr>

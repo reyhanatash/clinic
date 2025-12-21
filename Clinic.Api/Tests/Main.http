@@ -1,4 +1,4 @@
-@Clinic_Api_Host = https://localhost:7281
+@Clinic_Api_Host = https://localhost:8585
 
 ### Get Sections
 GET {{Clinic_Api_Host}}/api/main/getSections
@@ -168,4 +168,9 @@ Content-Type: application/json
 ### Delete Business
 GET {{Clinic_Api_Host}}/api/main/deleteBusiness/1
 Authorization: Bearer
+Content-Type: application/json
+
+### Get Time Exceptions
+GET {{Clinic_Api_Host}}/api/main/getTimeExceptions
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjU5NTk5ODIsImlhdCI6MTc2NTM1NTE4MiwidXNlcklkIjoiMiIsInVzZXJuYW1lIjoibmltYSIsInVzZXJSb2xlIjoiQWRtaW4iLCJuYmYiOjE3NjUzNTUxODJ9.Hv2MIk7K-iKo6r92yDS-xSSM33WKEedAo7SfrN1klbg
 Content-Type: application/json

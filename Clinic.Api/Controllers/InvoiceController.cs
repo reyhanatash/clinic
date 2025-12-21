@@ -159,5 +159,13 @@ namespace Clinic.Api.Controllers
             var result = await _invoicesService.InvoiceItemIsDone(invoiceItemId, isDone);
             return Ok(result);
         }
+
+        [HttpGet("getInvoicesWithoutReceipt/{patientId}")]
+        [Authorize]
+        public async Task<IActionResult> GetInvoicesWithoutReceipt(int patientId)
+        {
+            var result = await _invoicesService.GetInvoicesWithoutReceipt(patientId);
+            return Ok(result);
+        }
     }
 }

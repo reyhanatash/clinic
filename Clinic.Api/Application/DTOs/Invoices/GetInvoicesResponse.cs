@@ -36,5 +36,6 @@
         public decimal? BusinessAmount { get; set; }
         public bool AcceptDiscount { get; set; }
         public int? AssistantId { get; set; }
+        public bool HasReceipt { get; set; }
     }
 }

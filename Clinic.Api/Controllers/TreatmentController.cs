@@ -90,11 +90,11 @@ namespace Clinic.Api.Controllers
             return Ok(result);
         }
 
-        [HttpGet("getWeeklyAppointments")]
+        [HttpPost("getWeeklyAppointments")]
         [Authorize]
-        public async Task<IActionResult> GetWeekAppointments()
+        public async Task<IActionResult> GetWeekAppointments(GetAppointmentsDto model)
         {
-            var result = await _treatmentsService.GetWeekAppointments();
+            var result = await _treatmentsService.GetWeekAppointments(model);
             return Ok(result);
         }
 
@@ -199,6 +199,38 @@ namespace Clinic.Api.Controllers
         public async Task<IActionResult> SavePatientArrived(int appointmentId)
         {
             var result = await _treatmentsService.SavePatientArrived(appointmentId);
+            return Ok(result);
+        }
+
+        [HttpGet("cancelAppointment/{appointmentId}")]
+        [Authorize]
+        public async Task<IActionResult> CancelAppointment(int appointmentId)
+        {
+            var result = await _treatmentsService.CancelAppointment(appointmentId);
+            return Ok(result);
+        }
+
+        [HttpPost("saveTreatmentTemplate")]
+        [Authorize]
+        public async Task<IActionResult> SaveTreatmentTemplate(SaveTreatmentTemplateDto model)
+        {
+            var result = await _treatmentsService.SaveTreatmentTemplate(model);
+            return Ok(result);
+        }
+
+        [HttpGet("getTreatmentTemplates")]
+        [Authorize]
+        public async Task<IActionResult> GetTreatmentTemplates()
+        {
+            var result = await _treatmentsService.GetTreatmentTemplates();
+            return Ok(result);
+        }
+
+        [HttpGet("deleteTreatmentTemplate/{id}")]
+        [Authorize]
+        public async Task<IActionResult> DeleteTreatmentTemplate(int id)
+        {
+            var result = await _treatmentsService.DeleteTreatmentTemplate(id);
             return Ok(result);
         }
     }

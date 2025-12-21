@@ -14,6 +14,7 @@ import { TreatmentsService } from '../../_services/treatments.service';
 import { firstValueFrom } from 'rxjs';
 import { UtilService } from '../../_services/util.service';
 import { ObjectService } from '../../_services/store.service';
+import Swal from 'sweetalert2';
 @Component({
   selector: 'app-appointment',
   standalone: true,
@@ -105,6 +106,7 @@ export class AppointmentComponent {
   filteredHours: any = [];
   dropdownOpen: boolean = false;
   selectedPatientName: string = null;
+  selectedDoctorList: any = [];
 
   constructor(
     private userService: UserService,
@@ -138,7 +140,7 @@ export class AppointmentComponent {
     if (this.checkAccess(1)) {
       this.userType = this.utilService.checkUserType();
       if (this.userType == 9) {
-        this.selectedDoctor.code = this.userType;
+        this.selectedDoctor = this.userType;
       }
       this.getWeeklyAppointments();
       this.dateNew = new FormControl(moment().format('jYYYY/jMM/jDD'));
@@ -327,7 +329,10 @@ export class AppointmentComponent {
     this.hours.forEach(hour => this.timeSheetData[hour.time] = []);
     try {
       let formattedDate = moment(date).utc().toISOString();
-      let doctor = this.userType == 9 ? null : this.selectedDoctor?.code
+      if (this.selectedDoctor.length == 0 && this.userType != 9) {
+        return
+      }
+      let doctor = this.userType == 9 ? null : this.selectedDoctor;
       let model = {
         clinicId: this.selectedClinic.code,
         date: formattedDate,
@@ -338,7 +343,7 @@ export class AppointmentComponent {
       this.appointmentsData = res;
       this.appointmentsData.forEach((appointment: any) => {
         appointment.typeName = this.appointmentTypes.filter((type: any) => type.id == appointment.appointmentTypeId)[0]?.name;
-        appointment.patientName = this.patientsList.filter((patient: any) => patient.id == appointment.patientId)[0]?.name;
+        // appointment.patientName = this.patientsList.filter((patient: any) => patient.id == appointment.patientId)[0]?.name;
         appointment.showStartTime = shamsiTimePipe.transform(appointment.start);
         // let startIndex = this.hours.indexOf(appointment.showStartTime);
         let startIndex = this.hours.findIndex(h => h.time === appointment.showStartTime);
@@ -355,7 +360,7 @@ export class AppointmentComponent {
     try {
       let model = {
         "businessId": this.selectedClinic.code,
-        "practitionerId": this.selectedDoctor ? this.selectedDoctor.code : null,
+        "practitionerId": this.selectedDoctor ? this.selectedDoctor : null,
         // "patientId": this.newAppointmentModel.selectedPatient.code,
         "patientId": this.newAppointmentModel.selectedPatient,
         "appointmentTypeId": this.newAppointmentModel.selectedType.code,
@@ -470,6 +475,7 @@ export class AppointmentComponent {
   }
 
   editAppointment(appointment: any) {
+    this.showNewAppointment = true;
     this.newAppointmentModel.id = appointment.id;
     this.newAppointmentModel.selectedType = this.appointmentTypes.filter((type: any) => type.id == appointment.appointmentTypeId)[0];
     // this.newAppointmentModel.selectedPatient = this.patientsList.filter((patient: any) => patient.id == appointment.patientId)[0];
@@ -477,7 +483,6 @@ export class AppointmentComponent {
     this.newAppointmentModel.appointmentStartTime = appointment.start;
     this.newAppointmentModel.appointmentEndTime = appointment.end;
     this.newAppointmentModel.note = appointment.note;
-    this.showNewAppointment = true;
     this.newAppointmentModel.handelNewPateintStatus = false;
     this.patientsList = [];
     this.searchControl = null;
@@ -549,11 +554,11 @@ export class AppointmentComponent {
 
 
   async setWeeklyScheduleForDay(dayOfWeek: number, time: string) {
-    if (!this.selectedDoctor.code) {
+    if (this.selectedDoctor.length == 0) {
       return
     }
     try {
-      let res: any = await this.mainService.getDoctorSchedules(this.selectedDoctor.code).toPromise();
+      let res: any = await this.mainService.getDoctorSchedules(this.selectedDoctor).toPromise();
       if (!res) return false;
       let daySchedules = res.filter((x: any) => x.day == dayOfWeek);
       if (daySchedules.length == 0) return false;
@@ -686,12 +691,12 @@ export class AppointmentComponent {
       user.code = user.id;
       user.name = user.firstName + ' ' + user.lastName;
     });
-    this.selectedDoctor = this.doctorList[0];
     this.getDoctorSchedules(1);
   }
 
 
   getDetailOfDoctore() {
+    this.selectedDoctor = this.selectedDoctorList ? (this.selectedDoctorList || []).map(opt => opt.id).join(',') : [];
     this.getUserAppointmentsSettings();
     this.getDoctorSchedules(1);
     if (this.newAppointmentModel.time) {
@@ -708,10 +713,10 @@ export class AppointmentComponent {
     let res: any;
     try {
       if (type == 1) {
-        if (!this.selectedDoctor.code) {
+        if (this.selectedDoctor.length == 0) {
           return
         }
-        userId = this.selectedDoctor.code;
+        userId = this.selectedDoctor;
         res = await this.mainService.getDoctorSchedules(userId).toPromise();
 
       } else {
@@ -762,14 +767,14 @@ export class AppointmentComponent {
   }
 
   async getUserAppointmentsSettings() {
-    if (!this.selectedDoctor.code) {
+    if (this.selectedDoctor.length == 0) {
       return
     }
     let userId;
     if (this.userType == 9) {
       userId = -1;
     } else {
-      userId = this.selectedDoctor.code
+      userId = this.selectedDoctor
     }
     try {
       let model = {
@@ -794,11 +799,11 @@ export class AppointmentComponent {
   }
 
   async setDoctorScheduleBasedHours(filteredHours: any, selectedDate: any) {
-    if (!this.selectedDoctor.code) {
+    if (this.selectedDoctor.length == 0) {
       return
     }
     try {
-      let res: any = await this.mainService.getDoctorSchedules(this.selectedDoctor.code).toPromise();
+      let res: any = await this.mainService.getDoctorSchedules(this.selectedDoctor).toPromise();
       if (res.length > 0) {
         let selectedDay = moment(selectedDate).day();
         let daySchedules = res.filter(x => x.day == selectedDay);
@@ -883,6 +888,34 @@ export class AppointmentComponent {
     this.newAppointmentModel.selectedPatient = item.patientCode;
     this.selectedPatientName = item.name;
     this.dropdownOpen = false;
+  }
+
+
+  async cancelAppointment(id) {
+    setTimeout(() => {
+      this.showNewAppointment = false;
+    }, 50);
+    Swal.fire({
+      title: "آیا از حذف این وقت مطمئن هستید ؟",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "بله انجام بده",
+      cancelButtonText: "منصرف شدم",
+      reverseButtons: false,
+    }).then(async (result) => {
+      try {
+        if (result.value) {
+          let res: any = await this.treatmentService.cancelAppointment(id).toPromise();
+          if (res['status'] == 0) {
+            this.toastR.success('با موفقیت حذف گردید');
+            this.getAppointment(this.appointmentDate);
+          }
+        }
+      }
+      catch {
+        this.toastR.error('خطایی رخ داد', 'خطا!')
+      }
+    })
   }
 
 

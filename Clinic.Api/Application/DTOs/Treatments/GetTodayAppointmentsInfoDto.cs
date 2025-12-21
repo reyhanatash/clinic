@@ -19,6 +19,9 @@
         public decimal Receipt { get; set; }
         public bool Done { get; set; }
         public int? Arrived { get; set; }
+        public DateTime? FullDate { get; set; }
+        public string? Color { get; set; }
+        public string? Note { get; set; }
     }
 
     public class BillableItemDoneDto

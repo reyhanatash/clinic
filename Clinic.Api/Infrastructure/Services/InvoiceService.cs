@@ -113,7 +113,8 @@ namespace Clinic.Api.Infrastructure.Services
                                           AcceptDiscount = i.AcceptDiscount,
                                           AssistantId = i.AssistantId,
                                           PatientName = p.FirstName + " " + p.LastName,
-                                          BusinessName = b.Name
+                                          BusinessName = b.Name,
+                                          HasReceipt = _context.ReceiptInvoices.Any(ri => ri.InvoiceId == i.Id)
                                       })
                                  .ToListAsync();
 
@@ -303,6 +304,11 @@ namespace Clinic.Api.Infrastructure.Services
                     mappReceipt.CreatedOn = DateTime.Now;
                     mappReceipt.ReceiptNo = lastId + 1;
                     _context.Receipts.Add(mappReceipt);
+                    var mappReceiptInvoice = _mapper.Map<ReceiptInvoicesContext>(model.Invoices);
+                    mappReceiptInvoice.CreatedOn = DateTime.Now;
+                    mappReceiptInvoice.CreatorId = userId;
+                    mappReceiptInvoice.ReceiptId = mappReceipt.Id;
+                    _context.ReceiptInvoices.Add(mappReceiptInvoice);
                     await _context.SaveChangesAsync();
                     result.Message = "Receipt Saved Successfully";
                     result.Status = 0;
@@ -642,6 +648,36 @@ namespace Clinic.Api.Infrastructure.Services
                 result.Message = "Expense Deleted Successfully";
                 result.Status = 0;
                 return result;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<List<GetInvoicesWithoutReceipt>> GetInvoicesWithoutReceipt(int patientId)
+        {
+            try
+            {
+                return await (
+            from i in _context.Invoices
+            join u in _context.Users
+                on i.PractitionerId equals u.Id into userJoin
+            from u in userJoin.DefaultIfEmpty()
+            where i.PatientId == patientId
+                  && i.IsCanceled != true
+                  && !_context.ReceiptInvoices.Any(ri => ri.InvoiceId == i.Id)
+            select new GetInvoicesWithoutReceipt
+            {
+                Id = i.Id,
+                InvoiceNo = i.InvoiceNo,
+                IssueDate = i.IssueDate,
+                Amount = i.Amount,
+                PatientId = i.PatientId,
+                BillStatus = i.BillStatus,
+                DoctorName = (u.FirstName + " " + u.LastName) ?? string.Empty
+            }
+        ).ToListAsync();
             }
             catch (Exception ex)
             {

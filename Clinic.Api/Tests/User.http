@@ -1,4 +1,4 @@
-@Clinic_Api_Host = https://localhost:8585
+@Clinic_Api_Host = https://localhost:8586
 
 ### Login
 POST {{Clinic_Api_Host}}/api/user/login

@@ -5,6 +5,7 @@ using Clinic.Api.Application.Interfaces;
 using Clinic.Api.Domain.Entities;
 using Clinic.Api.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 using System.Security.Claims;
 
 namespace Clinic.Api.Infrastructure.Services
@@ -36,11 +37,11 @@ namespace Clinic.Api.Infrastructure.Services
             }
         }
 
-        public async Task<IEnumerable<BusinessesContext>> GetClinics()
+        public async Task<IEnumerable<GetClinicsResponse>> GetClinics()
         {
             try
             {
-                var result = await _context.Businesses.Select(b => new BusinessesContext
+                var result = await _context.Businesses.Select(b => new GetClinicsResponse
                 {
                     Id = b.Id,
                     Name = b.Name
@@ -375,17 +376,55 @@ namespace Clinic.Api.Infrastructure.Services
             }
         }
 
-        public async Task<IEnumerable<SchedulesContext>> GetDoctorSchedules(int? userId)
+        public async Task<IEnumerable<GetDoctorSchedulesResponse>> GetDoctorSchedules(string? userId)
         {
             try
             {
                 var userRole = _token.GetUserRole();
 
+                List<int>? userIds = null;
+
                 if (userRole == "Doctor")
                 {
-                    userId = _token.GetUserId();
+                    userIds = new List<int> { _token.GetUserId() };
                 }
-                var result = await _context.Schedules.Where(s => s.PractitionerId == userId).ToListAsync();
+                else if (!string.IsNullOrWhiteSpace(userId))
+                {
+                    userIds = userId
+                        .Split(',', StringSplitOptions.RemoveEmptyEntries)
+                        .Select(x => x.Trim())
+                        .Where(x => int.TryParse(x, out _))
+                        .Select(int.Parse)
+                        .ToList();
+                }
+
+                var result = await (
+                    from s in _context.Schedules
+                    join u in _context.Users
+                        on s.PractitionerId equals u.Id into userGroup
+                    from u in userGroup.DefaultIfEmpty()
+                    where userIds == null || userIds.Contains(s.PractitionerId)
+                    select new GetDoctorSchedulesResponse
+                    {
+                        Id = s.Id,
+                        PractitionerId = s.PractitionerId,
+                        BusinessId = s.BusinessId,
+                        Day = s.Day,
+                        IsActive = s.IsActive,
+                        FromTime = s.FromTime,
+                        ToTime = s.ToTime,
+                        IsBreak = s.IsBreak,
+                        ModifierId = s.ModifierId,
+                        CreatedOn = s.CreatedOn,
+                        LastUpdated = s.LastUpdated,
+                        Duration = s.Duration,
+                        CreatorId = s.CreatorId,
+                        DoctorName = u != null
+                            ? u.FirstName + " " + u.LastName
+                            : null
+                    }
+                ).ToListAsync();
+
                 return result;
             }
             catch (Exception ex)
@@ -440,24 +479,62 @@ namespace Clinic.Api.Infrastructure.Services
             }
         }
 
-        public async Task<IEnumerable<UserAppointmentsContext>> GetUserAppointmentsSettings(GetUserAppointmentsSettingsDto model)
+        public async Task<IEnumerable<GetUserAppointmentsSettingsResponse>> GetUserAppointmentsSettings(GetUserAppointmentsSettingsDto model)
         {
             try
             {
-                if (model.UserId == -1)
-                {
-                    model.UserId = _token.GetUserId();
-                }
-
                 var query = _context.UserAppointment.AsQueryable();
 
-                if (model.UserId.HasValue)
-                    query = query.Where(s => s.PractitionerId == model.UserId.Value);
+                List<int>? userIds = null;
 
-                if (model.BusinessId.HasValue)
+                if (model.UserId == "-1")
+                {
+                    userIds = new List<int> { _token.GetUserId() };
+                }
+                else if (!string.IsNullOrWhiteSpace(model.UserId))
+                {
+                    userIds = model.UserId
+                        .Split(',', StringSplitOptions.RemoveEmptyEntries)
+                        .Select(x => x.Trim())
+                        .Where(x => int.TryParse(x, out _))
+                        .Select(int.Parse)
+                        .ToList();
+                }
+
+                if (userIds != null)
+                {
+                    query = query.Where(s => userIds.Contains(s.PractitionerId));
+                }
+
+                if (model.BusinessId.HasValue && model.BusinessId.Value != -1)
+                {
                     query = query.Where(s => s.BusinessId == model.BusinessId.Value);
+                }
 
-                var result = await query.ToListAsync();
+                var result = await (
+                    from ua in query
+                    join u in _context.Users
+                        on ua.PractitionerId equals u.Id into userJoin
+                    from u in userJoin.DefaultIfEmpty()
+                    select new GetUserAppointmentsSettingsResponse
+                    {
+                        Id = ua.Id,
+                        PractitionerId = ua.PractitionerId,
+                        BusinessId = ua.BusinessId,
+                        OutOfTurn = ua.OutOfTurn,
+                        DefaultAppointmentTypeId = ua.DefaultAppointmentTypeId,
+                        ModifierId = ua.ModifierId,
+                        CreatedOn = ua.CreatedOn,
+                        LastUpdated = ua.LastUpdated,
+                        TimeSlotSize = ua.TimeSlotSize,
+                        CalendarTimeFrom = ua.CalendarTimeFrom,
+                        CalendarTimeTo = ua.CalendarTimeTo,
+                        CreatorId = ua.CreatorId,
+                        NewPatientAppointmentTypeId = ua.NewPatientAppointmentTypeId,
+                        MultipleAppointment = ua.MultipleAppointment,
+                        DoctorName = (u.FirstName + " " + u.LastName) ?? string.Empty
+                    }
+                ).ToListAsync();
 
                 return result;
             }
@@ -531,42 +608,67 @@ namespace Clinic.Api.Infrastructure.Services
                     result.Status = 0;
                     return result;
                 }
-                else
-                {
-                    var existingBusiness = await _context.Businesses.FirstOrDefaultAsync(j => j.Id == model.EditOrNew);
-                    if (existingBusiness == null)
-                    {
-                        throw new Exception("Business Not Found");
-                    }
-                    if (!string.IsNullOrEmpty(model.ServiceId))
-                    {
-                        var serviceIds = model.ServiceId
-                            .Split(',', StringSplitOptions.RemoveEmptyEntries)
-                            .Select(id => int.Parse(id.Trim()))
-                            .ToList();
+                var existingBusiness = await _context.Businesses
+             .FirstOrDefaultAsync(b => b.Id == model.EditOrNew);
 
-                        foreach (var serviceId in serviceIds)
+                if (existingBusiness == null)
+                    throw new Exception("Business Not Found");
+
+                if (!string.IsNullOrEmpty(model.ServiceId))
+                {
+                    var serviceIds = model.ServiceId
+                        .Split(',', StringSplitOptions.RemoveEmptyEntries)
+                        .Select(id => int.Parse(id.Trim()))
+                        .ToList();
+
+                    var existingServices = await _context.BusinessServices
+                        .Where(bs => bs.BusinessId == existingBusiness.Id)
+                        .ToListAsync();
+
+                    foreach (var bs in existingServices)
+                    {
+                        if (!serviceIds.Contains(bs.BillableItemId))
                         {
-                            var businessService = new BusinessServicesContext
+                            bs.IsActive = false;
+                            bs.ModifierId = userId;
+                            bs.LastUpdated = DateTime.Now;
+                        }
+                    }
+
+                    foreach (var serviceId in serviceIds)
+                    {
+                        var bs = existingServices
+                            .FirstOrDefault(x => x.BillableItemId == serviceId);
+
+                        if (bs != null)
+                        {
+                            bs.IsActive = true;
+                            bs.ModifierId = userId;
+                            bs.LastUpdated = DateTime.Now;
+                        }
+                        else
+                        {
+                            await _context.BusinessServices.AddAsync(new BusinessServicesContext
                             {
                                 BusinessId = existingBusiness.Id,
                                 BillableItemId = serviceId,
-                                ModifierId = userId,
-                                LastUpdated = DateTime.Now,
+                                CreatorId = userId,
+                                CreatedOn = DateTime.Now,
                                 IsActive = true
-                            };
-                            await _context.BusinessServices.AddAsync(businessService);
+                            });
                         }
                     }
-                    _mapper.Map(model, existingBusiness);
-                    existingBusiness.ModifierId = userId;
-                    existingBusiness.LastUpdated = DateTime.Now;
-                    _context.Businesses.Update(existingBusiness);
-                    await _context.SaveChangesAsync();
-                    result.Message = "Business Updated Successfully";
-                    result.Status = 0;
-                    return result;
                 }
+                _mapper.Map(model, existingBusiness);
+                existingBusiness.ModifierId = userId;
+                existingBusiness.LastUpdated = DateTime.Now;
+
+                _context.Businesses.Update(existingBusiness);
+                await _context.SaveChangesAsync();
+
+                result.Message = "Business Updated Successfully";
+                result.Status = 0;
+                return result;
             }
             catch (Exception ex)
             {
@@ -700,37 +802,40 @@ namespace Clinic.Api.Infrastructure.Services
             try
             {
                 var result = await (
-            from t in _context.TimeExceptions
-            join u in _context.Users
-                on t.PractitionerId equals u.Id
-            join b in _context.Businesses
-                on t.BusinessId equals b.Id
-            select new GetTimeExceptionsResponse
-            {
-                Id = t.Id,
-                StartDate = t.StartDate,
-                StartTime = t.StartTime,
-                EndTime = t.EndTime,
-                PractitionerId = t.PractitionerId,
-                TimeExceptionTypeId = t.TimeExceptionTypeId,
-                RepeatId = t.RepeatId,
-                RepeatEvery = t.RepeatEvery,
-                EndsAfter = t.EndsAfter,
-                ModifierId = t.ModifierId,
-                CreatedOn = t.CreatedOn,
-                LastUpdated = t.LastUpdated,
-                Duration = t.Duration,
-                GrigoryDate = t.GrigoryDate,
-                BusinessId = t.BusinessId,
-                CreatorId = t.CreatorId,
-                PractitionerTimeExceptionId = t.PractitionerTimeExceptionId,
-                OutOfTurn = t.OutOfTurn,
-                DefaultAppointmentTypeId = t.DefaultAppointmentTypeId,
-                TimeSlotSize = t.TimeSlotSize,
-                DoctorName = u.FirstName + " " + u.LastName,
-                BusinessName = b.Name
-            }
-        ).ToListAsync();
+         from t in _context.TimeExceptions
+         join u in _context.Users
+             on t.PractitionerId equals u.Id into userJoin
+         from u in userJoin.DefaultIfEmpty()
+
+         join b in _context.Businesses
+             on t.BusinessId equals b.Id into businessJoin
+         from b in businessJoin.DefaultIfEmpty()
+         select new GetTimeExceptionsResponse
+         {
+             Id = t.Id,
+             StartDate = t.StartDate,
+             StartTime = t.StartTime,
+             EndTime = t.EndTime,
+             PractitionerId = t.PractitionerId,
+             TimeExceptionTypeId = t.TimeExceptionTypeId,
+             RepeatId = t.RepeatId,
+             RepeatEvery = t.RepeatEvery,
+             EndsAfter = t.EndsAfter,
+             ModifierId = t.ModifierId,
+             CreatedOn = t.CreatedOn,
+             LastUpdated = t.LastUpdated,
+             Duration = t.Duration,
+             GrigoryDate = t.GrigoryDate,
+             BusinessId = t.BusinessId,
+             CreatorId = t.CreatorId,
+             PractitionerTimeExceptionId = t.PractitionerTimeExceptionId,
+             OutOfTurn = t.OutOfTurn,
+             DefaultAppointmentTypeId = t.DefaultAppointmentTypeId,
+             TimeSlotSize = t.TimeSlotSize,
+             DoctorName = u.FirstName + " " + u.LastName,
+             BusinessName = b.Name
+         }
+             ).ToListAsync();
 
                 return result;
             }
@@ -880,6 +985,58 @@ namespace Clinic.Api.Infrastructure.Services
                 result.Message = "Sms Settings Updated Successfully";
                 result.Status = 0;
                 return result;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<IEnumerable<SMSSettingsContext>> GetSmsSettings()
+        {
+            try
+            {
+                var settings = await _context.SMSSettings.ToListAsync();
+                return settings;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<GlobalResponse> UpdateGeneralSettings(UpdateGeneralSettingsDto model)
+        {
+            var result = new GlobalResponse();
+
+            try
+            {
+                var existingGeneralSettings = await _context.GeneralSettings.FirstOrDefaultAsync(p => p.Id == model.Id);
+
+                if (existingGeneralSettings == null)
+                {
+                    throw new Exception("General Settings Not Found");
+                }
+
+                _mapper.Map(model, existingGeneralSettings);
+                _context.GeneralSettings.Update(existingGeneralSettings);
+                await _context.SaveChangesAsync();
+                result.Message = "General Settings Updated Successfully";
+                result.Status = 0;
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<IEnumerable<GeneralSettingsContext>> GetGeneralSettings()
+        {
+            try
+            {
+                var settings = await _context.GeneralSettings.ToListAsync();
+                return settings;
             }
             catch (Exception ex)
             {

@@ -310,16 +310,17 @@ namespace Clinic.Api.Infrastructure.Services
 
                 _mapper.Map(model, user);
 
-                if (!string.IsNullOrWhiteSpace(model.Username))
+                if (!string.IsNullOrWhiteSpace(model.Username) || !string.IsNullOrWhiteSpace(model.Password))
                 {
                     user.Email = model.Username.Trim();
+                    user.Password = _passwordHasher.HashPassword(user, model.Password);
                 }
                 else
                 {
                     _context.Entry(user).Property(x => x.Email).IsModified = false;
+                    _context.Entry(user).Property(x => x.Password).IsModified = false;
                 }
-
-                user.Password = _passwordHasher.HashPassword(user, model.Password);
+        
                 _context.Users.Update(user);
                 await _uow.SaveAsync();
 
