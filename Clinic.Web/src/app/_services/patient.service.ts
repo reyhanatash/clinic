@@ -196,5 +196,28 @@ export class PatientService {
     return this.http.post(uri, data, httpOptions);
   }
 
+  savePatientFields(data: any) {
+    const uri = this.url + `api/Patient/savePatientField`;
+    const httpOptions = {
+      headers: new HttpHeaders({
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + this.token,
+        responseType: 'text'
+      }),
+    };
+    return this.http.post(uri, data, httpOptions);
+  }
+
+  getPatientFields() {
+    const token: any = localStorage.getItem("token");
+    const uri = this.url + `api/Patient/getPatientFields/`;
+    const httpOptions = {
+      headers: new HttpHeaders({
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token,
+      }),
+    };
+    return this.http.get(uri, httpOptions);
+  }
 
 }

@@ -59,7 +59,7 @@ export class TodayAppointmentsComponent implements OnInit {
   userType: any;
   isAdminOrDoctor: boolean;
   allowedLinks: any = [];
-  
+
   async ngOnInit() {
     this.allowedLinks = await this.objectService.getDataAccess();
     if (this.checkAccess(1)) {
@@ -89,6 +89,7 @@ export class TodayAppointmentsComponent implements OnInit {
     try {
       const res: any = await this.treatmentsService.getTodayAppointments(model).toPromise();
       this.todayAppointmentsList = res;
+      this.todayAppointmentsList = this.sortByCreatedOn(this.todayAppointmentsList);
       this.todayAppointmentsList.forEach(appointment => {
         appointment.hasDiscount = appointment.totalDiscount > 0 ? true : false;
       });
@@ -287,4 +288,11 @@ export class TodayAppointmentsComponent implements OnInit {
       }
     })
   }
+
+  sortByCreatedOn(data: any[]): any[] {
+    return data.sort((a, b) =>
+      new Date(b.createdOn).getTime() - new Date(a.createdOn).getTime()
+    );
+  }
+
 }

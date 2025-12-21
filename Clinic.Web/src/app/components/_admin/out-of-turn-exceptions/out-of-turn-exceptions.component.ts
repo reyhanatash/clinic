@@ -30,7 +30,7 @@ export class OutOfTurnExceptionsComponent implements OnInit {
   clinicsList: any = [];
   doctorList: any = [];
   allowedLinks: any = [];
-  
+
   async ngOnInit(): Promise<void> {
     this.allowedLinks = await this.objectService.getDataAccess();
     if (this.checkAccess(1)) {
@@ -54,22 +54,27 @@ export class OutOfTurnExceptionsComponent implements OnInit {
   }
 
   async saveOutOfTurnException() {
-    let model =
-    {
-      startDate: moment(this.form.selectedDate.value, 'jYYYY/jMM/jDD').add(3.5, 'hours').toDate(),
-      practitionerId: this.form.selectedDoctor?.id,
-      businessId: this.form.selectedClinic?.id,
-      outOfTurn: this.form.outOfTurn,
-      editOrNew: this.form.editOrNew
+    if (!this.form.selectedDate || !this.form.selectedDoctor || !this.form.outOfTurn) {
+      this.toastR.error("لطفا مقادیر اجباری را وارد نمایید!");
     }
-    try {
-      let res: any = await this.mainService.saveOutOfTurnException(model).toPromise();
-      this.toastR.success('اطلاعات با موفقیت ثبت شد');
-      this.form = [];
-      this.form.editOrNew = -1;
-      this.getOutOfTurnExceptions();
+    else {
+      let model =
+      {
+        startDate: moment(this.form.selectedDate.value, 'jYYYY/jMM/jDD').add(3.5, 'hours').toDate(),
+        practitionerId: this.form.selectedDoctor?.id,
+        businessId: this.form.selectedClinic?.id,
+        outOfTurn: this.form.outOfTurn,
+        editOrNew: this.form.editOrNew
+      }
+      try {
+        let res: any = await this.mainService.saveOutOfTurnException(model).toPromise();
+        this.toastR.success('اطلاعات با موفقیت ثبت شد');
+        this.form = [];
+        this.form.editOrNew = -1;
+        this.getOutOfTurnExceptions();
+      }
+      catch { }
     }
-    catch { }
   }
 
   edit(item) {

@@ -15,17 +15,51 @@
             بستری</div>
         </div>
       </div>
-      <div class="col-8 d-flex flex-column justify-content-center my-3">
+      <div *ngIf="!isPatientReceipt" class="col-8 d-flex flex-column justify-content-center my-3">
         <label for="patient" class="text-right">بیمار</label>
         <p-dropdown id="patient" [options]="patientsList" [(ngModel)]="newReceiptModel.selectedPatient"
-          optionLabel="name" placeholder="بیمار مورد نظر را انتخاب کنید" class="full-width text-right" />
+          optionLabel="name" placeholder="بیمار مورد نظر را انتخاب کنید" class="full-width text-right"
+          (ngModelChange)="getInvoicesWithoutReceipt()" />
       </div>
-      <div class="col-8 d-flex flex-column justify-content-center my-3">
-        <label for="invoice" class="text-right">اعمال صورتحساب ها</label>
-        <p-multiSelect [options]="invoiceList" optionLabel="name" dataKey="id"
-          [(ngModel)]="newReceiptModel.selectedInvoice" [ngModelOptions]="{standalone: true}"
-          [ngModelOptions]="{ standalone: true }" class="full-width text-right">
-        </p-multiSelect>
+      <div *ngIf="invoiceWithoutReceiptList.length > 0" class="col-8 d-flex flex-column justify-content-center my-3">
+        <div class="item-box">
+          <div class="header">
+            <h6>اعمال صورتحساب ها </h6>
+          </div>
+          <div>
+            <div *ngFor="let item of invoiceWithoutReceiptList" class="d-lg-flex align-items-center g-2 my-3">
+              <div class="col">
+                <h6>شماره</h6>
+                <p class="text-danger">{{item.invoiceNo || '-'}}</p>
+              </div>
+              <div class="col">
+                <h6>تاریخ</h6>
+                <p class="text-dark">{{(item.issueDate | JustDate) || '-'}}</p>
+              </div>
+              <div class="col">
+                <h6>پزشک</h6>
+                <p class="text-dark">{{item}}</p>
+              </div>
+              <div class="col">
+                <h6>مبلغ صورتحساب</h6>
+                <p class="text-dark">{{item.amount}}</p>
+              </div>
+              <div class="col">
+                <h6>دریافتی</h6>
+                <input type="number" class="form-control" [(ngModel)]="item.receipt"
+                  [ngModelOptions]="{ standalone: true }" (ngModelChange)="handelPrice(item)">
+              </div>
+              <div class="col">
+                <h6> باقیمانده</h6>
+                <p class="text-dark">{{item.remainder || "-"}}</p>
+              </div>
+              <div class="col">
+                <button type="submit" class="btn btn-success" (click)="setItem(item)"> ذخیره</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
       </div>
 
       <div class="col-12 text-right my-3">

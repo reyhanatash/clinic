@@ -88,14 +88,14 @@ export class AppointmentTypesComponent {
     let model = {
       "name": this.newType.name,
       "description": this.newType.description,
-      "duration": Number(this.newType.duration),
-      "relatedBillableItemId": this.newType.firstService.code,
-      "relatedBillableItem2Id": this.newType.secondService.code,
-      "relatedBillableItem3Id": this.newType.thirdService.code,
-      "defaultTreatmentNoteTemplate": this.newType.treatmentType.code,
-      "relatedProductId": this.newType.firstProduct.code,
-      "relatedProduct2Id": this.newType.secondProduct.code,
-      "relatedProduct3Id": this.newType.thirdProduct.code,
+      "duration": Number(this.newType.duration) || null,
+      "relatedBillableItemId": this.newType.firstService.code || null,
+      "relatedBillableItem2Id": this.newType.secondService.code || null,
+      "relatedBillableItem3Id": this.newType.thirdService.code || null,
+      "defaultTreatmentNoteTemplate": this.newType.treatmentType.code || null,
+      "relatedProductId": this.newType.firstProduct.code || null,
+      "relatedProduct2Id": this.newType.secondProduct.code || null,
+      "relatedProduct3Id": this.newType.thirdProduct.code || null,
       "color": this.newType.typeColor,
       "showInOnlineBookings": this.newType.showInAppoinment,
       "editOrNew": this.newType.id || -1
@@ -116,13 +116,13 @@ export class AppointmentTypesComponent {
       if (res.length > 0) {
         this.appointmentTypes = res;
         this.appointmentTypes.forEach((type: any) => {
-          type.relatedService1Name = this.billableItems.filter((item: any) => item.id == type.relatedBillableItemId)[0];
-          type.relatedService2Name = this.billableItems.filter((item: any) => item.id == type.relatedBillableItem2Id)[0];
-          type.relatedService3Name = this.billableItems.filter((item: any) => item.id == type.relatedBillableItem3Id)[0];
-          type.relatedProduct1Name = this.productList.filter((item: any) => item.id == type.relatedProductId)[0];
-          type.relatedProduct2Name = this.productList.filter((item: any) => item.id == type.relatedProduct2Id)[0];
-          type.relatedProduct3Name = this.productList.filter((item: any) => item.id == type.relatedProduct3Id)[0];
-          type.defaultTreatmentNoteTemplateName = this.treatmentTypes.filter((item: any) => item.id == type.defaultTreatmentNoteTemplate)[0];
+          type.relatedService1Name = this.billableItems.filter((item: any) => item.id == type.relatedBillableItemId)[0]?.name;
+          type.relatedService2Name = this.billableItems.filter((item: any) => item.id == type.relatedBillableItem2Id)[0]?.name;
+          type.relatedService3Name = this.billableItems.filter((item: any) => item.id == type.relatedBillableItem3Id)[0]?.name;
+          type.relatedProduct1Name = this.productList.filter((item: any) => item.id == type.relatedProductId)[0]?.name;
+          type.relatedProduct2Name = this.productList.filter((item: any) => item.id == type.relatedProduct2Id)[0]?.name;
+          type.relatedProduct3Name = this.productList.filter((item: any) => item.id == type.relatedProduct3Id)[0]?.name;
+          type.defaultTreatmentNoteTemplateName = this.treatmentTypes.filter((item: any) => item.id == type.defaultTreatmentNoteTemplate)[0]?.name;
         });
       }
     }

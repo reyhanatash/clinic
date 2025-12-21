@@ -13,7 +13,7 @@ import { SharedModule } from '../../share/shared.module';
 @Component({
   selector: 'app-receipt',
   standalone: true,
-  imports: [FormsModule, CommonModule, DropdownModule,SharedModule],
+  imports: [FormsModule, CommonModule, DropdownModule, SharedModule],
   templateUrl: './receipt.component.html',
   styleUrl: './receipt.component.css'
 })
@@ -28,6 +28,7 @@ export class ReceiptComponent {
     private paymentService: PaymentService,
 
   ) { }
+
   receiptType: any = 0;
   newReceiptModel: any = [];
   patientsList: any;
@@ -37,7 +38,8 @@ export class ReceiptComponent {
   patientSelected: any;
   isPatientReceipt: boolean = false;
   patientId: any;
-  invoiceList: any = [];
+  invoiceWithoutReceiptList: any = [];
+  invoicesForReceipt: any = [];
 
   async ngOnInit() {
     this.checkRout = this.activeRoute.snapshot.routeConfig.path;
@@ -48,7 +50,8 @@ export class ReceiptComponent {
 
     if (this.petientId != null) {
       this.isPatientReceipt = true;
-      this.patientSelect();
+      await this.patientSelect();
+      this.getInvoicesWithoutReceipt();
     }
   }
 
@@ -110,7 +113,8 @@ export class ReceiptComponent {
         other: null,
         notes: this.newReceiptModel.note,
         allowEdit: true,
-        receiptTypeId: this.receiptType ? 1 : 0
+        receiptTypeId: this.receiptType ? 1 : 0,
+        invoices: this.invoicesForReceipt
       }
       try {
         let data = await this.invoiceService.saveReceipt(model).toPromise();
@@ -137,5 +141,35 @@ export class ReceiptComponent {
   patientSelect() {
     this.newReceiptModel.selectedPatient = this.patientsList.filter(x => x.id == this.petientId)[0];
     console.log(this.patientSelected);
+  }
+
+
+
+
+  async getInvoicesWithoutReceipt() {
+    let id = this.isPatientReceipt ? this.petientId : this.newReceiptModel.selectedPatient.code;
+    try {
+      let res: any = await this.invoiceService.getInvoicesWithoutReceipt(id).toPromise();
+      677613
+      if (res.length > 0) {
+        this.invoiceWithoutReceiptList = res;
+      }
+    }
+    catch {
+      this.toastR.error('خطا!', 'خطا در دریافت اطلاعات')
+    }
+  }
+
+  setItem(item) {
+    this.invoicesForReceipt.push(
+      {
+        invoiceId: item.id,
+        amount: item.receipt
+      }
+    )
+  }
+
+  handelPrice(item) {
+    item.remainder = item.amount - item.receipt;
   }
 }

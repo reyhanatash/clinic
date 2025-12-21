@@ -3,12 +3,12 @@
   <hr>
   <div id="timeException" *ngIf="checkAccess(2)" class="col-12 d-flex flex-wrap">
     <div class="col-md-4 col-12 mt-2 text-right">
-      <label>پزشک</label>
+      <label><span class="text-danger">*</span> پزشک</label>
       <p-dropdown [options]="doctorList" placeholder="پزشک" [(ngModel)]="newException.selectedDoctor" optionLabel="name"
         dataKey="id" class="full-width text-right" />
     </div>
     <div class="col-md-4 col-12 mt-2 text-right">
-      <label>مکان</label>
+      <label><span class="text-danger">*</span> مکان</label>
       <p-dropdown id="clinic" [options]="clinicsList" [(ngModel)]="newException.selectedClinic" optionLabel="name"
         class="full-width text-right" />
     </div>
@@ -43,7 +43,7 @@
       <input type="text" class="form-control" [(ngModel)]="newException.duration" />
     </div>
     <div class="col-md-4 col-12 mt-3 text-right">
-      <label for="date">practitionerTimeExceptionId</label>
+      <label for="date"><span class="text-danger">*</span> practitionerTimeExceptionId</label>
       <input type="text" class="form-control" [(ngModel)]="newException.practitionerTimeExceptionId" />
     </div>
     <div class="col-md-4 col-12 mt-3 text-right">

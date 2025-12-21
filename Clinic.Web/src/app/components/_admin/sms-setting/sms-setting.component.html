@@ -1,0 +1,41 @@
+<div class="appContainer">
+    <div class="col-12 d-flex justify-content-start">
+        <h4>تنظیمات پیامک</h4>
+        <hr>
+    </div>
+    <div class="col-12 d-flex flex-wrap">
+        <div class="col-md-4 col-12 mt-2 d-flex align-items-center text-right">
+            <input type="checkbox" id="enableSms" [(ngModel)]="newSetting.sendAfterAppointment">
+            <label for="" class="m-0 mr-2">ارسال پیامک به بیمار پس از ثبت وقت جدید برای وی</label>
+        </div>
+        <div class="col-md-4 col-12 mt-2 d-flex flex-column text-right">
+            <label for="">شناسه قالب پیامک</label>
+            <input type="text" id="enableSms" class="form-control"
+                [(ngModel)]="newSetting.sendAfterAppointmentTemplateId">
+        </div>
+        <div class="col-md-4 col-12 mt-2 d-flex flex-column text-right">
+            <label for="">قالب پیامک</label>
+            <textarea name="" id="" [(ngModel)]="newSetting.sendAfterAppointmentTemplate"></textarea>
+        </div>
+        <hr class="my-4 col-12">
+        <div class="col-md-4 col-12 mt-2 d-flex align-items-center text-right">
+            <input type="checkbox" id="enableSms" [(ngModel)]="newSetting.sendBeforeAppointmentDay">
+            <label for="" class="m-0 mr-2">ارسال پیامک جهت یادآوری وقت بیمار</label>
+        </div>
+        <div class="col-md-4 col-12 mt-2 d-flex flex-column text-right">
+            <label for="">شناسه قالب پیامک</label>
+            <input type="text" id="enableSms" class="form-control"
+                [(ngModel)]="newSetting.sendBeforeAppointmentDayTemplateId">
+        </div>
+        <div class="col-md-4 col-12 mt-2 d-flex flex-column text-right">
+            <label for="">قالب پیامک</label>
+            <textarea name="" id="" [(ngModel)]="newSetting.sendBeforeAppointmentDayTemplate"></textarea>
+        </div>
+        <div class="col-md-4 col-12 mt-2 text-right">
+            <label for="">یادآوری چند روز قبل از قرار انجام شود؟</label>
+            <input type="text" id="enableSms" class="form-control" [(ngModel)]="newSetting.reminderDaysBefore">
+        </div>
+        <div class="col-12 d-flex justify-content-center mt-3">
+            <button class="btn btn-success" (click)="updateSmsSetting()">ذخیره</button>
+        </div>
+    </div>

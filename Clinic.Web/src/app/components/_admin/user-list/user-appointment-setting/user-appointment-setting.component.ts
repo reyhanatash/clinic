@@ -62,6 +62,7 @@ export class UserAppointmentSettingComponent implements OnInit {
       this.clinicsList.forEach((clinic: any) => {
         clinic.code = clinic.id;
       });
+      this.selectedClinic = this.clinicsList[0];
     }
     catch { }
   }
@@ -83,8 +84,8 @@ export class UserAppointmentSettingComponent implements OnInit {
   async getUserAppointmentsSettings() {
     try {
       let model = {
-        userId: this.userId,
-        businessId: null,
+        userId: String(this.userId),
+        businessId: -1,
       }
       let res: any = await this.mainService.getUserAppointmentsSettings(model).toPromise();
       if (res.length > 0) {

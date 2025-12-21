@@ -1,7 +1,7 @@
 <div class="appContainer text-right">
   <h4> مکان جدید</h4>
   <hr>
-  <form class="container px-5">
+  <form class="container px-5 d-flex flex-wrap">
     <div class="d-flex flex-wrap">
       <div class="form-group col-lg-6 col-12">
         <label for="name">نام</label>
@@ -39,12 +39,12 @@
           [ngModelOptions]="{standalone: true}">
       </div>
     </div>
-    <div class="form-group">
+    <div class="form-group col-6">
       <label for="phone">موقعیت در نقشه</label>
       <div id="map" style="height: 250px;"></div>
     </div>
 
-    <div class="form-group">
+    <div class="form-group col-6">
       <!-- <div class="d-flex flex-wrap"> -->
       <label class="form-check mr-4">
         <input class="form-check-input" type="checkbox" [(ngModel)]="model.isInPatient"
@@ -87,15 +87,17 @@
         <span class="form-check-label">امکان وقت دهی خارج از نوبت بین اوقات بیماران</span>
       </label>
       <!-- </div> -->
-      <p-multiSelect [options]="servicesList" optionLabel="name" dataKey="id" [(ngModel)]="model.selectedServices"
-        [ngModelOptions]="{standalone: true}" [ngModelOptions]="{ standalone: true }" class="text-right"
-        defaultLabel=" خدمات قابل ارائه">
+      <hr>
+      <label for="services">خدمات</label>
+      <p-multiSelect [options]="servicesList" name="services" optionLabel="name" dataKey="id"
+        [(ngModel)]="model.selectedServices" [ngModelOptions]="{standalone: true}"
+        [ngModelOptions]="{ standalone: true }" class="text-right" defaultLabel=" خدمات قابل ارائه">
       </p-multiSelect>
 
     </div>
 
 
-    <div class="col-12 text-center mt-3">
+    <div class="col-12 text-center mt-3 mb-3">
       <button type="submit" class="btn btn-danger" (click)="saveBusiness()">ذخیره مکان</button>
     </div>
   </form>

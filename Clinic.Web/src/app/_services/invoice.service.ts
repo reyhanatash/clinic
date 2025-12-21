@@ -195,7 +195,7 @@ export class InvoiceService {
     };
     return this.http.get(uri, httpOptions);
   }
-  
+
   deleteExpense(id: any) {
     const token: any = localStorage.getItem("token");
     const uri = this.url + `api/Invoice/deleteExpense/${id}`;
@@ -207,4 +207,17 @@ export class InvoiceService {
     };
     return this.http.get(uri, httpOptions);
   }
+
+  getInvoicesWithoutReceipt(patientId: any) {
+    const token: any = localStorage.getItem("token");
+    const uri = this.url + `api/Invoice/getInvoicesWithoutReceipt/${patientId}`;
+    const httpOptions = {
+      headers: new HttpHeaders({
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token,
+      }),
+    };
+    return this.http.get(uri, httpOptions);
+  }
+
 }

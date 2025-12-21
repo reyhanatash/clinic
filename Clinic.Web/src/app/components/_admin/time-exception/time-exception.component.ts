@@ -76,33 +76,38 @@ export class TimeExceptionComponent {
   }
 
   async saveException() {
-
-    let model =
-    {
-      "startDate": moment(this.newException.startDate.value, 'jYYYY/jMM/jDD').add(3.5, 'hours').toDate(),
-      "startTime": this.convertTimeToUTC(this.newException.startTime),
-      "endTime": this.convertTimeToUTC(this.newException.endTime),
-      "practitionerId": this.newException.selectedDoctor?.code || 0,
-      "timeExceptionTypeId": 0,
-      "repeatEvery": this.newException.repeatEvery,
-      "endsAfter": this.newException.endsAfter,
-      "duration": this.newException.duration,
-      "businessId": this.newException.selectedClinic?.code || null,
-      "practitionerTimeExceptionId": this.newException.practitionerTimeExceptionId,
-      "outOfTurn": this.newException.outOfTurn,
-      "defaultAppointmentTypeId": this.newException.defaultAppointmentTypeId,
-      "timeSlotSize": this.newException.timeSlotSize,
-      "editOrNew": this.newException.id || -1
+    if (!this.newException.selectedDoctor || !this.newException.selectedClinic || !this.newException.practitionerTimeExceptionId) {
+      this.toastR.error("لطفا مقادیر اجباری را وارد نمایید!")
     }
-    try {
-      if (!this.newException.selectedDoctor || !this.newException.dateFrom || !this.newException.dateTo) {
-        let res: any = await this.mainService.saveTimeException(model).toPromise();
-        this.toastR.success('اطلاعات با موفقیت ثبت شد');
-        this.newException = [];
-        this.getExceptions();
+    else {
+      let model =
+      {
+        "startDate": moment(this.newException.startDate.value, 'jYYYY/jMM/jDD').add(3.5, 'hours').toDate(),
+        "startTime": this.convertTimeToUTC(this.newException.startTime),
+        "endTime": this.convertTimeToUTC(this.newException.endTime),
+        "practitionerId": this.newException.selectedDoctor?.code || 0,
+        "timeExceptionTypeId": 0,
+        "repeatEvery": this.newException.repeatEvery,
+        "endsAfter": this.newException.endsAfter,
+        "duration": this.newException.duration,
+        "businessId": this.newException.selectedClinic?.code || null,
+        "practitionerTimeExceptionId": this.newException.practitionerTimeExceptionId,
+        "outOfTurn": this.newException.outOfTurn,
+        "defaultAppointmentTypeId": this.newException.defaultAppointmentTypeId,
+        "timeSlotSize": this.newException.timeSlotSize,
+        "editOrNew": this.newException.id || -1
       }
+      try {
+        if (!this.newException.selectedDoctor || !this.newException.dateFrom || !this.newException.dateTo) {
+          let res: any = await this.mainService.saveTimeException(model).toPromise();
+          this.toastR.success('اطلاعات با موفقیت ثبت شد');
+          this.newException = [];
+          this.getExceptions();
+        }
+      }
+      catch { }
+
     }
-    catch { }
   }
 
   convertTimeToUTC(time: string): string {

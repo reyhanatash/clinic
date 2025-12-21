@@ -9,10 +9,10 @@
   <div *ngIf="!isCanceled" class="col-12 text-left">
     <button *ngIf="type == 1 && checklInvoiceAccess(2)" class="btn btn-primary "
       (click)="goToEditPage()">ویرایش</button>
-    <button *ngIf="editOrNew != -1 && checklInvoiceAccess(2)" class="btn btn-warning mx-2"
-      (click)="savereceipt(1)">ذخیره دریافت</button>
-    <button *ngIf="editOrNew != -1 && checklInvoiceAccess(2)" class="btn btn-warning mx-2"
-      (click)="savereceipt(2)">ذخیره پرداخت</button>
+    <button *ngIf="editOrNew != -1 && checklInvoiceAccess(2) && !hasReceipt" class="btn btn-warning mx-2"
+      (click)="savereceipt(1)"> دریافت</button>
+    <button *ngIf="editOrNew != -1 && checklInvoiceAccess(2)  && hasReceipt" class="btn btn-warning mx-2"
+      (click)="savereceipt(2)"> پرداخت</button>
     <button *ngIf="editOrNew != -1 && checklInvoiceAccess(4)" class="btn btn-danger" (click)="cancelInvoice()">
       ابطال</button>
   </div>

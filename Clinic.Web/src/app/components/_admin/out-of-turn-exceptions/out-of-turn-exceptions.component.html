@@ -7,21 +7,24 @@
     <div *ngIf="checkAccess(2)" class="col-12">
       <div class="d-flex flex-wrap">
         <div class="col-lg-6 col-12 form-group mb-3">
-          <p-dropdown [options]="doctorList" placeholder="پزشک" [(ngModel)]="form.selectedDoctor" optionLabel="name"
-            dataKey="id" class="full-width text-right" />
+          <label for="" class="text-right col-12 p-0"><span class="text-danger">*</span>پزشک</label>
+          <p-dropdown [options]="doctorList" [(ngModel)]="form.selectedDoctor" optionLabel="name" dataKey="id"
+            class="full-width text-right" />
         </div>
         <div class="col-lg-6 col-12 form-group mb-3">
-          <p-dropdown [options]="clinicsList" placeholder="مکان" [(ngModel)]="form.selectedClinic" optionLabel="name"
-            dataKey="id" class="full-width text-right" />
+          <label for="" class="text-right col-12 p-0"><span class="text-danger">*</span>مکان</label>
+          <p-dropdown [options]="clinicsList" [(ngModel)]="form.selectedClinic" optionLabel="name" dataKey="id"
+            class="full-width text-right" />
         </div>
         <div class="col-lg-6 col-12 form-group mb-3">
+          <label for="" class="col-12 text-right p-0">زمان شروع</label>
           <ng-persian-datepicker>
             <input type="text" class="form-control" [formControl]="form.selectedDate" />
           </ng-persian-datepicker>
         </div>
         <div class="col-lg-6 col-12 form-group mb-3">
-          <input placeholder="تعداد خارج از نوبت" class="form-control" id="outOfTurn" name="outOfTurn"
-            [(ngModel)]="form.outOfTurn" OnlyNumber="true" />
+          <label for="" class="col-12 text-right p-0"><span class="text-danger">*</span>تعداد خارج از نوبت</label>
+          <input class="form-control" id="outOfTurn" name="outOfTurn" [(ngModel)]="form.outOfTurn" OnlyNumber="true" />
         </div>
         <div class="col-12 text-center">
           <button class="btn btn-danger" (click)="saveOutOfTurnException()">ذخیره</button>

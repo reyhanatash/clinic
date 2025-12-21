@@ -64,6 +64,7 @@ export class ReceiptListComponent {
       });
     }
     this.tableData = this.receiptsList;
+    this.tableData = this.sortByCreatedOn(this.tableData);
   }
 
   async getAllPayments() {
@@ -75,6 +76,8 @@ export class ReceiptListComponent {
       });
     }
     this.tableData = this.paymentList;
+    this.tableData = this.sortByCreatedOn(this.tableData);
+
   }
 
   async deleteReceipt(id) {
@@ -190,6 +193,12 @@ export class ReceiptListComponent {
     } else {
       return false
     }
+  }
+
+  sortByCreatedOn(data: any[]): any[] {
+    return data.sort((a, b) =>
+      new Date(b.createdOn).getTime() - new Date(a.createdOn).getTime()
+    );
   }
 
 }

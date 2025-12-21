@@ -44,6 +44,7 @@ export class PatientPaymentComponent {
   async getPatientPayments() {
     let data = await this.patientService.getPatientPayments(this.pationId).toPromise();
     this.patientPaymentList = data;
+    this.patientPaymentList = this.sortByCreatedOn(this.patientPaymentList);
     if (this.patientPaymentList.length > 0) {
       this.patientPaymentList.forEach(element => {
         element.sumPrice = element.eftPos + element.cash;
@@ -68,4 +69,11 @@ export class PatientPaymentComponent {
     const item = this.paymentAccess.find(x => x.id === id);
     return item ? item.clicked : false;
   }
+
+  sortByCreatedOn(data: any[]): any[] {
+    return data.sort((a, b) =>
+      new Date(b.createdOn).getTime() - new Date(a.createdOn).getTime()
+    );
+  }
+
 }

@@ -75,6 +75,9 @@ export class ShamsiDatePipe implements PipeTransform {
 @Pipe({ name: 'JustDate' })
 export class JustDatePipe implements PipeTransform {
   transform(value: any) {
+    if (!value) {
+      return '-';
+    }
     let date = moment(value + "Z").format('jYYYY/jMM/jDD');
     return date;
   }

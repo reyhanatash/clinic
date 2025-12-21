@@ -26,6 +26,7 @@ import { ImageModule } from 'primeng/image';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 import { OnlyNumberDirective } from './only-number.directive';
+import { TooltipModule } from 'primeng/tooltip';
 
 @NgModule({
   declarations: [
@@ -72,7 +73,8 @@ import { OnlyNumberDirective } from './only-number.directive';
     ImageModule,
     SelectButtonModule,
     LeafletModule,
-    OnlyNumberDirective
+    OnlyNumberDirective,
+    TooltipModule
   ],
   exports: [
     NumberSplitPipe,
@@ -115,7 +117,8 @@ import { OnlyNumberDirective } from './only-number.directive';
     ImageModule,
     SelectButtonModule,
     LeafletModule,
-    OnlyNumberDirective
+    OnlyNumberDirective,
+    TooltipModule
   ]
 })
 export class SharedModule { }

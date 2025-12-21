@@ -1,0 +1,138 @@
+<div class="appContainer">
+    <div class="col-12">
+        <h4 class="text-right">فیلد های بیماران</h4>
+    </div>
+    <div class="col-12 d-flex flex-wrap">
+        <div class="col-12">
+            <h5 class="text-right">اطلاعات عمومی</h5>
+        </div>
+        <div class="col-md-4 col-12 mt-3">
+            <label for="fieldName" class="col-12 text-right">عنوان</label>
+            <p-dropdown [options]="fieldStatus" [(ngModel)]="patient.title" optionLabel="name"
+                class="full-width text-right" />
+        </div>
+        <div class="col-md-4 col-12 mt-3">
+            <label for="fieldName" class="col-12 text-right">جنسیت</label>
+            <p-dropdown [options]="fieldStatus" [(ngModel)]="patient.gender" optionLabel="name"
+                class="full-width text-right" />
+        </div>
+        <div class="col-md-4 col-12 mt-3">
+            <label for="fieldName" class="col-12 text-right">نام پدر</label>
+            <p-dropdown [options]="fieldStatus" [(ngModel)]="patient.fatherName" optionLabel="name"
+                class="full-width text-right" />
+        </div>
+        <div class="col-md-4 col-12 mt-3">
+            <label for="fieldName" class="col-12 text-right">تاریخ تولد</label>
+            <p-dropdown [options]="fieldStatus" [(ngModel)]="patient.birthDate" optionLabel="name"
+                class="full-width text-right" />
+        </div>
+        <div class="col-md-4 col-12 mt-3">
+            <label for="fieldName" class="col-12 text-right">کد ملی</label>
+            <p-dropdown [options]="fieldStatus" [(ngModel)]="patient.nationalCode" optionLabel="name"
+                class="full-width text-right" />
+        </div>
+        <div class="col-12 p-0 mt-4">
+            <h5 class="text-right">بیماران مرتبط</h5>
+        </div>
+        <div class="col-md-4 col-12 mt-3">
+            <label for="fieldName" class="col-12 text-right">بیماران مرتبط</label>
+            <p-dropdown [options]="fieldStatus" [(ngModel)]="patient.relatedPatients" optionLabel="name"
+                class="full-width text-right" />
+        </div>
+        <div class="col-12 p-0 mt-4">
+            <h5 class="text-right">اطلاعات تماس</h5>
+        </div>
+        <div class="col-md-4 col-12 mt-3">
+            <label for="fieldName" class="col-12 text-right">تلفن</label>
+            <p-dropdown [options]="fieldStatus" [(ngModel)]="patient.patientPhones" optionLabel="name"
+                class="full-width text-right" />
+        </div>
+        <div class="col-md-4 col-12 mt-3">
+            <label for="fieldName" class="col-12 text-right">ایمیل</label>
+            <p-dropdown [options]="fieldStatus" [(ngModel)]="patient.email" optionLabel="name"
+                class="full-width text-right" />
+        </div>
+        <div class="col-md-4 col-12 mt-3">
+            <label for="fieldName" class="col-12 text-right">آدرس خط اول</label>
+            <p-dropdown [options]="fieldStatus" [(ngModel)]="patient.address1" optionLabel="name"
+                class="full-width text-right" />
+        </div>
+        <div class="col-md-4 col-12 mt-3">
+            <label for="fieldName" class="col-12 text-right">آدرس خط دوم</label>
+            <p-dropdown [options]="fieldStatus" [(ngModel)]="patient.address2" optionLabel="name"
+                class="full-width text-right" />
+        </div>
+        <div class="col-md-4 col-12 mt-3">
+            <label for="fieldName" class="col-12 text-right">آدرس خط سوم</label>
+            <p-dropdown [options]="fieldStatus" [(ngModel)]="patient.address3" optionLabel="name"
+                class="full-width text-right" />
+        </div>
+        <div class="col-md-4 col-12 mt-3">
+            <label for="fieldName" class="col-12 text-right">شهر</label>
+            <p-dropdown [options]="fieldStatus" [(ngModel)]="patient.city" optionLabel="name"
+                class="full-width text-right" />
+        </div>
+        <div class="col-md-4 col-12 mt-3">
+            <label for="fieldName" class="col-12 text-right">کد پستی</label>
+            <p-dropdown [options]="fieldStatus" [(ngModel)]="patient.postCode" optionLabel="name"
+                class="full-width text-right" />
+        </div>
+        <div class="col-12 p-0 mt-4">
+            <h5 class="text-right">اطلاعات تکمیلی</h5>
+        </div>
+        <div class="col-md-4 col-12 mt-3">
+            <label for="fieldName" class="col-12 text-right">شغل</label>
+            <p-dropdown [options]="fieldStatus" [(ngModel)]="patient.jobId" optionLabel="name"
+                class="full-width text-right" />
+        </div>
+        <div class="col-md-4 col-12 mt-3">
+            <label for="fieldName" class="col-12 text-right">اطلاعات تماس اضطراری</label>
+            <p-dropdown [options]="fieldStatus" [(ngModel)]="patient.emergencyContact" optionLabel="name"
+                class="full-width text-right" />
+        </div>
+        <div class="col-md-4 col-12 mt-3">
+            <label for="fieldName" class="col-12 text-right">شماره پرونده</label>
+            <p-dropdown [options]="fieldStatus" [(ngModel)]="patient.billable" optionLabel="name"
+                class="full-width text-right" />
+        </div>
+        <div class="col-md-4 col-12 mt-3">
+            <label for="fieldName" class="col-12 text-right">بیمه گر اصلی</label>
+            <p-dropdown [options]="fieldStatus" [(ngModel)]="patient.referringInsurerId" optionLabel="name"
+                class="full-width text-right" />
+        </div>
+        <div class="col-md-4 col-12 mt-3">
+            <label for="fieldName" class="col-12 text-right">بیمه گر تکمیلی</label>
+            <p-dropdown [options]="fieldStatus" [(ngModel)]="patient.referringInsurer2Id" optionLabel="name"
+                class="full-width text-right" />
+        </div>
+        <div class="col-md-4 col-12 mt-3">
+            <label for="fieldName" class="col-12 text-right">بیمه گر بستری</label>
+            <p-dropdown [options]="fieldStatus" [(ngModel)]="patient.referringInpatientInsurerId" optionLabel="name"
+                class="full-width text-right" />
+        </div>
+        <div class="col-md-4 col-12 mt-3">
+            <label for="fieldName" class="col-12 text-right">معرف اول</label>
+            <p-dropdown [options]="fieldStatus" [(ngModel)]="patient.referringContactId" optionLabel="name"
+                class="full-width text-right" />
+        </div>
+        <div class="col-md-4 col-12 mt-3">
+            <label for="fieldName" class="col-12 text-right">معرف دوم</label>
+            <p-dropdown [options]="fieldStatus" [(ngModel)]="patient.referringContact2Id" optionLabel="name"
+                class="full-width text-right" />
+        </div>
+        <div class="col-md-4 col-12 mt-3">
+            <label for="fieldName" class="col-12 text-right">بیمار معرف</label>
+            <p-dropdown [options]="fieldStatus" [(ngModel)]="patient.referringPatientId" optionLabel="name"
+                class="full-width text-right" />
+        </div>
+        <div class="col-md-4 col-12 mt-3">
+            <label for="fieldName" class="col-12 text-right">یادداشت</label>
+            <p-dropdown [options]="fieldStatus" [(ngModel)]="patient.notes" optionLabel="name"
+                class="full-width text-right" />
+        </div>
+        <div class="col-12">
+            <button class="btn btn-success" (click)="savePatientFields()">ذخیره</button>
+        </div>
+
+    </div>
+</div>

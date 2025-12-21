@@ -52,7 +52,8 @@ export class NewInvoiceComponent implements OnInit {
   @ViewChild(InvoiceItemsComponent) invoiceItemsComponent: InvoiceItemsComponent;
   isCanceled: boolean = false;
   invoiceAccess: any = [];
-
+  hasReceipt: boolean = false;
+  
   async ngOnInit() {
     this.activeRoute.params.subscribe(async () => {
       this.editOrNew = this.activeRoute.snapshot.paramMap.get('invoiceId') == 'n' ? -1 : +this.activeRoute.snapshot.paramMap.get('invoiceId');
@@ -169,6 +170,7 @@ export class NewInvoiceComponent implements OnInit {
       this.note = item[0]['notes'];
       this.selectedPatientAppointment = this.patientAppointmentsList.filter(x => x.id == item[0]['appointmentId'])[0];
       this.isCanceled = item[0]['isCanceled'];
+      this.hasReceipt = item[0]['hasReceipt'];
     }
     catch { }
   }

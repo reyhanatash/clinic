@@ -64,7 +64,7 @@ export class PatientsComponent {
   displayDialog: boolean;
   userType: any;
   allowedLinks: any = [];
-  
+
   constructor(
     private patientService: PatientService,
     private mainService: MainService,
@@ -89,6 +89,7 @@ export class PatientsComponent {
     let res: any = await this.patientService.getPatients().toPromise();
     if (res.length > 0) {
       this.patientsList = res;
+      this.patientsList = this.sortByCreatedOn(this.patientsList);
     }
     this.patientsList.forEach(async patient => {
       patient.patientPhone = await this.getPatientPhone(patient.id);
@@ -316,5 +317,14 @@ export class PatientsComponent {
       return false
     }
   }
+
+
+
+  sortByCreatedOn(data: any[]) {
+    return data.sort((a, b) =>
+      new Date(b.createdOn).getTime() - new Date(a.createdOn).getTime()
+    );
+  }
+
 
 }
