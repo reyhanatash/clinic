@@ -243,6 +243,40 @@ namespace Clinic.Api.Infrastructure.Services
                     }
                 }
 
+                if (user.LoadLastDataOnNewTreatment)
+                {
+                    var lastTreatments = await _context.Treatments
+                        .GroupBy(t => t.PatientId)
+                        .Select(g => g.OrderByDescending(t => t.CreatedOn).FirstOrDefault())
+                        .Where(t => t != null)
+                        .ToListAsync();
+
+                    foreach (var t in lastTreatments)
+                    {
+                        var appointment = await _context.Appointments
+                            .FirstOrDefaultAsync(a => a.Id == t.AppointmentId);
+
+                        if (appointment == null)
+                            continue;
+
+                        var newTreatment = new TreatmentsContext
+                        {
+                            PatientId = t.PatientId,
+                            AppointmentId = t.AppointmentId,
+                            TreatmentTemplateId = t.TreatmentTemplateId,
+                            CreatorId = user.Id,
+                            CreatedOn = DateTime.Now,
+                            ModifierId = t.ModifierId,
+                            LastUpdated = t.LastUpdated,
+                            InvoiceItemId = t.InvoiceItemId,
+                            VisitTime = t.VisitTime,
+                            IsFinal = t.IsFinal
+                        };
+
+                        await _context.Treatments.AddAsync(newTreatment);
+                    }
+                }
+
                 await _context.SaveChangesAsync();
 
                 response.Status = 0;

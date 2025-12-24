@@ -41,12 +41,31 @@ namespace Clinic.Api.Infrastructure.Services
         {
             try
             {
-                var result = await _context.Businesses.Select(b => new GetClinicsResponse
-                {
-                    Id = b.Id,
-                    Name = b.Name
-                }).ToListAsync();
-                return result;
+                var data =
+              from b in _context.Businesses
+              join bs in _context.BusinessServices
+                  on b.Id equals bs.BusinessId into servicesGroup
+              select new GetClinicsResponse
+              {
+                  Id = b.Id,
+                  Name = b.Name,
+
+                  Services = b.IsServiceBase
+                      ? servicesGroup.Select(s => new ClinicsServiceResponse
+                      {
+                          Id = s.Id,
+                          BusinessId = s.BusinessId,
+                          BillableItemId = s.BillableItemId,
+                          IsActive = s.IsActive,
+                          ModifierId = s.ModifierId,
+                          CreatedOn = s.CreatedOn,
+                          LastUpdated = s.LastUpdated,
+                          CreatorId = s.CreatorId
+                      }).ToList()
+                      : new List<ClinicsServiceResponse>()
+              };
+
+                return await data.ToListAsync();
             }
             catch (Exception ex)
             {

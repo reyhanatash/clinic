@@ -23,6 +23,7 @@
         public DateTime? AppointmentSMS { get; set; }
         public bool? IgnoreDidNotCome { get; set; }
         public bool? ByInvoice { get; set; }
+        public string? Services { get; set; }
         public int EditOrNew { get; set; }
     }
 }
