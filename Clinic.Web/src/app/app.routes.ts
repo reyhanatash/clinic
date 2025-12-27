@@ -258,4 +258,9 @@ export const routes: Routes = [
     //     loadComponent: () => import('./components/_admin/patient-fields/patient-fields.component').then(m => m.PatientFieldsComponent),
     //     canActivate: [AuthGuard]
     // },
+    {
+        path: 'treatment-template',
+        loadComponent: () => import('./components/_admin/treatment-template/treatment-template.component').then(m => m.TreatmentTemplateComponent),
+        canActivate: [AuthGuard]
+    },
 ];

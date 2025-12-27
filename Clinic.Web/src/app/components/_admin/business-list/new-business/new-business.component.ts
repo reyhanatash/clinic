@@ -154,7 +154,7 @@ export class NewBusinessComponent implements AfterViewInit {
         this.model.selectedServices = [];
         item[0]['services'].forEach(element => {
           let temp = this.servicesList.filter(x => x.id == element.billableItemId)[0];
-          this.model.selectedServices.push(temp);
+          this.model.selectedServices = [...this.model.selectedServices,temp];
         });
       }
     }

@@ -3,7 +3,7 @@
   width: 100%;
   z-index: 1;
   margin: auto;
-  overflow: auto;
+  overflow-y: auto;
   height: 600px;
 }
 
@@ -208,4 +208,18 @@ ul.dropdown-list li:hover {
   background-color: #e0f7fa;
   cursor: pointer;
 
+}
+
+.tr-sticky {
+  position: sticky;
+  top: 0;
+  background: #fff;
+  z-index: 2;
+}
+
+.badgee {
+  padding: 5px;
+  border-radius: 50%;
+  width: 3px;
+  height: 3px;
 }

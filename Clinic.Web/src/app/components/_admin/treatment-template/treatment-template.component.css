@@ -1,0 +1,111 @@
+.box {
+  margin-top: 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background: #f2f2f2;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.08);
+
+  .header {
+    background-color: #00c4b41f;
+    padding: 10px;
+    border-radius: 012px 12px 0px 0px;
+  }
+}
+
+.box-header {
+  text-align: left;
+}
+
+.close-btn {
+  background: transparent;
+  color: #ef4444;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.label {
+  color: #374151;
+  font-size: 14px;
+}
+
+.input-with-clear {
+  position: relative;
+}
+
+.text-input {
+  width: 100%;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 10px 36px 10px 12px;
+  /* جا برای دکمه × سمت راست */
+  font-size: 14px;
+  outline: none;
+}
+
+.text-input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.clear-btn {
+  position: absolute;
+  top: 50%;
+  inset-inline-end: 8px;
+  /* سمت راست در RTL */
+  transform: translateY(-50%);
+  border: none;
+  background: #ef4444;
+  color: #fff;
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+}
+
+.clear-btn:hover {
+  background: #dc2626;
+}
+
+.check-row {
+  grid-template-columns: 1fr;
+  display: grid;
+  gap: 8px;
+}
+
+.checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #374151;
+  user-select: none;
+}
+
+
+label {
+  color: #5cc4b2;
+}
+
+.new-question-box {
+  margin-top: 10px;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background: #fff;
+  padding: 8px;
+}
+
+@media (min-width: 1200px) {
+    .container, .container-lg, .container-md, .container-sm, .container-xl {
+        max-width: 800px;
+    }
+}

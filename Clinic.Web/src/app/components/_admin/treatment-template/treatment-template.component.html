@@ -1,0 +1,82 @@
+<div class="appContainer text-right">
+  <h4> قالب پرونده بالینی </h4>
+  <hr>
+  <form class=" container px-5">
+    <div class="form-group col-12">
+      <label for="name">نام</label>
+      <input type="text" class="form-control" id="name" [(ngModel)]="model.name" [ngModelOptions]="{standalone: true}">
+    </div>
+    <div class="form-group col-12">
+      <label for="address1">اولویت نمایش</label>
+      <input type="text" class="form-control" id="address1" [(ngModel)]="model.address"
+        [ngModelOptions]="{standalone: true}">
+    </div>
+    <div class="col-12 form-group">
+      <button *ngIf="!showBox" class="btn btn-danger" (click)="toggleBox()">
+        گروه جدید
+      </button>
+      <div *ngIf="showBox" class="box">
+        <div class="header">
+          <div class="box-header">
+            <button class="close-btn" (click)="closeBox()" aria-label="بستن">×</button>
+          </div>
+
+          <div class="form-group col-12">
+            <label for="groupTitle"> عنوان گروه</label>
+            <div class="position-relative">
+              <input type="text" class="form-control" id="groupTitle" [(ngModel)]="model.groupTitle"
+                [ngModelOptions]="{standalone: true}">
+              <button class="clear-btn" (click)="model.groupTitle = ''" aria-label="پاک کردن">×</button>
+            </div>
+          </div>
+
+          <div class="d-flex col-12">
+            <label class="checkbox ml-5">
+              <input type="checkbox" [(ngModel)]="horizontalDisplay" [ngModelOptions]="{standalone: true}" />
+              نمایش افقی
+            </label>
+            <label class="checkbox">
+              <input type="checkbox" [(ngModel)]="defaultClosed" [ngModelOptions]="{standalone: true}" />
+              پیش فرض بسته
+            </label>
+          </div>
+        </div>
+
+        <div *ngIf="!showNewQuestionBox" class="col-12 my-3">
+          <button class="btn btn-lg btn-outline-secondary" (click)="addNewQuestion()">سوال جدید</button>
+        </div>
+        <div *ngIf="showNewQuestionBox" class="new-question-box">
+          <div class="col-12">
+            <label for="questionTitle"> عنوان سوال</label>
+            <div class="d-lg-flex justify-content-center align-items-center">
+              <div class="position-relative col-lg-8 col-12 px-0">
+                <input type="text" class="form-control" id="questionTitle" [(ngModel)]="model.questionTitle"
+                  [ngModelOptions]="{standalone: true}">
+                <button class="clear-btn" (click)="model.questionTitle = ''" aria-label="پاک کردن">×</button>
+              </div>
+              <select [(ngModel)]="model.type" [ngModelOptions]="{ standalone: true }"
+                class="form-select form-control mr-3 col-lg-4 col-12">
+                <option *ngFor="let item of questionType" [value]="item">{{item}}</option>
+              </select>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+
+    <div class="form-group col-12">
+      <label for="city">اطلاعات چاپ</label>
+      <input type="text" class="form-control" id="city" [(ngModel)]="model.city" [ngModelOptions]="{standalone: true}">
+    </div>
+
+
+    <!-- <div class="col-12 text-center mt-3 mb-3">
+      <button type="submit" class="btn btn-danger" (click)="saveBusiness()">ذخیره مکان</button>
+    </div> -->
+  </form>
+
+
+</div>
