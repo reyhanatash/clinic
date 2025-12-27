@@ -346,4 +346,29 @@ export class MainService {
     };
     return this.http.post(uri, data, httpOptions);
   }
+
+  updateGeneralSettings(data) {
+    const token: any = localStorage.getItem("token");
+    const uri = this.url + 'api/main/updateGeneralSettings';
+    const httpOptions = {
+      headers: new HttpHeaders({
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token,
+      }),
+    };
+    return this.http.post(uri, data, httpOptions);
+  }
+
+  getGeneralSettings() {
+    const token: any = localStorage.getItem("token");
+    const uri = this.url + `api/main/getGeneralSettings`;
+    const httpOptions = {
+      headers: new HttpHeaders({
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token,
+      }),
+    };
+    return this.http.get(uri, httpOptions);
+
+  }
 }

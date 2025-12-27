@@ -1,0 +1,154 @@
+<div class="appContainer">
+    <div class="col-12 text-right">
+        <h4>تنظیمات عمومی</h4>
+    </div>
+    <hr>
+    <div class="col-12 d-flex flex-wrap">
+        <div class="col-md-4 col-12 mt-2">
+            <div class="dashed_upload p-5 pointer" (click)="fileInput.click()">
+                <div class="wrapper">
+                    <div class="drop">
+                        <div class="cont col-12 d-flex flex-column align-items-center">
+                            <i class="fa fa-cloud-upload"></i>
+                            <div class="">
+                                <h5>
+                                    بکشید و رها کنید
+                                </h5>
+                            </div>
+                            <div class="desc my-2">
+                                یا
+                            </div>
+                            <div>
+                                برای انتخاب فایل کلیک کنید
+                            </div>
+                            <small class="my-3">
+                                فرمت های مجاز :jpg, jpeg, png
+                            </small>
+                        </div>
+                        <output id="list"></output><input #fileInput id="files" class="d-none" type="file"
+                            (change)="handleFileInput($event.target.files)">
+                    </div>
+                </div>
+                <div *ngIf="fileName" class="d-flex align-items-center justify-content-center">
+                    <small>{{fileName}}</small>
+                    <a (click)='removeFile($event)' class='pointer text-danger mx-2'><i class='fa fa-trash'></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 col-12 mt-2">
+            <label class="form-label col-12 p-0 text-right">نام مرکز درمانی</label>
+            <input type="text" class="form-control" [(ngModel)]="newGeneralSetting.clinicName">
+        </div>
+        <div class="col-md-4 col-12 mt-2">
+            <label class="form-label col-12 p-0 text-right">آدرس</label>
+            <input type="text" class="form-control" [(ngModel)]="newGeneralSetting.address">
+        </div>
+        <div class="col-md-4 col-12 mt-2">
+            <label class="form-label  col-12 p-0 text-right">آدرس (خط دوم)</label>
+            <input type="text" class="form-control" [(ngModel)]="newGeneralSetting.addressLine2">
+        </div>
+        <div class="col-md-4 col-12 mt-2">
+            <label class="form-label  col-12 p-0 text-right">شهر</label>
+            <input type="text" class="form-control" [(ngModel)]="newGeneralSetting.city">
+        </div>
+        <div class="col-md-4 col-12 mt-2">
+            <label class="form-label col-12 p-0 text-right">کد پستی</label>
+            <input type="text" class="form-control" [(ngModel)]="newGeneralSetting.postalCode">
+        </div>
+        <div class="col-md-4 col-12 mt-2">
+            <label class="form-label col-12 p-0 text-right">پست الکترونیک</label>
+            <input type="text" class="form-control" [(ngModel)]="newGeneralSetting.emailInput">
+        </div>
+        <div class="col-md-4 col-12 mt-2">
+            <label class="form-label col-12 p-0 text-right">وبسایت</label>
+            <input type="text" class="form-control" [(ngModel)]="newGeneralSetting.website">
+        </div>
+        <div class="col-12 text-right mt-4 mb-2">
+            <hr>
+            <h5>تقویم وقت دهی</h5>
+            <input type="checkbox" class="ml-2" [(ngModel)]="newGeneralSetting.disallowsetAppointment">
+            <label for="">عدم امکان ثبت خارج از نوبت زمانیکه وقت مجاز در آن روز وجود دارد</label>
+        </div>
+        <div class="col-md-4 col-12 d-flex flex-column align-items-center">
+            <label for="">رنگ روز های تعطیل</label>
+            <p-colorPicker [(ngModel)]="newGeneralSetting.holidayColor" [ngModelOptions]="{standalone: true}"
+                [inline]="true" />
+        </div>
+        <div class="col-md-4 col-12 d-flex flex-column align-items-center">
+            <label for="">رنگ روز های خالی</label>
+            <p-colorPicker [(ngModel)]="newGeneralSetting.emptyDayColor" [ngModelOptions]="{standalone: true}"
+                [inline]="true" />
+        </div>
+        <div class="col-md-4 col-12 d-flex flex-column align-items-center">
+            <label for="">رنگ روز های پر</label>
+            <p-colorPicker [(ngModel)]="newGeneralSetting.fullDayColor" [ngModelOptions]="{standalone: true}"
+                [inline]="true" />
+        </div>
+        <div class="col-md-4 col-12 d-flex flex-column align-items-center">
+            <label for="">رنگ روز های پرنشده</label>
+            <p-colorPicker [(ngModel)]="newGeneralSetting.notFullDayColor" [ngModelOptions]="{standalone: true}"
+                [inline]="true" />
+        </div>
+        <div class="col-12 text-right mt-4 mb-2">
+            <hr>
+            <h5>اطلاعات اضافی قابل تعریف برای بیمار در وقت دهی</h5>
+        </div>
+        <div class="col-md-4 col-12 text-right">
+            <input type="checkbox" class="ml-2" [(ngModel)]="newGeneralSetting.email">
+            <label class="form-label">ایمیل</label>
+        </div>
+        <div class="col-md-4 col-12 text-right">
+            <input type="checkbox" class="ml-2" [(ngModel)]="newGeneralSetting.birthDate">
+            <label class="form-label">تاریخ تولد</label>
+        </div>
+        <div class="col-md-4 col-12 text-right">
+            <input type="checkbox" class="ml-2" [(ngModel)]="newGeneralSetting.insuranceProvider1">
+            <label class="form-label">بیمه گر اول</label>
+        </div>
+        <div class="col-md-4 col-12 text-right">
+            <input type="checkbox" class="ml-2" [(ngModel)]="newGeneralSetting.insuranceProvider2">
+            <label class="form-label">بیمه گر دوم</label>
+        </div>
+        <div class="col-md-4 col-12 text-right">
+            <input type="checkbox" class="ml-2" [(ngModel)]="newGeneralSetting.referralProvider1">
+            <label class="form-label">معرف اول</label>
+        </div>
+        <div class="col-md-4 col-12 text-right">
+            <input type="checkbox" class="ml-2" [(ngModel)]="newGeneralSetting.referralProvider2">
+            <label class="form-label">معرف دوم</label>
+        </div>
+        <div class="col-12">
+            <hr>
+        </div>
+        <div class="col-md-4 col-12 text-right">
+            <h5>دریافت</h5>
+            <input type="checkbox" class="ml-2" [(ngModel)]="newGeneralSetting.enableReceipts">
+            <label for="">در زمان ثبت دریافت جدید ، مبلغ قابل دریافت از بیمار در فیلد کارت بانکی قرار داده شود</label>
+        </div>
+        <div class="col-md-4 col-12 text-right">
+            <h5>پرداخت</h5>
+            <input type="checkbox" class="ml-2" [(ngModel)]="newGeneralSetting.enablepayments">
+            <label for="">در زمان ثبت پرداخت جدید ، مبلغ قابل پرداخت به بیمار در فیلد نقد قرار داده شود</label>
+        </div>
+        <div class="col-md-4 col-12 text-right">
+            <h5>صورتحساب</h5>
+            <input type="checkbox" class="ml-2" [(ngModel)]="newGeneralSetting.enablepayments">
+            <label for="">در صورتی که زمان ثبت صورتحساب با زمانبندی برنامه ریزی شده همخوانی ندارد به کاربر اخطار داده
+                شود</label>
+        </div>
+        <div class="col-md-4 col-12 text-right">
+            <h5>بیمار</h5>
+            <label for="">کد بیمار شروع شود از</label>
+            <input type="text" class="form-control" [(ngModel)]="newGeneralSetting.patientCodeStartFrom">
+        </div>
+        <div class="col-md-4 col-12 text-right">
+            <h5>عمومی</h5>
+            <div class="d-flex align-items-center">
+                <input type="checkbox" class="ml-2" [(ngModel)]="newGeneralSetting.showPatientNotes">
+                <label for="">نمایش یادداشت ها بیماران در زمان پذیرش و وقت دهی و پرونده بالینی</label>
+            </div>
+        </div>
+        <div class="col-12 d-flex justify-content-center">
+            <button class="btn btn-success" (click)="updateSettings()">ذخیره تنظیمات</button>
+        </div>
+    </div>

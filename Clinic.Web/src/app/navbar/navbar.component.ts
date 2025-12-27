@@ -34,6 +34,8 @@ export const settingMenu: imenu[] = [
   { id: 12, text: "مکان ها", link: '/business-List', roleAccess: [], icon: 'fa fa-caret-left' },
   { id: 13, text: "کاربران", link: '/userlist', roleAccess: [], icon: 'fa fa-caret-left' },
   { id: 14, text: "نقش ها و دسترسی ها", link: '/user-role-list', roleAccess: [], icon: 'fa fa-caret-left' },
+  { id: 21, text: "تنظیمات پیامکی", link: '/sms-setting', roleAccess: [], icon: 'fa fa-caret-left' },
+  { id: 22, text: "تنظیمات عمومی", link: '/general-setting', roleAccess: [], icon: 'fa fa-caret-left' },
 ];
 export const financialMenu: imenu[] = [
   { id: 15, text: "خدمات", link: '/service-list', roleAccess: [], icon: 'fa fa-caret-left' },
