@@ -712,7 +712,9 @@ namespace Clinic.Api.Infrastructure.Services
                 var iranTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Iran Standard Time");
                 var iranNow = TimeZoneInfo.ConvertTime(DateTime.Now, iranTimeZone);
 
-                var baseDate = model.Date?.Date ?? iranNow.Date;
+                var baseDateLocal = model.Date?.Date ?? iranNow.Date;
+
+                var baseDate = DateTime.SpecifyKind(baseDateLocal, DateTimeKind.Unspecified);
 
                 var weekStartUtc = TimeZoneInfo.ConvertTimeToUtc(baseDate, iranTimeZone);
                 var weekEndUtc = weekStartUtc.AddDays(7);
@@ -801,7 +803,9 @@ namespace Clinic.Api.Infrastructure.Services
                     var dayDate = dayUtc.Date;
 
                     var dayAppointments = appointments
-                        .Where(x => x.Appointment.Start.Date == dayDate)
+                       .Where(x =>
+    x.Appointment.Start >= dayDate &&
+    x.Appointment.Start < dayDate.AddDays(1))
                         .Select(x => new GetTodayAppointmentsInfoDto
                         {
                             Id = x.Appointment.Id,
@@ -1363,6 +1367,7 @@ namespace Clinic.Api.Infrastructure.Services
                     _context.TreatmentTemplates.Add(treatmentTemplate);
                     await _context.SaveChangesAsync();
                     result.Message = "Treatment Template Saved Successfully";
+                    result.Data = treatmentTemplate.Id;
                     return result;
                 }
                 else
@@ -1382,19 +1387,6 @@ namespace Clinic.Api.Infrastructure.Services
                     result.Message = "Treatment Template Updated Successfully";
                     return result;
                 }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
-
-        public async Task<IEnumerable<TreatmentTemplatesContext>> GetTreatmentTemplates()
-        {
-            try
-            {
-                var treatmentTemplate = await _context.TreatmentTemplates.ToListAsync();
-                return treatmentTemplate;
             }
             catch (Exception ex)
             {

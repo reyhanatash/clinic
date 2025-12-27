@@ -1,12 +1,15 @@
 ﻿using Clinic.Api.Application.DTOs;
 using Clinic.Api.Application.DTOs.Main;
+using Clinic.Api.Application.DTOs.Treatments;
 using Clinic.Api.Domain.Entities;
 
 namespace Clinic.Api.Application.Interfaces
 {
     public interface IMainService
     {
-        Task<IEnumerable<SectionsContext>> GetSections();
+        Task<GlobalResponse> SaveSection(SaveSectionDto model);
+        Task<GlobalResponse> DeleteSection(int id);
+        Task<IEnumerable<SectionsContext>> GetSections(GetTreatmentTemplateDto model);
         Task<IEnumerable<GetClinicsResponse>> GetClinics();
         Task<GlobalResponse> SaveJob(SaveJobDto model);
         Task<IEnumerable<JobsContext>> GetJobs();

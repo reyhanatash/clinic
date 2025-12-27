@@ -9,5 +9,7 @@ namespace Clinic.Api.Application.Interfaces
         Task<IEnumerable<QuestionsContext>> GetQuestions();
         Task<GlobalResponse> SaveQuestionValue(SaveQuestionValueDto model);
         Task<GlobalResponse> DeleteQuestionValue(int id);
+        Task<GlobalResponse> SaveQuestion(SaveQuestionDto model);
+        Task<GlobalResponse> DeleteQuestion(int id);
     }
 }

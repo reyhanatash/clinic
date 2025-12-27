@@ -31,7 +31,6 @@ namespace Clinic.Api.Application.Interfaces
         Task<GlobalResponse> SavePatientArrived(int appointmentId);
         Task<GlobalResponse> CancelAppointment(int appointmentId);
         Task<GlobalResponse> SaveTreatmentTemplate(SaveTreatmentTemplateDto model);
-        Task<IEnumerable<TreatmentTemplatesContext>> GetTreatmentTemplates();
         Task<GlobalResponse> DeleteTreatmentTemplate(int id);
     }
 }

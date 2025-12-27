@@ -47,6 +47,9 @@ namespace Clinic.Api.Mappings
             CreateMap<UpdateSmsSettingsDto, SMSSettingsContext>().ReverseMap();
             CreateMap<UpdateUserDto, UserContext>().ReverseMap();
             CreateMap<SaveTreatmentTemplateDto, TreatmentTemplatesContext>().ReverseMap();
+            CreateMap<SaveQuestionDto, QuestionsContext>().ReverseMap();
+            CreateMap<UpdateGeneralSettingsDto, GeneralSettingsContext>().ReverseMap();
+            CreateMap<SaveSectionDto, SectionsContext>().ReverseMap();
         }
     }
 }

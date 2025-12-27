@@ -1,4 +1,5 @@
 ﻿using Clinic.Api.Application.DTOs.Main;
+using Clinic.Api.Application.DTOs.Treatments;
 using Clinic.Api.Application.Interfaces;
 using Clinic.Api.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -16,11 +17,27 @@ namespace Clinic.Api.Controllers
             _mainService = mainService;
         }
 
-        [HttpGet("getSections")]
+        [HttpPost("saveSection")]
         [Authorize]
-        public async Task<IActionResult> GetSections()
+        public async Task<IActionResult> SaveSection(SaveSectionDto model)
         {
-            var result = await _mainService.GetSections();
+            var result = await _mainService.SaveSection(model);
+            return Ok(result);
+        }
+
+        [HttpGet("deleteSection/{id}")]
+        [Authorize]
+        public async Task<IActionResult> DeleteSection(int id)
+        {
+            var result = await _mainService.DeleteSection(id);
+            return Ok(result);
+        }
+
+        [HttpPost("getSections")]
+        [Authorize]
+        public async Task<IActionResult> GetSections(GetTreatmentTemplateDto model)
+        {
+            var result = await _mainService.GetSections(model);
             return Ok(result);
         }
 

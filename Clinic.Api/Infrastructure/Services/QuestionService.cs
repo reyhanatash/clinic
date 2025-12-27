@@ -112,5 +112,67 @@ namespace Clinic.Api.Infrastructure.Services
                 throw new Exception(ex.Message);
             }
         }
+
+        public async Task<GlobalResponse> SaveQuestion(SaveQuestionDto model)
+        {
+            var result = new GlobalResponse();
+
+            try
+            {
+                var userId = _token.GetUserId();
+
+                if (model.EditOrNew == -1)
+                {
+                    var question = _mapper.Map<QuestionsContext>(model);
+                    _context.Questions.Add(question);
+                    await _context.SaveChangesAsync();
+                    result.Message = "Question Saved Successfully";
+                    result.Status = 0;
+                    result.Data = question.Id;
+                    return result;
+                }
+                else
+                {
+                    var existingQuestion = await _context.Questions.FirstOrDefaultAsync(j => j.Id == model.EditOrNew);
+                    if (existingQuestion == null)
+                    {
+                        throw new Exception("Job Not Found");
+                    }
+
+                    _mapper.Map(model, existingQuestion);
+                    _context.Questions.Update(existingQuestion);
+                    await _context.SaveChangesAsync();
+                    result.Message = "Question Updated Successfully";
+                    result.Status = 0;
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<GlobalResponse> DeleteQuestion(int id)
+        {
+            var result = new GlobalResponse();
+
+            try
+            {
+                var question = await _context.Questions.FindAsync(id);
+                if (question == null)
+                    throw new Exception("Question Not Found");
+
+                _context.Questions.Remove(question);
+                await _context.SaveChangesAsync();
+                result.Message = "Question Deleted Successfully";
+                result.Status = 0;
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }

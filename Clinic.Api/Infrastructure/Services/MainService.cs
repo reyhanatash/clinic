@@ -1,12 +1,11 @@
 ﻿using AutoMapper;
 using Clinic.Api.Application.DTOs;
 using Clinic.Api.Application.DTOs.Main;
+using Clinic.Api.Application.DTOs.Treatments;
 using Clinic.Api.Application.Interfaces;
 using Clinic.Api.Domain.Entities;
 using Clinic.Api.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using System.Security.Claims;
 
 namespace Clinic.Api.Infrastructure.Services
 {
@@ -15,21 +14,95 @@ namespace Clinic.Api.Infrastructure.Services
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
         private readonly IReadTokenClaims _token;
+        private readonly IFileService _fileService;
+        private readonly IWebHostEnvironment _environment;
 
-        public MainService(ApplicationDbContext context, IMapper mapper, IReadTokenClaims token)
+        public MainService(ApplicationDbContext context, IMapper mapper, IReadTokenClaims token, IFileService fileService, IWebHostEnvironment environment)
         {
             _context = context;
             _mapper = mapper;
             _token = token;
+            _fileService = fileService;
+            _environment = environment;
         }
 
-        public async Task<IEnumerable<SectionsContext>> GetSections()
+        public async Task<GlobalResponse> SaveSection(SaveSectionDto model)
+        {
+            var result = new GlobalResponse();
+
+            try
+            {
+                var userId = _token.GetUserId();
+
+                if (model.EditOrNew == -1)
+                {
+                    var section = _mapper.Map<SectionsContext>(model);
+                    _context.Sections.Add(section);
+                    await _context.SaveChangesAsync();
+                    result.Message = "Section Saved Successfully";
+                    result.Status = 0;
+                    result.Data = section.Id;
+                    return result;
+                }
+                else
+                {
+                    var existingSection = await _context.Sections.FirstOrDefaultAsync(j => j.Id == model.EditOrNew);
+                    if (existingSection == null)
+                    {
+                        throw new Exception("Job Not Found");
+                    }
+
+                    _mapper.Map(model, existingSection);
+                    _context.Sections.Update(existingSection);
+                    await _context.SaveChangesAsync();
+                    result.Message = "Section Updated Successfully";
+                    result.Status = 0;
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<GlobalResponse> DeleteSection(int id)
+        {
+            var result = new GlobalResponse();
+
+            try
+            {
+                var section = await _context.Sections.FindAsync(id);
+
+                if (section == null)
+                    throw new Exception("Section Not Found");
+
+                _context.Sections.Remove(section);
+                await _context.SaveChangesAsync();
+                result.Message = "Section Deleted Successfully";
+                result.Status = 0;
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<IEnumerable<SectionsContext>> GetSections(GetTreatmentTemplateDto model)
         {
             try
             {
-                var result = await _context.Sections.ToListAsync();
-
-                return result;
+                if (model.Id == null)
+                {
+                    var result = await _context.Sections.ToListAsync();
+                    return result;
+                }
+                else
+                {
+                    var result = await _context.Sections.Where(t => t.Id == model.Id).ToListAsync();
+                    return result;
+                }
             }
             catch (Exception ex)
             {
@@ -1030,15 +1103,55 @@ namespace Clinic.Api.Infrastructure.Services
 
             try
             {
-                var existingGeneralSettings = await _context.GeneralSettings.FirstOrDefaultAsync(p => p.Id == model.Id);
+                var userId = _token.GetUserId();
 
-                if (existingGeneralSettings == null)
+                var allowedExtensions = new List<string> { ".png", ".jpg", ".jpeg", ".pdf" };
+                var fileExtension = Path.GetExtension(model.LogoName)?.ToLower();
+
+                if (string.IsNullOrEmpty(fileExtension) || !allowedExtensions.Contains(fileExtension))
+                {
+                    result.Status = 1;
+                    result.Message = "Invalid file type. Only images and PDF are allowed.";
+                    return result;
+                }
+
+                var relativePath = await _fileService.SaveFileAsync(model.LogoBase64, model.LogoName, "assets/general", _environment);
+
+                relativePath = relativePath.Replace("\\", "/");
+
+                var entity = await _context.GeneralSettings.FirstOrDefaultAsync(p => p.Id == model.Id);
+
+                if (entity == null)
                 {
                     throw new Exception("General Settings Not Found");
                 }
 
-                _mapper.Map(model, existingGeneralSettings);
-                _context.GeneralSettings.Update(existingGeneralSettings);
+                entity.Logo = relativePath;
+                entity.CompanyName = model.CompanyName;
+                entity.EmailOnAppointment = model.EmailOnAppointment;
+                entity.BirthDateOnAppointment = model.BirthDateOnAppointment;
+                entity.Insurer1OnAppointment = model.Insurer1OnAppointment;
+                entity.Insurer2OnAppointment = model.Insurer2OnAppointment;
+                entity.Referr1OnAppointment = model.Referr1OnAppointment;
+                entity.Referr2OnAppointment = model.Referr2OnAppointment;
+                entity.Address = model.Address;
+                entity.Address2 = model.Address2;
+                entity.City = model.City;
+                entity.PostCode = model.PostCode;
+                entity.WebSiteAddress = model.WebSiteAddress;
+                entity.InfoEmail = model.InfoEmail;
+                entity.SetPayableAmountInNewPaymentCash = model.SetPayableAmountInNewPaymentCash;
+                entity.CheckInvoiceDateByPractitionerSchedule = model.CheckInvoiceDateByPractitionerSchedule;
+                entity.PatientCodeStartFrom = model.PatientCodeStartFrom;
+                entity.SetReceivebleAmountInNewReceiptBank = model.SetReceivebleAmountInNewReceiptBank;
+                entity.HolidayColor = model.HolidayColor;
+                entity.EmptyDayColor = model.EmptyDayColor;
+                entity.FullDayColor = model.FullDayColor;
+                entity.NotFullDayColor = model.NotFullDayColor;
+                entity.ShowPatientNotes = model.ShowPatientNotes;
+                entity.ModifierId = userId;
+                entity.LastUpdated = DateTime.UtcNow;
+                _context.GeneralSettings.Update(entity);
                 await _context.SaveChangesAsync();
                 result.Message = "General Settings Updated Successfully";
                 result.Status = 0;
