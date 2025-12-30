@@ -141,6 +141,7 @@ export class AppointmentComponent {
   doctors: any = [];
   serviceBaselist: any = [];
   servicesList: any = [];
+  isOutOfTurnlist: any = [];
 
   @HostListener('click', ['$event'])
   onClick(event: MouseEvent) {
@@ -382,6 +383,7 @@ export class AppointmentComponent {
 
   async getAppointment(date: any) {
     this.timeSheetData = [];
+    this.isOutOfTurnlist = [];
     const shamsiTimePipe = new ShamsiUTCPipe()
     this.hours.forEach(hour => this.timeSheetData[hour.time] = []);
     try {
@@ -413,7 +415,11 @@ export class AppointmentComponent {
         // let startIndex = this.hours.indexOf(appointment.showStartTime);
         let startIndex = this.hours.findIndex(h => h.time === appointment.showStartTime);
         if (startIndex !== -1) {
-          this.timeSheetData[this.hours[startIndex].time].push(appointment);
+          if (appointment.isOutOfTurn) {
+            this.isOutOfTurnlist.push(appointment);
+          } else {
+            this.timeSheetData[this.hours[startIndex].time].push(appointment);
+          }
         }
       });
       this.timeSheetHeaderDate = date._d;
