@@ -36,70 +36,125 @@ namespace Clinic.Api.Infrastructure.Services
 
                 if (model.EditOrNew == -1)
                 {
-                    if (model.Start >= model.End)
-                        throw new Exception("Start date must be earlier than End date.");
-
-                    if (model.PatientId == null)
-                        throw new Exception("Patient Id can't be null!");
-
-                    bool hasOverlap = await _context.Appointments
-                   .AnyAsync(a =>
-                     a.PractitionerId == model.PractitionerId &&
-                     a.BusinessId == model.BusinessId &&
-                      a.Start.Date == model.Start.Date &&
-                    (
-                        (model.Start.TimeOfDay >= a.Start.TimeOfDay && model.Start.TimeOfDay < a.End.TimeOfDay) ||
-                        (model.End.TimeOfDay > a.Start.TimeOfDay && model.End.TimeOfDay <= a.End.TimeOfDay) ||
-                        (model.Start.TimeOfDay <= a.Start.TimeOfDay && model.End.TimeOfDay >= a.End.TimeOfDay)
-                    ));
-
-                    if (hasOverlap)
-                        throw new Exception("Doctor already has an appointment in this Clinic during this time.");
-
-                    var business = await _context.Businesses
-             .FirstOrDefaultAsync(b => b.Id == model.BusinessId.Value);
-
-                    if (business == null)
-                        throw new Exception("Business not found.");
-
-                    model.ByInvoice = true;
-                    var appointment = _mapper.Map<AppointmentsContext>(model);
-                    appointment.CreatorId = userId;
-                    appointment.CreatedOn = DateTime.Now;
-                    _context.Appointments.Add(appointment);
-                    await _context.SaveChangesAsync();
-
-                    if (business.IsServiceBase == true &&
-              !string.IsNullOrWhiteSpace(model.Services))
+                    if (model.IsAllDay == null)
                     {
-                        var serviceIds = model.Services
-                            .Split(',', StringSplitOptions.RemoveEmptyEntries)
-                            .Select(x => x.Trim())
-                            .Where(x => int.TryParse(x, out _))
-                            .Select(int.Parse)
-                            .Distinct()
-                            .ToList();
+                        if (model.Start >= model.End)
+                            throw new Exception("Start date must be earlier than End date.");
 
-                        foreach (var serviceId in serviceIds)
+                        if (model.PatientId == null)
+                            throw new Exception("Patient Id can't be null!");
+
+                        bool hasOverlap = await _context.Appointments
+                       .AnyAsync(a =>
+                         a.PractitionerId == model.PractitionerId &&
+                         a.BusinessId == model.BusinessId &&
+                          a.Start.Date == model.Start.Date &&
+                        (
+                            (model.Start.TimeOfDay >= a.Start.TimeOfDay && model.Start.TimeOfDay < a.End.TimeOfDay) ||
+                            (model.End.TimeOfDay > a.Start.TimeOfDay && model.End.TimeOfDay <= a.End.TimeOfDay) ||
+                            (model.Start.TimeOfDay <= a.Start.TimeOfDay && model.End.TimeOfDay >= a.End.TimeOfDay)
+                        ));
+
+                        if (hasOverlap)
+                            throw new Exception("Doctor already has an appointment in this Clinic during this time.");
+
+                        var business = await _context.Businesses
+                 .FirstOrDefaultAsync(b => b.Id == model.BusinessId.Value);
+
+                        if (business == null)
+                            throw new Exception("Business not found.");
+
+                        model.ByInvoice = true;
+                        var appointment = _mapper.Map<AppointmentsContext>(model);
+                        appointment.CreatorId = userId;
+                        appointment.CreatedOn = DateTime.Now;
+                        _context.Appointments.Add(appointment);
+                        await _context.SaveChangesAsync();
+
+                        if (business.IsServiceBase == true &&
+                  !string.IsNullOrWhiteSpace(model.Services))
                         {
-                            var businessService = new BusinessServicesContext
-                            {
-                                BusinessId = business.Id,
-                                BillableItemId = serviceId,
-                                CreatorId = userId,
-                                CreatedOn = DateTime.Now,
-                                IsActive = true
-                            };
+                            var serviceIds = model.Services
+                                .Split(',', StringSplitOptions.RemoveEmptyEntries)
+                                .Select(x => x.Trim())
+                                .Where(x => int.TryParse(x, out _))
+                                .Select(int.Parse)
+                                .Distinct()
+                                .ToList();
 
-                            await _context.BusinessServices.AddAsync(businessService);
+                            foreach (var serviceId in serviceIds)
+                            {
+                                var businessService = new BusinessServicesContext
+                                {
+                                    BusinessId = business.Id,
+                                    BillableItemId = serviceId,
+                                    CreatorId = userId,
+                                    CreatedOn = DateTime.Now,
+                                    IsActive = true
+                                };
+
+                                await _context.BusinessServices.AddAsync(businessService);
+                            }
+
+                            await _context.SaveChangesAsync();
                         }
 
-                        await _context.SaveChangesAsync();
+                        result.Data = appointment.Id;
+                        result.Status = 0;
+                        return result;
                     }
+                    else
+                    {
+                        if (model.PatientId == null)
+                            throw new Exception("Patient Id can't be null!");
 
-                    result.Data = appointment.Id;
-                    result.Status = 0;
-                    return result;
+                        var business = await _context.Businesses
+                 .FirstOrDefaultAsync(b => b.Id == model.BusinessId.Value);
+
+                        if (business == null)
+                            throw new Exception("Business not found.");
+
+                        model.ByInvoice = true;
+                        var appointment = _mapper.Map<AppointmentsContext>(model);
+                        appointment.CreatorId = userId;
+                        appointment.CreatedOn = DateTime.Now;
+                        _context.Appointments.Add(appointment);
+                        await _context.SaveChangesAsync();
+
+                        if (business.IsServiceBase == true &&
+                  !string.IsNullOrWhiteSpace(model.Services))
+                        {
+                            var serviceIds = model.Services
+                                .Split(',', StringSplitOptions.RemoveEmptyEntries)
+                                .Select(x => x.Trim())
+                                .Where(x => int.TryParse(x, out _))
+                                .Select(int.Parse)
+                                .Distinct()
+                                .ToList();
+
+
+                            foreach (var serviceId in serviceIds)
+                            {
+                                var businessService = new BusinessServicesContext
+                                {
+                                    BusinessId = business.Id,
+                                    BillableItemId = serviceId,
+                                    CreatorId = userId,
+                                    CreatedOn = DateTime.Now,
+                                    IsActive = true
+                                };
+
+                                await _context.BusinessServices.AddAsync(businessService);
+                            }
+
+                            await _context.SaveChangesAsync();
+                        }
+
+                        result.Data = appointment.Id;
+                        result.Status = 0;
+                        return result;
+                    }
+                  
                 }
                 else
                 {

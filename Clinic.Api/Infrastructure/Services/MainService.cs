@@ -100,7 +100,7 @@ namespace Clinic.Api.Infrastructure.Services
                 }
                 else
                 {
-                    var result = await _context.Sections.Where(t => t.Id == model.Id).ToListAsync();
+                    var result = await _context.Sections.Where(t => t.TreatmentTemplateId == model.Id).ToListAsync();
                     return result;
                 }
             }
