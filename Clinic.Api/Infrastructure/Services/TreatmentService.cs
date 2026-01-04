@@ -561,6 +561,7 @@ namespace Clinic.Api.Infrastructure.Services
                         a.Id,
                         a.Start,
                         a.Arrived,
+                        a.IsAllDay,
                         PatientId = p.Id,
                         PatientName = (p.FirstName + " " + p.LastName).Trim(),
                         PractitionerId = u.Id,
@@ -569,6 +570,33 @@ namespace Clinic.Api.Infrastructure.Services
                         PhoneNumber = ph != null ? ph.Number : null
                     }
                 ).ToListAsync();
+
+                var outOfTurnAppointments = await (
+          from a in query
+          where a.IsAllDay == true
+          join p in _context.Patients on a.PatientId equals p.Id
+          join u in _context.Users on a.PractitionerId equals u.Id
+          join at in _context.AppointmentTypes on a.AppointmentTypeId equals at.Id
+          join ph in _context.PatientPhones on p.Id equals ph.PatientId into phg
+          from ph in phg.OrderByDescending(x => x.CreatedOn).Take(1).DefaultIfEmpty()
+          select new
+          {
+              a.Id,
+              a.Start,
+              a.Arrived,
+              a.IsAllDay, 
+              PatientId = p.Id,
+              PatientName = (p.FirstName + " " + p.LastName).Trim(),
+              PractitionerId = u.Id,
+              PractitionerName = (u.FirstName + " " + u.LastName).Trim(),
+              AppointmentTypeName = at.Name + " (خارج از نوبت)",
+              PhoneNumber = ph != null ? ph.Number : null
+          }
+      ).ToListAsync();
+
+                var combinedAppointments = baseAppointments
+                    .Concat(outOfTurnAppointments)
+                    .ToList();
 
                 if (userRole == "Doctor")
                 {
@@ -632,7 +660,7 @@ namespace Clinic.Api.Infrastructure.Services
                     .Distinct()
                     .ToHashSetAsync();
 
-                var result = baseAppointments.Select(x =>
+                var result = combinedAppointments.Select(x =>
                 {
                     invoiceLookup.TryGetValue(x.Id, out var invoice);
                     billableLookup.TryGetValue(x.Id, out var billables);
@@ -659,7 +687,8 @@ namespace Clinic.Api.Infrastructure.Services
                         Arrived = x.Arrived,
                         TotalDiscount = invoice?.TotalDiscount,
                         InvoiceId = invoice?.Id,
-                        Receipt = invoice.Receipt
+                        Receipt = invoice.Receipt,
+                        IsOutOfTurn = x.IsAllDay == true
                     };
                 }).ToList();
 
@@ -1161,6 +1190,44 @@ namespace Clinic.Api.Infrastructure.Services
             {
                 var res = await _context.Answers.Where(a => a.Question_Id == questionId).ToListAsync();
                 return res;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<GlobalResponse> SaveQuestionAnswer(SaveQuestionAnswerDto model)
+        {
+            var result = new GlobalResponse();
+
+            try
+            {
+                var userId = _token.GetUserId();
+
+                if (model.EditOrNew == -1)
+                {
+                    var answer = _mapper.Map<AnswersContext>(model);
+                    _context.Answers.Add(answer);
+                    await _context.SaveChangesAsync();
+                    result.Message = "Answer Saved Successfully";
+                    return result;
+                }
+                else
+                {
+                    var existingAnswer = await _context.Answers.FirstOrDefaultAsync(b => b.Id == model.EditOrNew);
+
+                    if (existingAnswer == null)
+                    {
+                        throw new Exception("Answer Not Found");
+                    }
+
+                    _mapper.Map(model, existingAnswer);
+                    _context.Answers.Update(existingAnswer);
+                    await _context.SaveChangesAsync();
+                    result.Message = "Answer Updated Successfully";
+                    return result;
+                }
             }
             catch (Exception ex)
             {

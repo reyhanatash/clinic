@@ -146,6 +146,14 @@ namespace Clinic.Api.Controllers
             return Ok(result);
         }
 
+        [HttpPost("saveQuestionAnswer")]
+        [Authorize]
+        public async Task<IActionResult> SaveQuestionAnswer(SaveQuestionAnswerDto model)
+        {
+            var result = await _treatmentsService.SaveQuestionAnswer(model);
+            return Ok(result);
+        }
+
         [HttpGet("getPatientServices/{patientId}")]
         [Authorize]
         public async Task<IActionResult> GetPatientServices(int patientId)
