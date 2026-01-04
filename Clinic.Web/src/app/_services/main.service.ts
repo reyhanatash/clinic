@@ -333,7 +333,7 @@ export class MainService {
         Authorization: "Bearer " + token,
       }),
     };
-    return this.http.post(uri,data , httpOptions);
+    return this.http.post(uri, data, httpOptions);
   }
 
   deleteJob(id) {
@@ -394,5 +394,17 @@ export class MainService {
       }),
     };
     return this.http.get(uri, httpOptions);
-  }  
+  }
+
+  deleteSection(id) {
+    const token: any = localStorage.getItem("token");
+    const uri = this.url + `api/main/deleteSection/${id}`;
+    const httpOptions = {
+      headers: new HttpHeaders({
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token,
+      }),
+    };
+    return this.http.get(uri, httpOptions);
+  }
 }

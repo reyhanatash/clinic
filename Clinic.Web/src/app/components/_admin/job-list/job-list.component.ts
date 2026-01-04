@@ -78,6 +78,5 @@ export class JobListComponent {
   editJob(job) {
     this.newJob.jobId = job.id;
     this.newJob.title = job.name;
-
   }
 }
