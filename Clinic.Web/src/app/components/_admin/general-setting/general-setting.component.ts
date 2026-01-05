@@ -59,7 +59,8 @@ export class GeneralSettingComponent {
     let model = {
       "id": this.newGeneralSetting.id,
       "companyName": this.newGeneralSetting.clinicName,
-      "logo": this.base64,
+      "logoBase64": this.base64 || "",
+      "logoName": this.fileName || "",
       "emailOnAppointment": this.newGeneralSetting.email,
       "birthDateOnAppointment": this.newGeneralSetting.birthDate,
       "insurer1OnAppointment": this.newGeneralSetting.insuranceProvider1,

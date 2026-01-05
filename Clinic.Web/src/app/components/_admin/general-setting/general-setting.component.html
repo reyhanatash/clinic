@@ -42,21 +42,25 @@
             <label for="">رنگ روز های تعطیل</label>
             <p-colorPicker [(ngModel)]="newGeneralSetting.holidayColor" [ngModelOptions]="{standalone: true}"
                 [inline]="true" />
+            <small>{{newGeneralSetting.holidayColor}}</small>
         </div>
         <div class="col-md-4 col-12 d-flex flex-column align-items-center">
             <label for="">رنگ روز های خالی</label>
             <p-colorPicker [(ngModel)]="newGeneralSetting.emptyDayColor" [ngModelOptions]="{standalone: true}"
                 [inline]="true" />
+            <small>{{newGeneralSetting.emptyDayColor}}</small>
         </div>
         <div class="col-md-4 col-12 d-flex flex-column align-items-center">
             <label for="">رنگ روز های پر</label>
             <p-colorPicker [(ngModel)]="newGeneralSetting.fullDayColor" [ngModelOptions]="{standalone: true}"
                 [inline]="true" />
+            <small>{{newGeneralSetting.fullDayColor}}</small>
         </div>
         <div class="col-md-4 col-12 d-flex flex-column align-items-center">
             <label for="">رنگ روز های پرنشده</label>
             <p-colorPicker [(ngModel)]="newGeneralSetting.notFullDayColor" [ngModelOptions]="{standalone: true}"
                 [inline]="true" />
+            <small>{{newGeneralSetting.notFullDayColor}}</small>
         </div>
         <div class="col-12 text-right mt-4 mb-2">
             <hr>

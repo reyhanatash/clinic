@@ -185,6 +185,7 @@ mat-label {
 #appointment .day-col {
   padding-bottom: 0.5rem !important;
 }
+
 #appointment2 .day-col {
   padding-bottom: 0.5rem !important;
 }
@@ -306,7 +307,8 @@ mat-label {
 }
 
 .holiday-day {
-  background-color: #ffe5e5;
+  /* background-color: #ffe5e5; */
+  background-color: var(--holiday-color);
   color: #d60000;
   font-weight: bold;
   border-radius: 50%;
@@ -314,7 +316,7 @@ mat-label {
 }
 
 .doctor-days {
-  background-color: #00c203;
+  background-color: var(--doctor-day-color);
   color: white;
   font-weight: bold;
   border-radius: 50%;

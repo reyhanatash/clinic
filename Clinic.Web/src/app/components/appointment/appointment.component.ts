@@ -89,6 +89,7 @@ export class AppointmentComponent {
   weeklyTimetable: any = [];
   weeklyAppointments: any = [];
   weekDaysAppointmentCount: any = [];
+  generalSetting: any;
   get selectedDate(): any {
     return this._selectedDate;
   }
@@ -200,6 +201,7 @@ export class AppointmentComponent {
     } else {
       this.toastR.error("شما دسترسی به این صفحه ندارید");
     }
+    this.getGeneralSettings();
   }
 
 
@@ -1135,5 +1137,21 @@ export class AppointmentComponent {
     this.getWeeklyAppointments();
   }
 
-
+  async getGeneralSettings() {
+    try {
+      let res: any = await this.mainService.getGeneralSettings().toPromise();
+      if (res) {
+        this.generalSetting = res;
+        document.documentElement.style.setProperty(
+          '--holiday-color',
+          this.generalSetting[0].holidayColor
+        );
+        document.documentElement.style.setProperty(
+          '--doctor-day-color',
+          this.generalSetting[0].emptyDayColor
+        );
+      }
+    }
+    catch { }
+  }
 }
