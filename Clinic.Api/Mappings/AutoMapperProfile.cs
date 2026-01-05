@@ -50,6 +50,7 @@ namespace Clinic.Api.Mappings
             CreateMap<SaveQuestionDto, QuestionsContext>().ReverseMap();
             CreateMap<UpdateGeneralSettingsDto, GeneralSettingsContext>().ReverseMap();
             CreateMap<SaveSectionDto, SectionsContext>().ReverseMap();
+            CreateMap<SaveQuestionAnswerDto, AnswersContext>().ReverseMap();
         }
     }
 }

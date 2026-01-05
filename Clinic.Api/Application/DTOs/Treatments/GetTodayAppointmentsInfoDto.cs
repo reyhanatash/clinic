@@ -22,6 +22,7 @@
         public DateTime? FullDate { get; set; }
         public string? Color { get; set; }
         public string? Note { get; set; }
+        public bool IsOutOfTurn { get; set; }
     }
 
     public class BillableItemDoneDto
