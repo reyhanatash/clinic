@@ -844,7 +844,8 @@ export class AppointmentComponent {
           year = moment(element.createdOn).format('jYYYY');
           weekday.push({
             day: element.day,
-            doctor: element.doctorName
+            doctor: element.doctorName,
+            isDayFull: element.isDayFull
           });
         });
         const unique: any = [...new Set(weekday)];
@@ -858,49 +859,112 @@ export class AppointmentComponent {
   }
 
   mergeDoctors(data) {
-    const map = new Map<number, Set<string>>();
+    const map = new Map<number, { doctors: Set<string>, isDayFull: boolean }>();
+
     data.forEach(item => {
       if (!map.has(item.day)) {
-        map.set(item.day, new Set());
+        map.set(item.day, { doctors: new Set(), isDayFull: false });
       }
-      map.get(item.day)!.add(item.doctor);
+
+      map.get(item.day)!.doctors.add(item.doctor);
+
+      if (item.isDayFull) {
+        map.get(item.day)!.isDayFull = true;
+      }
     });
-    return Array.from(map.entries()).map(([day, doctors]) => ({
+
+    return Array.from(map.entries()).map(([day, value]) => ({
       day,
-      doctor: Array.from(doctors).join(", ")
+      doctor: Array.from(value.doctors).join(', '),
+      isDayFull: value.isDayFull
     }));
   }
 
 
-  getWeekdayDatesForDoctor(jalaliYear: string, weekdays: { day: number, doctor: string }[]) {
-    const dates: { date: string, doctor: string }[] = [];
+
+  // getWeekdayDatesForDoctor(jalaliYear: string, weekdays: { day: number, doctor: string }[]) {
+  //   const dates: { date: string, doctor: string }[] = [];
+  //   let date = moment(`${jalaliYear}/01/01`, 'jYYYY/jMM/jDD');
+  //   while (date.jYear() === parseInt(jalaliYear)) {
+  //     const match = weekdays.find(w => w.day === date.day());
+  //     if (match) {
+  //       dates.push({
+  //         date: date.format('jYYYY/jMM/jDD'),
+  //         doctor: match.doctor
+  //       });
+  //     }
+  //     date.add(1, 'day');
+  //   }
+  //   this.addDaysForDoctor(dates);
+  // }
+
+
+  getWeekdayDatesForDoctor(
+    jalaliYear: string,
+    weekdays: { day: number; doctor: string; isDayFull: boolean }[]
+  ) {
+    const dates: { date: string; doctor: string; isDayFull: boolean }[] = [];
+
     let date = moment(`${jalaliYear}/01/01`, 'jYYYY/jMM/jDD');
+
     while (date.jYear() === parseInt(jalaliYear)) {
       const match = weekdays.find(w => w.day === date.day());
+
       if (match) {
         dates.push({
           date: date.format('jYYYY/jMM/jDD'),
-          doctor: match.doctor
+          doctor: match.doctor,
+          isDayFull: match.isDayFull
         });
       }
+
       date.add(1, 'day');
     }
+
     this.addDaysForDoctor(dates);
   }
 
-  addDaysForDoctor(dates: { date: string, doctor: string }[]) {
+
+  // addDaysForDoctor(dates: { date: string, doctor: string }[]) {
+  //   setTimeout(() => {
+  //     const cells = this.el.nativeElement.querySelectorAll('.dp-btn');
+  //     cells.forEach((cell: HTMLElement) => {
+  //       const label = cell.innerText.trim();
+  //       const fullDate = this.buildFullDate(label);
+  //       const match = dates.find(d => d.date === fullDate);
+  //       if (match) {
+  //         this.renderer.addClass(cell, 'doctor-days');
+  //         this.renderer.setAttribute(cell, 'title', match.doctor);
+  //       } else {
+  //         this.renderer.removeClass(cell, 'doctor-days');
+  //         this.renderer.removeAttribute(cell, 'title');
+  //       }
+  //     });
+  //   }, 300);
+  // }
+
+
+  addDaysForDoctor(dates: { date: string; doctor: string; isDayFull: boolean }[]) {
     setTimeout(() => {
       const cells = this.el.nativeElement.querySelectorAll('.dp-btn');
+
       cells.forEach((cell: HTMLElement) => {
         const label = cell.innerText.trim();
         const fullDate = this.buildFullDate(label);
+
         const match = dates.find(d => d.date === fullDate);
+
+        this.renderer.removeClass(cell, 'doctor-days');
+        this.renderer.removeClass(cell, 'day-full');
+        this.renderer.removeAttribute(cell, 'title');
+
         if (match) {
           this.renderer.addClass(cell, 'doctor-days');
           this.renderer.setAttribute(cell, 'title', match.doctor);
-        } else {
-          this.renderer.removeClass(cell, 'doctor-days');
-          this.renderer.removeAttribute(cell, 'title');
+
+          if (match.isDayFull) {
+            this.renderer.addClass(cell, 'day-full');
+          }
         }
       });
     }, 300);
@@ -1143,6 +1207,10 @@ export class AppointmentComponent {
         document.documentElement.style.setProperty(
           '--doctor-day-color',
           this.generalSetting[0].emptyDayColor
+        );
+        document.documentElement.style.setProperty(
+          '--full-day-color',
+          this.generalSetting[0].fullDayColor
         );
       }
     }

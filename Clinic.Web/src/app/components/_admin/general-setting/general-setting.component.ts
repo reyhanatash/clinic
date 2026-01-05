@@ -81,7 +81,8 @@ export class GeneralSettingComponent {
       "emptyDayColor": this.newGeneralSetting.emptyDayColor,
       "fullDayColor": this.newGeneralSetting.fullDayColor,
       "notFullDayColor": this.newGeneralSetting.notFullDayColor,
-      "showPatientNotes": this.newGeneralSetting.showPatientNotes
+      "showPatientNotes": this.newGeneralSetting.showPatientNotes,
+      "nonFilledDays": this.newGeneralSetting.nonFilledDays
     }
     try {
       let res: any = await this.mainService.updateGeneralSettings(model).toPromise();
@@ -129,5 +130,6 @@ export class GeneralSettingComponent {
     this.newGeneralSetting.notFullDayColor = this.generalSetting.notFullDayColor;
     this.newGeneralSetting.showPatientNotes = this.generalSetting.showPatientNotes;
     this.newGeneralSetting.email = this.generalSetting.emailOnAppointment;
+    this.newGeneralSetting.nonFilledDays = this.generalSetting.nonFilledDays;
   }
 }
