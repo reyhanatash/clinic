@@ -1,5 +1,5 @@
 import { MainService } from './../../_services/main.service';
-import { Component, ElementRef, Renderer2 } from '@angular/core';
+import { Component, ElementRef, HostListener, Renderer2 } from '@angular/core';
 import { SharedModule, ShamsiUTCPipe } from "../../share/shared.module";
 import { FormControl, FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -141,6 +141,23 @@ export class AppointmentComponent {
   doctors: any = [];
   serviceBaselist: any = [];
   servicesList: any = [];
+  isOutOfTurnlist: any = [];
+
+  @HostListener('click', ['$event'])
+  onClick(event: MouseEvent) {
+    const target = event.target as HTMLElement;
+    if (target.tagName.toLowerCase() === 'svg' || target.tagName.toLowerCase() === 'path') {
+      const parent = target.closest('.go-forward, .go-back');
+      if (parent) {
+        this.addHoliday();
+      }
+    }
+    if (target.classList.contains('go-forward') || target.classList.contains('go-back')) {
+      this.addHoliday();
+    }
+  }
+
+
 
   async ngOnInit() {
     this.allowedLinks = await this.objectService.getDataAccess();
@@ -148,18 +165,20 @@ export class AppointmentComponent {
       this.userType = this.utilService.checkUserType();
       this.dateNew = new FormControl(moment().format('jYYYY/jMM/jDD'));
       this.firstCalendarDateNew = new FormControl(moment(this.dateNew).format('jYYYY/jMM/jDD'));
-      this.secondCalendarDateNew = new FormControl(moment(this.dateNew).add(1, 'month').format('jYYYY/jMM/jDD'));
+      this.secondCalendarDateNew = new FormControl(moment(this.dateNew).add(1, 'jMonth').format('jYYYY/jMM/jDD'));
       await this.getClinics();
       await this.getBillableItems();
       if (this.userType != 9) {
         await this.getUsers();
       } else {
+        this.selectedDoctor = localStorage.getItem("userId");
         await this.getDoctorSchedules(2);
+        this.getUserAppointmentsSettings();
       }
-      if (this.userType == 9) {
-        this.selectedDoctor = this.userType;
-      }
+
       this.firstCalendarDateNew.valueChanges.subscribe(async (date: any) => {
+        let nextMonthDate = moment(date, 'jYYYY/jMM/jDD').add(1, 'jMonth').format('jYYYY/jMM/jDD');
+        this.secondCalendarDateNew.setValue(nextMonthDate);
         this.onDateSelect(date);
       });
 
@@ -167,15 +186,17 @@ export class AppointmentComponent {
       // this.selectedDate = this.today;
       await this.getPatients();
       await this.getAppointmentTypes();
+      this.appointmentDate = this.today._d;
       await this.getAppointment(this.today);
       this.today = this.today._d;
       // this.getCurrentWeek(1);
       this.getWeeklyAppointments();
       const jalaliYear = moment().format('jYYYY');
-      this.utilService.getIranianHolidaysWithFridays(jalaliYear).subscribe(days => {
+      this.utilService.getIranianHolidaysWithFridays().subscribe(days => {
         this.holidays = days
         this.addHoliday();
       });
+      this.changeSecondDate();
     } else {
       this.toastR.error("شما دسترسی به این صفحه ندارید");
     }
@@ -183,7 +204,11 @@ export class AppointmentComponent {
 
 
   ngAfterViewInit() {
+    this.utilService.getIranianHolidaysWithFridays().subscribe(days => {
+      this.holidays = days;
+    });
     this.isCalendarVisible = true;
+    this.isCalendar2Visible = true;
     const calendarEl = this.el.nativeElement.querySelector('#appointment');
     if (calendarEl) {
       const observer = new MutationObserver(() => {
@@ -191,11 +216,8 @@ export class AppointmentComponent {
         const text = switchViewEl?.textContent?.trim();
         const parts = text?.split(' ');
         if (parts?.[1]) {
-          this.utilService.getIranianHolidaysWithFridays(parts[1]).subscribe(days => {
-            this.holidays = days;
-            this.addHoliday();
-            this.getDoctorSchedules(this.userType != 9 ? 1 : 2);
-          });
+          this.addHoliday();
+          this.getDoctorSchedules(this.userType != 9 ? 1 : 2);
         }
       });
       observer.observe(calendarEl, {
@@ -213,11 +235,8 @@ export class AppointmentComponent {
         const text = switchViewEl?.textContent?.trim();
         const parts = text?.split(' ');
         if (parts?.[1]) {
-          this.utilService.getIranianHolidaysWithFridays(parts[1]).subscribe(days => {
-            this.holidays = days;
-            this.addHoliday();
-            this.getDoctorSchedules(this.userType != 9 ? 1 : 2);
-          });
+          this.addHoliday();
+          this.getDoctorSchedules(this.userType != 9 ? 1 : 2);
         }
       });
       observer.observe(calendarEl, {
@@ -230,52 +249,56 @@ export class AppointmentComponent {
   }
 
 
-
-
-
   addHoliday() {
     setTimeout(() => {
-      const cells = this.el.nativeElement.querySelectorAll('.dp-btn');
-      cells.forEach((cell: HTMLElement) => {
-        const label = cell.innerText.trim();
-        const fullDate = this.buildFullDate(label);
-        if (this.isHoliday(fullDate)) {
-          this.renderer.addClass(cell, 'holiday-day');
+      const containers = [
+        this.el.nativeElement.querySelector('#appointment'),
+        this.el.nativeElement.querySelector('#appointment2')
+      ];
+      containers.forEach(container => {
+        if (!container) return;
+        const switchViewEl = container.querySelector('.switch-view.dp-btn') as HTMLElement;
+        const text = switchViewEl?.textContent?.trim();
+        const parts = text?.split(' ');
+        let jalaliYear: string | null = null;
+        let jalaliMonthName: string | null = null;
+        if (parts && parts.length === 2) {
+          jalaliMonthName = parts[0]; // نام ماه فارسی
+          jalaliYear = parts[1];      // سال جلالی
         }
+
+        const cells = container.querySelectorAll('.dp-btn');
+        cells.forEach((cell: HTMLElement) => {
+          const label = cell.innerText.trim();
+          const fullDate = this.buildFullDate(label, jalaliYear, jalaliMonthName);
+          if (this.isHoliday(fullDate)) {
+            this.renderer.addClass(cell, 'holiday-day');
+          }
+        });
       });
     }, 300);
   }
 
-
-  buildFullDate(dayLabel: string): string {
-    let jalaliYear = moment().format('jYYYY');
+  buildFullDate(dayLabel: string, yearText?: string, monthName?: string): string {
+    let jalaliYear = yearText || moment().format('jYYYY');
     let jalaliMonth = moment().format('jMM');
-    const switchViewEl = document.querySelector('.switch-view.dp-btn');
-    if (switchViewEl) {
-      const text = switchViewEl.textContent?.trim();
-      const parts = text?.split(' ');
-      if (parts && parts.length === 2) {
-        const monthName = parts[0];
-        const yearText = parts[1];
-        const monthMap: { [key: string]: string } = {
-          'فروردین': '01',
-          'اردیبهشت': '02',
-          'خرداد': '03',
-          'تیر': '04',
-          'مرداد': '05',
-          'شهریور': '06',
-          'مهر': '07',
-          'آبان': '08',
-          'آذر': '09',
-          'دی': '10',
-          'بهمن': '11',
-          'اسفند': '12'
-        };
-        jalaliMonth = monthMap[monthName] || jalaliMonth;
-        jalaliYear = yearText;
-      }
+    if (monthName && yearText) {
+      const monthMap: { [key: string]: string } = {
+        'فروردین': '01',
+        'اردیبهشت': '02',
+        'خرداد': '03',
+        'تیر': '04',
+        'مرداد': '05',
+        'شهریور': '06',
+        'مهر': '07',
+        'آبان': '08',
+        'آذر': '09',
+        'دی': '10',
+        'بهمن': '11',
+        'اسفند': '12'
+      };
+      jalaliMonth = monthMap[monthName] || jalaliMonth;
     }
-
     const paddedDay = dayLabel.padStart(2, '0');
     return `${jalaliYear}/${jalaliMonth}/${paddedDay}`;
   }
@@ -313,37 +336,37 @@ export class AppointmentComponent {
 
 
       case 14:
-        formattedDate = moment(this.appointmentDate);
+        formattedDate = moment();
         this.appointmentDate = formattedDate.clone().add(2, 'weeks').toDate();
         this.getAppointment(this.appointmentDate);
         break;
 
       case 28:
-        formattedDate = moment(this.appointmentDate);
+        formattedDate = moment();
         this.appointmentDate = formattedDate.clone().add(4, 'weeks').toDate();
         this.getAppointment(this.appointmentDate);
         break;
 
       case 42:
-        formattedDate = moment(this.appointmentDate);
+        formattedDate = moment();
         this.appointmentDate = formattedDate.clone().add(6, 'weeks').toDate();
         this.getAppointment(this.appointmentDate);
         break;
 
       case 90:
-        formattedDate = moment(this.appointmentDate);
+        formattedDate = moment();
         this.appointmentDate = formattedDate.clone().add(3, 'months').toDate();
         this.getAppointment(this.appointmentDate);
         break;
 
       case 180:
-        formattedDate = moment(this.appointmentDate);
+        formattedDate = moment();
         this.appointmentDate = formattedDate.clone().add(6, 'months').toDate();
         this.getAppointment(this.appointmentDate);
         break;
 
       case 365:
-        formattedDate = moment(this.appointmentDate);
+        formattedDate = moment();
         this.appointmentDate = formattedDate.clone().add(12, 'months').toDate();
         this.getAppointment(this.appointmentDate);
         break;
@@ -354,11 +377,13 @@ export class AppointmentComponent {
     this.isBeforeNow = moment(this.appointmentDate).isBefore(moment().startOf('day'));
     this.getUserAppointmentsSettings();
     this.getWeeklyAppointments();
+    this.addHoliday();
   }
 
 
   async getAppointment(date: any) {
     this.timeSheetData = [];
+    this.isOutOfTurnlist = [];
     const shamsiTimePipe = new ShamsiUTCPipe()
     this.hours.forEach(hour => this.timeSheetData[hour.time] = []);
     try {
@@ -390,7 +415,11 @@ export class AppointmentComponent {
         // let startIndex = this.hours.indexOf(appointment.showStartTime);
         let startIndex = this.hours.findIndex(h => h.time === appointment.showStartTime);
         if (startIndex !== -1) {
-          this.timeSheetData[this.hours[startIndex].time].push(appointment);
+          if (appointment.isOutOfTurn) {
+            this.isOutOfTurnlist.push(appointment);
+          } else {
+            this.timeSheetData[this.hours[startIndex].time].push(appointment);
+          }
         }
       });
       this.timeSheetHeaderDate = date._d;
@@ -692,7 +721,7 @@ export class AppointmentComponent {
     setTimeout(() => {
       this.isCalendarVisible = true;
       this.isCalendar2Visible = true;
-    }, 10);
+    }, 0);
     this.changeDate(0, date);
   }
 
@@ -1097,6 +1126,13 @@ export class AppointmentComponent {
       });
     }
     catch { }
+  }
+
+
+  changeClinic() {
+    this.getUserAppointmentsSettings();
+    this.getAppointment(this.appointmentDate);
+    this.getWeeklyAppointments();
   }
 
 

@@ -55,32 +55,52 @@ export class UtilService {
     });
   }
 
-  getIranianHolidaysWithFridays(jalaliYear): Observable<string[]> {
-    const apiKey = 'KQcB85KNJqb4EnsKohwMJfsqvZsn5l9B';
-    // const jalaliYear = moment().format('jYYYY');
-    const gregorianYear = moment(`${jalaliYear}/01/01`, 'jYYYY/MM/DD').format('YYYY');
-    const url = `https://calendarific.com/api/v2/holidays?api_key=${apiKey}&country=IR&year=${gregorianYear}`;
+getIranianHolidaysWithFridays(): Observable<string[]> {
+  const manualData: Record<string, string[]> = {
+    "1403": [
+      "1403/01/01","1403/01/02","1403/01/03","1403/01/04","1403/01/05",
+      "1403/01/12","1403/01/13","1403/03/14","1403/03/15","1403/04/09",
+      "1403/04/10","1403/04/18","1403/04/26","1403/05/17","1403/05/18",
+      "1403/06/26","1403/07/15","1403/07/16","1403/07/25","1403/08/05",
+      "1403/08/14","1403/09/24","1403/10/04","1403/10/13","1403/11/22",
+      "1403/12/29"
+    ],
+    "1404": [
+      "1404/01/01","1404/01/02","1404/01/03","1404/01/04","1404/01/05",
+      "1404/01/12","1404/01/13","1404/03/14","1404/03/15","1404/04/11",
+      "1404/04/12","1404/04/16","1404/04/24","1404/05/14","1404/05/15",
+      "1404/05/23","1404/05/31","1404/06/02","1404/06/10","1404/06/19",
+      "1404/09/03","1404/10/13","1404/10/27","1404/11/15","1404/11/22",
+      "1404/12/20","1404/12/29"
+    ],
+    "1405": [
+      "1405/01/01","1405/01/02","1405/01/03","1405/01/04","1405/01/05",
+      "1405/01/12","1405/01/13","1405/03/14","1405/03/15","1405/03/20",
+      "1405/03/21","1405/03/26","1405/04/04","1405/04/25","1405/04/26",
+      "1405/05/04","1405/05/12","1405/05/13","1405/05/22","1405/08/31",
+      "1405/09/14","1405/09/23","1405/10/16","1405/11/15","1405/11/22",
+      "1405/12/29"
+    ]
+  };
+  return new Observable<string[]>(observer => {
+    const allYears: string[] = [];
+    Object.keys(manualData).forEach(jYear => {
+      const official = manualData[jYear] ?? [];
 
-    return this.http.get<any>(url).pipe(
-      map(response => {
-        const official = response.response.holidays.map(h => {
-          const jDate = moment(h.date.iso).format('jYYYY/jMM/jDD');
-          return jDate;
-        });
-
-        const fridays: string[] = [];
-        let date = moment(`${jalaliYear}/01/01`, 'jYYYY/jMM/jDD');
-        while (date.jYear() === parseInt(jalaliYear)) {
-          if (date.day() === 5) {
-            fridays.push(date.format('jYYYY/jMM/jDD'));
-          }
-          date.add(1, 'day');
+      const fridays: string[] = [];
+      let date = moment(`${jYear}/01/01`, 'jYYYY/jMM/jDD');
+      while (date.jYear() === parseInt(jYear)) {
+        if (date.day() === 5) {
+          fridays.push(date.format('jYYYY/jMM/jDD'));
         }
+        date.add(1, 'day');
+      }
 
-        const all = [...new Set([...official, ...fridays])];
-        return all.sort();
-      })
-    );
-  }
-
+      allYears.push(...official, ...fridays);
+    });
+    const all = [...new Set(allYears)].sort();
+    observer.next(all);
+    observer.complete();
+  });
+}
 }

@@ -49,7 +49,7 @@
     </div>
     <div>
       <!-- setting Menu -->
-      <div class="d-flex sidebar-item align-items-center pointer mt-3 p-2 text-white"
+      <div *ngIf="settingMenu.length > 0" class="d-flex sidebar-item align-items-center pointer mt-3 p-2 text-white"
         [ngClass]="{'text-dark selected-sidebar-menu' : openSettingMenu}">
         <i *ngIf="!openSettingMenu" class="fa fa-angle-down mx-2"></i>
         <i *ngIf="openSettingMenu" class="fa fa-angle-up mx-2"></i>
@@ -69,7 +69,7 @@
         </div>
       </div>
       <!-- financial menu -->
-      <div class="d-flex sidebar-item align-items-center pointer mt-3 p-2 text-white"
+      <div *ngIf="financialMenu.length > 0" class="d-flex sidebar-item align-items-center pointer mt-3 p-2 text-white"
         [ngClass]="{'text-dark selected-sidebar-menu' : openFinancialMenu}">
         <i *ngIf="!openFinancialMenu" class="fa fa-angle-down mx-2"></i>
         <i *ngIf="openFinancialMenu" class="fa fa-angle-up mx-2"></i>
@@ -89,7 +89,7 @@
         </div>
       </div>
       <!-- appointment Menu -->
-      <div class="d-flex sidebar-item align-items-center pointer mt-3 p-2 text-white"
+      <div *ngIf="appointmentMenu.length > 0" class="d-flex sidebar-item align-items-center pointer mt-3 p-2 text-white"
         [ngClass]="{'text-dark selected-sidebar-menu' : openAppointmentMenu}">
         <i *ngIf="!openAppointmentMenu" class="fa fa-angle-down mx-2"></i>
         <i *ngIf="openAppointmentMenu" class="fa fa-angle-up mx-2"></i>

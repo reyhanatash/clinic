@@ -29,13 +29,11 @@ export const Menu: imenu[] = [
 ];
 
 export const settingMenu: imenu[] = [
-  { id: 10, text: "کلینیک", link: '', roleAccess: [], icon: 'fa fa-caret-left' },
-  { id: 11, text: "تنظیمات عمومی", link: '', roleAccess: [], icon: 'fa fa-caret-left' },
+  { id: 11, text: "تنظیمات عمومی", link: '/general-setting', roleAccess: [], icon: 'fa fa-caret-left' },
   { id: 12, text: "مکان ها", link: '/business-List', roleAccess: [], icon: 'fa fa-caret-left' },
   { id: 13, text: "کاربران", link: '/userlist', roleAccess: [], icon: 'fa fa-caret-left' },
   { id: 14, text: "نقش ها و دسترسی ها", link: '/user-role-list', roleAccess: [], icon: 'fa fa-caret-left' },
   { id: 21, text: "تنظیمات پیامکی", link: '/sms-setting', roleAccess: [], icon: 'fa fa-caret-left' },
-  { id: 22, text: "تنظیمات عمومی", link: '/general-setting', roleAccess: [], icon: 'fa fa-caret-left' },
 ];
 export const financialMenu: imenu[] = [
   { id: 15, text: "خدمات", link: '/service-list', roleAccess: [], icon: 'fa fa-caret-left' },
@@ -43,7 +41,7 @@ export const financialMenu: imenu[] = [
 ];
 export const appointmentMenu: imenu[] = [
   { id: 17, text: "انواع وقت دهی", link: '/appointment-types', roleAccess: [], icon: 'fa fa-caret-left' },
-  { id: 18, text: "تعطیلات", link: '', roleAccess: [], icon: 'fa fa-caret-left' },
+  // { id: 18, text: "تعطیلات", link: '', roleAccess: [], icon: 'fa fa-caret-left' },
   { id: 19, text: "استثنائات اوقات پزشکان", link: '/time-exception', roleAccess: [], icon: 'fa fa-caret-left' },
   { id: 20, text: "استثنائات خارج از نوبت", link: '/outOfturnexceptions', roleAccess: [], icon: 'fa fa-caret-left' },
 ];

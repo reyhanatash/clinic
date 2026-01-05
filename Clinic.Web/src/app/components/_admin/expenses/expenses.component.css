@@ -1,5 +1,5 @@
-::ng-deep #add-expense-modal .ng-tns-c662934324-1 .p-dialog-mask .ng-star-inserted div {
-    min-width: 30%;
+::ng-deep #create-expense-modal .p-dialog {
+    min-width: 80% !important;
     min-height: 300px;
 }
 

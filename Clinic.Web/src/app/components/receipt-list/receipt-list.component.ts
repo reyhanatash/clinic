@@ -20,6 +20,7 @@ import { ObjectService } from '../../_services/store.service';
   styleUrl: './receipt-list.component.css'
 })
 export class ReceiptListComponent {
+  modalHeader: string;
   constructor(
     private toastR: ToastrService,
     private invoiceService: InvoiceService,
@@ -45,10 +46,12 @@ export class ReceiptListComponent {
       if (this.checkRout === "payment-list") {
         this.isPayment = true;
         this.getAllPayments();
+        this.modalHeader = "ویرایش پرداختی";
       }
       else {
         this.isPayment = false;
         this.getReceipts();
+        this.modalHeader = "ویرایش دریافتی";
       }
     } else {
       this.toastR.error("شما دسترسی به این صفحه ندارید");

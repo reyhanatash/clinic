@@ -160,7 +160,7 @@ export class ObjectService {
             ]
         },
         {
-            id: 18, title: 'تعریف پرونده بالینی ', itmes: [
+            id: 18, title: 'تعریف پرونده بالینی ',url:'/treatment-template-list', itmes: [
                 { id: 1, text: 'مشاهده', clicked: false, fieldName: 'treatmentTemplateView' },
                 { id: 2, text: 'ثبت', clicked: false, fieldName: 'treatmentTemplateCreateAndUpdate' },
                 { id: 3, text: 'حذف', clicked: false, fieldName: 'treatmentTemplateDelete' }
@@ -194,7 +194,7 @@ export class ObjectService {
         { id: 16, link: '/outOfturnexceptions', clicked: false, fieldName: 'outOfTurnExceptionView' },
         { id: 17, link: '/service-list', clicked: false, fieldName: 'billableItemView' },
         { id: 18, link: '/service-group-list', clicked: false, fieldName: 'itemCategoryView' },
-        { id: 19, text: 'مشاهده', clicked: false, fieldName: 'treatmentTemplateView' },
+        { id: 19, link: '/treatment-template', clicked: false, fieldName: 'treatmentTemplateView' },
         { id: 20, text: 'مشاهده', clicked: false, fieldName: 'jobView' },
         { id: 21, text: 'ثبت', clicked: false, fieldName: 'paymentCreateAndUpdate' },
         { id: 22, text: 'ثبت', clicked: false, fieldName: 'receiptCreateAndUpdate' },

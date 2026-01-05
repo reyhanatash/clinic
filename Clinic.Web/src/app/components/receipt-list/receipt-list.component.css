@@ -15,10 +15,6 @@
 .edit-receipt-modal {
     min-width: 500px;
     min-height: 200px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
 }
 
 .selected-mode {
@@ -42,4 +38,9 @@
 .main-btn {
     background-color: #00c4b4;
     color: #FFFFFF;
+}
+
+::ng-deep #edit-receipt-modal .p-dialog {
+    min-width: 80% !important;
+    min-height: 300px;
 }

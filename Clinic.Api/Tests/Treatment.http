@@ -33,12 +33,12 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjE1NzAwM
 
 ### Get appointments with date
 POST {{Clinic_Api_Host}}/api/treatment/getAppointments
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjYyOTk0NTYsImlhdCI6MTc2NTY5NDY1NiwidXNlcklkIjoiMiIsInVzZXJuYW1lIjoibmltYSIsInVzZXJSb2xlIjoiQWRtaW4iLCJuYmYiOjE3NjU2OTQ2NTZ9.jwUwNOTkWQlAY7UswKP52TbB0iO7TKKQCDkeKqHHkjY
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3Njc2MDAwMTYsImlhdCI6MTc2Njk5NTIxNiwidXNlcklkIjoiMiIsInVzZXJuYW1lIjoibmltYSIsInVzZXJSb2xlIjoiQWRtaW4iLCJuYmYiOjE3NjY5OTUyMTZ9.ZXPoQUVlZg3UziP0I-W52yHLqTORLj1bSDSeCe58hw0
 Content-Type: application/json
 {
   "clinicId": 7795,
-  "Date": "2025-09-02",
-  "doctorId": "1156,1163,6"
+  "Date": "2025-02-12",
+  "doctorId": "1156"
 }
 
 

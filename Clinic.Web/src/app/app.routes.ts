@@ -263,4 +263,16 @@ export const routes: Routes = [
         loadComponent: () => import('./components/_admin/treatment-template/treatment-template.component').then(m => m.TreatmentTemplateComponent),
         canActivate: [AuthGuard]
     },
+    {
+        path: 'treatment-template/:id',
+        loadComponent: () => import('./components/_admin/treatment-template/treatment-template.component').then(m => m.TreatmentTemplateComponent),
+        canActivate: [AuthGuard]
+    },
+    {
+        path: 'treatment-template-list',
+        loadComponent: () => import('./components/_admin/treatment-template/treatment-template-list/treatment-template-list.component').then(m => m.TreatmentTemplateListComponent),
+        canActivate: [AuthGuard]
+    }
+
+
 ];

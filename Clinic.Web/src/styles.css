@@ -185,6 +185,10 @@ mat-label {
 #appointment .day-col {
   padding-bottom: 0.5rem !important;
 }
+#appointment2 .day-col {
+  padding-bottom: 0.5rem !important;
+}
+
 
 
 .datepicker-outer-container {
@@ -193,6 +197,13 @@ mat-label {
 }
 
 #appointment .datepicker-outer-container .datepicker-inner-container .dp-btn {
+  border-radius: 50% !important;
+  width: 2em;
+  height: 2em;
+  margin: auto;
+}
+
+#appointment2 .datepicker-outer-container .datepicker-inner-container .dp-btn {
   border-radius: 50% !important;
   width: 2em;
   height: 2em;

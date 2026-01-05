@@ -259,6 +259,8 @@ export class ShamsiMonthPipe implements PipeTransform {
 @Pipe({ name: 'JustDateZone' })
 export class JustDateZone implements PipeTransform {
   transform(value: any) {
+    if (!value)
+      return '-'
     let date = moment(value).format('jYYYY/jMM/jDD');
     return date;
   }

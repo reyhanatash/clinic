@@ -8,9 +8,10 @@
         <hr>
     </div>
     <div>
-        <p-table *ngIf="checkAccess(1)" id="expensesTable" #dt styleClass="" class="expenses-table" [value]="expensesList" [pageLinks]="20"
-            [autoLayout]="true" [paginator]="true" [rows]="10" [showCurrentPageReport]="true"
-            currentPageReportTemplate="نمایش {first} تا {last} " [rowsPerPageOptions]="[10,25,50]">
+        <p-table *ngIf="checkAccess(1)" id="expensesTable" #dt styleClass="" class="expenses-table"
+            [value]="expensesList" [pageLinks]="20" [autoLayout]="true" [paginator]="true" [rows]="10"
+            [showCurrentPageReport]="true" currentPageReportTemplate="نمایش {first} تا {last} "
+            [rowsPerPageOptions]="[10,25,50]">
             <ng-template pTemplate="header">
                 <tr>
                     <th>#</th>
@@ -19,7 +20,7 @@
                     <th pSortableColumn="amount"><p-sortIcon field="amount"></p-sortIcon> مبلغ</th>
                     <th>فروشنده</th>
                     <th>گروه</th>
-                    <th *ngIf="checkAccess(3) || checkAccess(2)" >عملیات</th>
+                    <th *ngIf="checkAccess(3) || checkAccess(2)">عملیات</th>
                 </tr>
             </ng-template>
             <ng-template pTemplate="body" let-expense let-rowIndex="rowIndex">
@@ -56,35 +57,35 @@
             <p>هزینه</p>
         </p-header>
 
-        <div class="col-12">
-            <div class="col-12 d-flex flex-column text-right">
+        <div class="col-12 d-flex flex-wrap">
+            <div class="col-md-6 col-12 d-flex flex-column text-right">
                 <label for="date">تاریخ</label>
                 <ng-persian-datepicker>
                     <input type="text" class="form-control" name="date" [formControl]="newExpense.date" />
                 </ng-persian-datepicker>
             </div>
-            <div class="col-12 d-flex flex-column text-right mt-2">
+            <div class="col-md-6 col-12 d-flex flex-column text-right">
                 <label for="location">مکان</label>
                 <p-dropdown id="location" [options]="clinicsList" [(ngModel)]="newExpense.selectedclinic"
                     optionLabel="name" class="form-control" class="full-width text-right" />
             </div>
-            <div class="col-12 d-flex flex-column text-right">
+            <div class="col-md-6 col-12 d-flex flex-column text-right mt-2">
                 <label for="seller">فروشنده</label>
                 <input name="seller" class="form-control" [(ngModel)]="newExpense.seller" type="text">
             </div>
-            <div class="col-12 d-flex flex-column text-right">
+            <div class="col-md-6 col-12 d-flex flex-column text-right mt-2">
                 <label for="group">گروه</label>
                 <input name="group" class="form-control" [(ngModel)]="newExpense.group" type="text">
             </div>
-            <div class="col-12 d-flex flex-column text-right">
+            <div class="col-md-6 col-12 d-flex flex-column text-right mt-2">
                 <label for="payment">مبلغ</label>
                 <input name="payment" class="form-control" [(ngModel)]="newExpense.amount" type="text">
             </div>
-            <div class="col-12 d-flex flex-column text-right">
+            <div class="col-md-6 col-12 d-flex flex-column text-right mt-2">
                 <label for="note">یادداشت</label>
                 <textarea name="note" [(ngModel)]="newExpense.note" id="note"></textarea>
             </div>
-            <div class="col-12 d-flex flex-column text-right">
+            <div class="col-md-6 col-12 d-flex flex-column text-right">
                 <label for="status">هزینه بابت خرید کالا است؟</label>
                 <div class="d-flex justify-content-center">
                     <p-selectButton id="status" [options]="expenseStatus" [(ngModel)]="newExpense.status"
@@ -92,9 +93,9 @@
                 </div>
             </div>
         </div>
-        <div class="col-12 d-flex justify-content-between mt-2">
-            <button class="btn btn-outline-danger col-5" (click)="showAddExpense = false">انصراف</button>
-            <button class="btn main-btn-outline col-5" (click)="saveExpense()">ذخیره</button>
+        <div class="col-12 d-flex justify-content-center mt-3">
+            <button class="btn main-btn-outline mx-1" (click)="saveExpense()">ذخیره</button>
+            <button class="btn btn-outline-danger mx-1" (click)="showAddExpense = false">انصراف</button>
         </div>
     </p-dialog>
 

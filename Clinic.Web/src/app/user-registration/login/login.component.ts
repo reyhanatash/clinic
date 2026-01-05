@@ -74,6 +74,7 @@ export class LoginComponent {
 
   async getUserRole() {
     let res: any = await this.userService.getUserRole().toPromise();
+    localStorage.setItem("userId", res[0].id);
     this.objectService.setData(res[0]);
   }
 }
