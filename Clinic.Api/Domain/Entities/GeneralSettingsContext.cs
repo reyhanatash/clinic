@@ -45,5 +45,6 @@
         public string? FullDayColor { get; set; }
         public string? NotFullDayColor { get; set; }
         public bool? ShowPatientNotes { get; set; }
+        public int? NonFilledDays { get; set; }
     }
 }

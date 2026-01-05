@@ -490,13 +490,58 @@ namespace Clinic.Api.Infrastructure.Services
                         .ToList();
                 }
 
-                var result = await (
+                var schedules = await (
                     from s in _context.Schedules
                     join u in _context.Users
-                        on s.PractitionerId equals u.Id into userGroup
-                    from u in userGroup.DefaultIfEmpty()
+                        on s.PractitionerId equals u.Id into ug
+                    from u in ug.DefaultIfEmpty()
                     where userIds == null || userIds.Contains(s.PractitionerId)
-                    select new GetDoctorSchedulesResponse
+                    select new
+                    {
+                        Schedule = s,
+                        DoctorName = u != null ? u.FirstName + " " + u.LastName : null
+                    }
+                ).ToListAsync();
+
+                var practitionerIds = schedules
+                    .Select(x => x.Schedule.PractitionerId)
+                    .Distinct()
+                    .ToList();
+
+                var appointments = await _context.Appointments
+                    .Where(a =>
+                        a.PractitionerId.HasValue &&
+                        practitionerIds.Contains(a.PractitionerId.Value) &&
+                        a.Cancelled != true)
+                    .Select(a => new
+                    {
+                        a.PractitionerId,
+                        a.Start
+                    })
+                    .ToListAsync();
+
+                var result = schedules.Select(x =>
+                {
+                    var s = x.Schedule;
+
+                    var dayAppointmentsCount = appointments.Count(a =>
+                        a.PractitionerId == s.PractitionerId &&
+                        a.Start.DayOfWeek == (DayOfWeek)s.Day);
+
+                    var fromTime = TimeSpan.Parse(s.FromTime);
+                    var toTime = TimeSpan.Parse(s.ToTime);
+
+                    var totalMinutes = (int)(toTime - fromTime).TotalMinutes;
+
+                    var totalSlots = s.Duration > 0
+                        ? totalMinutes / s.Duration
+                        : 0;
+
+                    bool isDayFull =
+                        totalSlots > 0 &&
+                        dayAppointmentsCount >= totalSlots;
+
+                    return new GetDoctorSchedulesResponse
                     {
                         Id = s.Id,
                         PractitionerId = s.PractitionerId,
@@ -511,11 +556,10 @@ namespace Clinic.Api.Infrastructure.Services
                         LastUpdated = s.LastUpdated,
                         Duration = s.Duration,
                         CreatorId = s.CreatorId,
-                        DoctorName = u != null
-                            ? u.FirstName + " " + u.LastName
-                            : null
-                    }
-                ).ToListAsync();
+                        DoctorName = x.DoctorName,
+                        IsDayFull = isDayFull
+                    };
+                }).ToList();
 
                 return result;
             }
@@ -1151,6 +1195,7 @@ namespace Clinic.Api.Infrastructure.Services
                 entity.ShowPatientNotes = model.ShowPatientNotes;
                 entity.ModifierId = userId;
                 entity.LastUpdated = DateTime.UtcNow;
+                entity.NonFilledDays = model.NonFilledDays;
                 _context.GeneralSettings.Update(entity);
                 await _context.SaveChangesAsync();
                 result.Message = "General Settings Updated Successfully";
