@@ -16,5 +16,6 @@
         public int? Duration { get; set; }
         public int? CreatorId { get; set; }
         public string? DoctorName { get; set; }
+        public bool IsDayFull { get; set; }
     }
 }

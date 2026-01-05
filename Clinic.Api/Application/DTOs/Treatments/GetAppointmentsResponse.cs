@@ -32,5 +32,6 @@
         public string? PatientName { get; set; }
         public string? Color { get; set; }
         public int Status { get; set; }
+        public bool IsOutOfTurn { get; set; }
     }
 }
