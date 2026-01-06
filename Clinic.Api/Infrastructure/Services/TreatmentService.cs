@@ -1235,6 +1235,27 @@ namespace Clinic.Api.Infrastructure.Services
             }
         }
 
+        public async Task<GlobalResponse> DeleteQuestionAnswer(int id)
+        {
+            var result = new GlobalResponse();
+
+            try
+            {
+                var questionAnswer = await _context.Answers.FindAsync(id);
+                if (questionAnswer == null)
+                    throw new Exception("Question Answer Not Found");
+
+                _context.Answers.Remove(questionAnswer);
+                await _context.SaveChangesAsync();
+                result.Message = "Question Answer Deleted Successfully";
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
         public async Task<IEnumerable<GetServicesPerPatientResponse>> GetPatientServices(int patientId)
         {
             try
