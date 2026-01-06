@@ -177,8 +177,8 @@
 </div>
 
 
-<p-dialog [(visible)]="questionAnswerModal" [closable]="true"
-  [ngClass]="{'modalShadow' : questionAnswerModal}" class="p-2">
+<p-dialog [(visible)]="questionAnswerModal" [closable]="true" [ngClass]="{'modalShadow' : questionAnswerModal}"
+  class="p-2">
   <p-header>
     <h4>جواب های سوال</h4>
   </p-header>
@@ -215,6 +215,7 @@
             </td>
             <td class="px-2">
               <button class="btn btn-warning mr-3" (click)="editQuestionAnswer(item)">ویرایش جواب</button>
+              <button class="btn btn-danger mr-3" (click)="deleteQuestionAnswer(item.id)">حذف جواب</button>
             </td>
           </tr>
         </ng-template>

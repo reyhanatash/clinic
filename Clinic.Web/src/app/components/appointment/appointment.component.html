@@ -85,7 +85,8 @@
               class="table col-12 table-bordered border-0 text-center appointment-grid">
               <thead class="tr-sticky d-flex">
                 <tr class=" w-100 d-flex">
-                  <th class="table-time col-2">{{isOutOfTurnlist.length> 0  ? '':'ساعت'}}</th>
+                  <!-- <th class="table-time col-2">{{isOutOfTurnlist.length> 0  ? '':'ساعت'}}</th> -->
+                  <th class="table-time col-2"> </th>
                   <!-- <th class="text-center currentDate-box-table col-10">
                   </th> -->
                   <th class="text-center currentDate-box-table col" *ngFor="let doctor of doctors">
@@ -94,7 +95,7 @@
                 </tr>
               </thead>
               <tbody class="d-flex flex-column">
-                <tr class="d-flex" *ngIf="isOutOfTurnlist.length > 0">
+                <tr class="d-flex">
                   <td class="col-2 d-flex justify-content-center align-items-center">خارج از نوبت
                   </td>
                   <td *ngFor="let doctor of doctors" class="col p-2 appointments-container">
