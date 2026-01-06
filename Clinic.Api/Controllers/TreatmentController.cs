@@ -158,7 +158,8 @@ namespace Clinic.Api.Controllers
         [Authorize]
         public async Task<IActionResult> DeleteQuestionAnswer(int id)
         {
-
+            var result = await _treatmentsService.DeleteQuestionAnswer(id);
+            return Ok(result);
         }
 
         [HttpGet("getPatientServices/{patientId}")]
