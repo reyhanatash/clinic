@@ -1149,20 +1149,24 @@ namespace Clinic.Api.Infrastructure.Services
             {
                 var userId = _token.GetUserId();
 
+                string? relativePath = null;
                 var allowedExtensions = new List<string> { ".png", ".jpg", ".jpeg", ".pdf" };
-                var fileExtension = Path.GetExtension(model.LogoName)?.ToLower();
-
-                if (string.IsNullOrEmpty(fileExtension) || !allowedExtensions.Contains(fileExtension))
+                if (model.LogoBase64 != null)
                 {
-                    result.Status = 1;
-                    result.Message = "Invalid file type. Only images and PDF are allowed.";
-                    return result;
+                    var fileExtension = Path.GetExtension(model.LogoName)?.ToLower();
+
+                    if (string.IsNullOrEmpty(fileExtension) || !allowedExtensions.Contains(fileExtension))
+                    {
+                        result.Status = 1;
+                        result.Message = "Invalid file type. Only images and PDF are allowed.";
+                        return result;
+                    }
+
+                    relativePath = await _fileService.SaveFileAsync(model.LogoBase64, model.LogoName, "assets/general", _environment);
+
+                    relativePath = relativePath.Replace("\\", "/");
                 }
-
-                var relativePath = await _fileService.SaveFileAsync(model.LogoBase64, model.LogoName, "assets/general", _environment);
-
-                relativePath = relativePath.Replace("\\", "/");
-
+               
                 var entity = await _context.GeneralSettings.FirstOrDefaultAsync(p => p.Id == model.Id);
 
                 if (entity == null)
