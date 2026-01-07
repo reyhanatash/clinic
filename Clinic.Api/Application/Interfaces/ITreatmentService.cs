@@ -23,6 +23,7 @@ namespace Clinic.Api.Application.Interfaces
         Task<IEnumerable<QuestionsContext>> GetQuestionsPerSection(int sectionId);
         Task<IEnumerable<AnswersContext>> GetAnswersPerQuestion(int questionId);
         Task<GlobalResponse> SaveQuestionAnswer(SaveQuestionAnswerDto model);
+        Task<GlobalResponse> DeleteQuestionAnswer(int id);
         Task<IEnumerable<GetServicesPerPatientResponse>> GetPatientServices(int patinetId);
         Task<IEnumerable<GetPatientTreatmentsResponse>> GetPatientTreatments(int patientId);
         Task<IEnumerable<ItemCategoriesContext>> GetItemCategory();

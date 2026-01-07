@@ -415,11 +415,11 @@ export class AppointmentComponent {
         // appointment.patientName = this.patientsList.filter((patient: any) => patient.id == appointment.patientId)[0]?.name;
         appointment.showStartTime = shamsiTimePipe.transform(appointment.start);
         // let startIndex = this.hours.indexOf(appointment.showStartTime);
-        let startIndex = this.hours.findIndex(h => h.time === appointment.showStartTime);
-        if (startIndex !== -1) {
-          if (appointment.isOutOfTurn) {
-            this.isOutOfTurnlist.push(appointment);
-          } else {
+        if (appointment.isOutOfTurn) {
+          this.isOutOfTurnlist.push(appointment);
+        } else {
+          let startIndex = this.hours.findIndex(h => h.time === appointment.showStartTime);
+          if (startIndex !== -1) {
             this.timeSheetData[this.hours[startIndex].time].push(appointment);
           }
         }
@@ -455,7 +455,7 @@ export class AppointmentComponent {
         "modifierId": null,
         "createdOn": null,
         "lastUpdated": null,
-        "isAllDay": null,
+        "isAllDay": this.newAppointmentModel.isAllDay,
         "sendReminder": null,
         "appointmentSMS": null,
         "ignoreDidNotCome": null,
@@ -503,6 +503,7 @@ export class AppointmentComponent {
       this.newAppointmentModel.time = time['time'];
       this.patientsList = [];
       this.searchControl = null;
+      this.newAppointmentModel.isAllDay = false;
       // this.listOfDoctorForCreateAppointment = this.doctorList.filter(doc => time.ids.includes(doc.id));
       // if (this.listOfDoctorForCreateAppointment.length == 1) {
       //   this.newAppointmentModel.selectedDoctor = this.listOfDoctorForCreateAppointment[0];
@@ -510,6 +511,24 @@ export class AppointmentComponent {
     }
     this.isTimeInRange(time['time']);
   }
+
+  setNewAppointmentOutOfRang(doctorId) {
+    if (!this.checkAccess(2)) { return }
+    this.newAppointmentModel.selectedDoctor = [];
+    this.selectedPatientName = null;
+    this.newAppointmentModel.appointmentStartTime = moment(this.appointmentDate);
+    this.newAppointmentModel.appointmentEndTime = moment(this.appointmentDate);
+    const matchedDoctors = this.doctorList.filter(doc => doc.code == doctorId);
+    this.newAppointmentModel.selectedDoctor = matchedDoctors[0];
+    this.newAppointmentModel.selectedDoctorName = matchedDoctors[0]['name'];
+    this.showNewAppointment = true;
+    this.newAppointmentModel.handelNewPateintStatus = false;
+    this.newAppointmentModel.time = null;
+    this.patientsList = [];
+    this.searchControl = null;
+    this.newAppointmentModel.isAllDay = true;
+  }
+
 
   async getPatients() {
     // try {
@@ -707,10 +726,13 @@ export class AppointmentComponent {
       this.weeklyAppointments.forEach(appointment => {
         // appointment.patientName = this.patientsList.filter((patient: any) => patient.patientCode == appointment.patientId)[0].name;
         // let startIndex = this.hours.indexOf(appointment.time);
-        appointment.showStartTime = shamsiTimePipe.transform(appointment.fullDate);
-        let startIndex = this.hours.findIndex(h => h.time === appointment.showStartTime);
-        // this.weeklyTimetable[this.hours[startIndex].time][appointment.dayOfWeek].dayAppointments.push(appointment);
-        this.weeklyTimetable[this.hours[startIndex].time][appointment.dayNumber].dayAppointments.push(appointment);
+        if(!appointment.isOutOfTurn){
+          appointment.showStartTime = shamsiTimePipe.transform(appointment.fullDate);
+          let startIndex = this.hours.findIndex(h => h.time === appointment.showStartTime);
+          // this.weeklyTimetable[this.hours[startIndex].time][appointment.dayOfWeek].dayAppointments.push(appointment);
+  
+          this.weeklyTimetable[this.hours[startIndex].time][appointment.dayNumber].dayAppointments.push(appointment);
+        }
 
       });
       // console.log(this.weeklyTimetable);

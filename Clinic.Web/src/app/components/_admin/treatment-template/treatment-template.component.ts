@@ -302,4 +302,28 @@ export class TreatmentTemplateComponent implements OnInit {
     this.editOrNewQuestionAnswer = item.id;
   }
 
+  async deleteQuestionAnswer(id) {
+    Swal.fire({
+      title: "آیا از حذف این جواب سوال مطمئن هستید ؟",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "بله انجام بده",
+      cancelButtonText: "منصرف شدم",
+      reverseButtons: false,
+    }).then(async (result) => {
+      try {
+        if (result.value) {
+          let res: any = await this.treatmentsService.deleteQuestionAnswer(id).toPromise();
+          if (res.status == 0) {
+            this.toastR.success("با موفقیت حذف شد!");
+            this.treatmentsService.getAnswersPerQuestion(this.questionId).subscribe((data: any) => {
+              this.answersPerQuestion = data;
+            });
+          }
+        }
+      }
+      catch { }
+    })
+  }
+
 }
