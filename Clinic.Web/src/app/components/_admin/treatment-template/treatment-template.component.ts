@@ -4,8 +4,10 @@ import { FormsModule } from '@angular/forms';
 import { firstValueFrom } from 'rxjs';
 import { TreatmentsService } from '../../../_services/treatments.service';
 import { ToastrService } from 'ngx-toastr';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MainService } from './../../../_services/main.service';
+import Swal from 'sweetalert2';
+import { QuestionService } from '../../../_services/question.service';
 
 @Component({
   selector: 'app-treatment-template',
@@ -20,7 +22,9 @@ export class TreatmentTemplateComponent implements OnInit {
     private treatmentsService: TreatmentsService,
     private toastR: ToastrService,
     private activeRoute: ActivatedRoute,
-    private mainService: MainService
+    private mainService: MainService,
+    private router: Router,
+    private questionService: QuestionService
   ) { }
 
   model: any = [];
@@ -41,6 +45,15 @@ export class TreatmentTemplateComponent implements OnInit {
   editOrNewTemplate: any;
   editOrNewSection: any = -1;
   sectionsList: any = [];
+  questionsPerSectionList: any = [];
+  questionModel: any = [];
+  editOrNewQuestion: any = -1;
+  questionAnswerModal = false;
+  answersPerQuestion: any = [];
+  editOrNewQuestionAnswer: any = -1;
+  questionId: any;
+  titleQuestionAnswer = '';
+
   ngOnInit() {
     this.editOrNewTemplate = +this.activeRoute.snapshot.paramMap.get('id') || -1;
     if (this.editOrNewTemplate != -1) {
@@ -75,6 +88,7 @@ export class TreatmentTemplateComponent implements OnInit {
 
   addNewQuestion() {
     this.showNewQuestionBox = true;
+    this.editOrNewQuestion = -1;
   }
 
 
@@ -93,6 +107,12 @@ export class TreatmentTemplateComponent implements OnInit {
       let res: any = await firstValueFrom(this.treatmentsService.saveTreatmentTemplate(model));
       if (res.status == 0) {
         this.toastR.success('با موفقیت ثبت شد!');
+        if (this.editOrNewTemplate == -1) {
+          this.editOrNewTemplate = res.data
+          this.router.navigate(['/treatment-template/' + this.editOrNewTemplate]);
+          this.getTreatmentTemplate();
+          this.getSections();
+        }
       } else {
         this.toastR.error('خطایی رخ داده است');
       }
@@ -102,7 +122,11 @@ export class TreatmentTemplateComponent implements OnInit {
   }
 
   async getSections() {
-    let res: any = await firstValueFrom(this.mainService.getSections());
+    let model = {
+      "id": this.editOrNewTemplate
+      // "id": null
+    }
+    let res: any = await firstValueFrom(this.mainService.getSections(model));
     this.sectionsList = res;
   }
 
@@ -120,12 +144,186 @@ export class TreatmentTemplateComponent implements OnInit {
       let res: any = await firstValueFrom(this.mainService.saveSection(model));
       if (res.status == 0) {
         this.toastR.success('با موفقیت ثبت شد!');
+        this.showBox = false;
+        this.getSections();
+        this.editOrNewSection = res.data;
+        this.model = [];
       } else {
         this.toastR.error('خطایی رخ داده است');
       }
     } catch (error) {
       this.toastR.error('خطایی رخ داده است');
     }
+  }
+
+  selectedSection(id) {
+    this.editOrNewSection = id;
+    this.questionModel = [];
+    this.showNewQuestionBox = false;
+    this.editOrNewQuestion = -1;
+    this.getSectionPerService();
+  }
+
+
+  async deleteSection(id) {
+    Swal.fire({
+      title: "آیا از حذف این گروه مطمئن هستید ؟",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "بله انجام بده",
+      cancelButtonText: "منصرف شدم",
+      reverseButtons: false,
+    }).then(async (result) => {
+      try {
+        if (result.value) {
+          let res: any = await this.mainService.deleteSection(id).toPromise();
+          if (res.status == 0) {
+            this.toastR.success("با موفقیت حذف شد!");
+            this.getSections();
+          }
+        }
+      }
+      catch { }
+    })
+  }
+
+  editSection(item) {
+    this.editOrNewSection = item.id;
+    this.model.groupTitle = item.title;
+    this.model.defaultClose = item.defaultClose;
+    this.model.horizontalDisplay = item.horizontalDirection;
+    this.showBox = true;
+  }
+
+
+  async getSectionPerService() {
+    this.questionsPerSectionList = [];
+    this.treatmentsService.getQuestionsPerSection(this.editOrNewSection).subscribe((res: any) => {
+      this.questionsPerSectionList = res;
+    });
+  }
+
+  async saveQuestion() {
+    let model = {
+      title: this.questionModel.title,
+      type: this.questionModel.type,
+      normalAnswer: this.questionModel.normalAnswer,
+      "defaultAnswer": null,
+      "masterId": null,
+      "refId": null,
+      "order": null,
+      isDeleted: false,
+      sectionId: this.editOrNewSection,
+      canCopy: this.questionModel.canCopy,
+      canFocusEnd: this.questionModel.canFocusEnd,
+      editOrNew: this.editOrNewQuestion
+    }
+    try {
+      await this.questionService.saveQuestion(model).toPromise();
+      this.questionModel = [];
+      this.showNewQuestionBox = false;
+      this.editOrNewQuestion = -1;
+      this.getSectionPerService();
+    } catch (error) {
+      this.toastR.error('خطا!', 'خطا در ثبت ')
+    }
+  }
+
+  editQuestion(item) {
+    this.editOrNewQuestion = item.id;
+    this.questionModel.title = item.title;
+    this.questionModel.type = item.type;
+    this.questionModel.normalAnswer = item.normalAnswer;
+    this.questionModel.canCopy = item.canCopy;
+    this.questionModel.canFocusEnd = item.canFocusEnd;
+    this.showNewQuestionBox = true;
+  }
+
+  async deleteQuestion(id) {
+    Swal.fire({
+      title: "آیا از حذف این سوال مطمئن هستید ؟",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "بله انجام بده",
+      cancelButtonText: "منصرف شدم",
+      reverseButtons: false,
+    }).then(async (result) => {
+      try {
+        if (result.value) {
+          let res: any = await this.questionService.deleteQuestion(id).toPromise();
+          if (res.status == 0) {
+            this.toastR.success("با موفقیت حذف شد!");
+            this.getSectionPerService();
+          }
+        }
+      }
+      catch { }
+    })
+  }
+
+  showQuestionAnswerModal(id) {
+    this.treatmentsService.getAnswersPerQuestion(id).subscribe((data: any) => {
+      this.answersPerQuestion = data;
+    });
+    this.questionId = id;
+    this.titleQuestionAnswer = '';
+    this.questionAnswerModal = true;
+  }
+
+  async saveQuestionAnswer() {
+    let model = {
+      "title": this.titleQuestionAnswer,
+      "text": null,
+      "refTitle": null,
+      "order": null,
+      "isDeleted": false,
+      "question_Id": this.questionId,
+      "editOrNew": this.editOrNewQuestionAnswer
+    }
+    try {
+      let res: any = await firstValueFrom(this.treatmentsService.saveQuestionAnswer(model));
+      if (res.status == 0) {
+        this.editOrNewQuestionAnswer = -1;
+        this.titleQuestionAnswer = '';
+        this.toastR.success('با موفقیت ثبت شد!');
+        this.treatmentsService.getAnswersPerQuestion(this.questionId).subscribe((data: any) => {
+          this.answersPerQuestion = data;
+        });
+      } else {
+        this.toastR.error('خطایی رخ داده است');
+      }
+    } catch (error) {
+      this.toastR.error('خطایی رخ داده است');
+    }
+  }
+
+  editQuestionAnswer(item) {
+    this.titleQuestionAnswer = item.title;
+    this.editOrNewQuestionAnswer = item.id;
+  }
+
+  async deleteQuestionAnswer(id) {
+    Swal.fire({
+      title: "آیا از حذف این جواب سوال مطمئن هستید ؟",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "بله انجام بده",
+      cancelButtonText: "منصرف شدم",
+      reverseButtons: false,
+    }).then(async (result) => {
+      try {
+        if (result.value) {
+          let res: any = await this.treatmentsService.deleteQuestionAnswer(id).toPromise();
+          if (res.status == 0) {
+            this.toastR.success("با موفقیت حذف شد!");
+            this.treatmentsService.getAnswersPerQuestion(this.questionId).subscribe((data: any) => {
+              this.answersPerQuestion = data;
+            });
+          }
+        }
+      }
+      catch { }
+    })
   }
 
 }

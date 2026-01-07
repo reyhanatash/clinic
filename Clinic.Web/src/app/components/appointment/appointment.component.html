@@ -4,7 +4,7 @@
   </div>
   <hr>
   <div *ngIf="checkAccess(1)" class="row px-0 d-lg-flex">
-    <div class="col-12 d-flex">
+    <div class="col-12 d-lg-flex">
       <div class="col-lg-4 col-12  p-2">
         <p-dropdown [options]="clinicsList" [(ngModel)]="selectedClinic" optionLabel="name"
           class="full-width text-right" (onChange)="changeClinic()" />
@@ -85,7 +85,8 @@
               class="table col-12 table-bordered border-0 text-center appointment-grid">
               <thead class="tr-sticky d-flex">
                 <tr class=" w-100 d-flex">
-                  <th class="table-time col-2">ساعت</th>
+                  <!-- <th class="table-time col-2">{{isOutOfTurnlist.length> 0  ? '':'ساعت'}}</th> -->
+                  <th class="table-time col-2"> </th>
                   <!-- <th class="text-center currentDate-box-table col-10">
                   </th> -->
                   <th class="text-center currentDate-box-table col" *ngFor="let doctor of doctors">
@@ -94,6 +95,26 @@
                 </tr>
               </thead>
               <tbody class="d-flex flex-column">
+                <tr class="d-flex">
+                  <td class="col-2 d-flex justify-content-center align-items-center">خارج از نوبت
+                  </td>
+                  <td *ngFor="let doctor of doctors" (click)="setNewAppointmentOutOfRang(doctor.id)"
+                    class="col p-2 appointments-container">
+                    <div *ngFor="let appointment of isOutOfTurnlist"
+                      class="appointment text-right px-2 pb-1 mx-2 pointer" style="width: fit-content;"
+                      [ngClass]="{'d-none': appointment.practitionerId != doctor.id}"
+                      [ngStyle]="{'background-color': appointment.color != null ? appointment.color : '#63C7B2'}">
+                      <div>
+                        <div class="mt-2 d-flex align-items-center">
+                          <div class="badgee ml-2"
+                            [ngClass]="{'bg-dark': appointment.status == 1,'bg-primary': appointment.status == 2,'bg-success': appointment.status == 3}">
+                          </div>
+                          {{appointment.patientName}} (خارج از نوبت)
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
                 <tr class="d-flex" *ngFor="let time of filteredHours">
                   <td class="col-2 d-flex justify-content-center align-items-center">{{time.time}}
                   </td>
@@ -176,6 +197,7 @@
   <p-dialog id="new-appointment-modal" header="اختصاص وقت به بیمار" [(visible)]="showNewAppointment" [closable]="true"
     [ngClass]="{'modalShadow' : showNewAppointment}" class="p-2">
     <div class="col-12 new-appointment-modal">
+      <h5 *ngIf="newAppointmentModel.isAllDay" class="text-danger text-center"> وقت خارج از نوبت</h5>
       <div class="col-12 text-right">
         <button *ngIf="!newAppointmentModel?.handelNewPateintStatus" class="btn btn-danger btn-sm"
           (click)="handelNewPateint(1)">ساخت بیمار جدید</button>
@@ -262,7 +284,7 @@
         </div>
       </div>
       <hr>
-      <div class="col-12 text-center mt-3">
+      <div *ngIf="!newAppointmentModel.isAllDay" class="col-12 text-center mt-3">
         <div class="col-12 d-flex justify-content-between">
           <div class="col-4 text-right">تاریخ</div>
           <div class="col-8">{{newAppointmentModel.appointmentStartTime | JustDateZone}}</div>
@@ -272,8 +294,8 @@
           <div class="col-4">از : {{newAppointmentModel.appointmentStartTime | ShamsiTime}}</div>
           <div class="col-4">تا : {{newAppointmentModel.appointmentEndTime | ShamsiTime}}</div>
         </div>
+        <hr>
       </div>
-      <hr>
       <div class="col-12 mt-3">
         <p class="text-right">یادداشت</p>
         <div>

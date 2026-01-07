@@ -41,31 +41,127 @@
             </label>
           </div>
         </div>
-
-        <div *ngIf="!showNewQuestionBox && editOrNewSection != -1" class="col-12 my-3">
-          <button class="btn btn-lg btn-outline-secondary" (click)="addNewQuestion()">سوال جدید</button>
+        <div class="col-12 text-center mt-3 mb-3">
+          <button type="submit" class="btn btn-danger" (click)="saveSection()">ذخیره گروه </button>
         </div>
-        <div *ngIf="showNewQuestionBox" class="new-question-box">
-          <div class="col-12">
-            <label for="questionTitle"> عنوان سوال</label>
-            <div class="d-lg-flex justify-content-center align-items-center">
-              <div class="position-relative col-lg-8 col-12 px-0">
-                <input type="text" class="form-control" id="questionTitle" [(ngModel)]="model.questionTitle"
-                  [ngModelOptions]="{standalone: true}">
-                <button class="clear-btn" (click)="model.questionTitle = ''" aria-label="پاک کردن">×</button>
-              </div>
-              <select [(ngModel)]="model.type" [ngModelOptions]="{ standalone: true }"
-                class="form-select form-control mr-3 col-lg-4 col-12">
-                <option *ngFor="let item of questionType" [value]="item">{{item}}</option>
-              </select>
-            </div>
 
+
+      </div>
+      <div *ngIf="sectionsList.length > 0" class="col-12 mt-3">
+        <p-table #dt styleClass="p-datatable-gridlines" [value]="sectionsList" [autoLayout]="true" [paginator]="false"
+          [rows]="10" [showCurrentPageReport]="false" currentPageReportTemplate="نمایش {first} تا {last} "
+          [rowsPerPageOptions]="[10,25,50]">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>
+                نام گروه
+              </th>
+              <th></th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
+            <tr [ngClass]="{'bg-main-outline': item.id == editOrNewSection}">
+              <td class="px-2">
+                <div class="py-2 widthClassPrime">
+                  <span>{{item.title}}</span>
+                </div>
+              </td>
+              <td class="px-2">
+                <button class="btn btn-secondary" (click)="selectedSection(item.id)">انتخاب گروه</button>
+                <button class="btn btn-warning mr-3" (click)="editSection(item)">ویرایش گروه</button>
+                <button class="btn btn-danger mr-3" (click)="deleteSection(item.id)">حذف گروه</button>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+    <div class="col-12 form-group">
+      <div *ngIf="!showNewQuestionBox && editOrNewSection != -1" class="col-12 my-3">
+        <button class="btn btn-lg btn-outline-secondary" (click)="addNewQuestion()">سوال جدید</button>
+      </div>
+      <div *ngIf="showNewQuestionBox" class="new-question-box my-4">
+        <div class="box-header">
+          <button class="close-btn" (click)="showNewQuestionBox = false" aria-label="بستن">×</button>
+        </div>
+        <div class="col-12">
+          <label for="title"> عنوان سوال</label>
+          <div class="d-lg-flex justify-content-center align-items-center">
+            <div class="position-relative col-lg-8 col-12 px-0">
+              <input type="text" class="form-control" id="title" [(ngModel)]="questionModel.title"
+                [ngModelOptions]="{standalone: true}">
+              <button class="clear-btn" (click)="questionModel.title = ''" aria-label="پاک کردن">×</button>
+            </div>
+            <select [(ngModel)]="questionModel.type" [ngModelOptions]="{ standalone: true }"
+              class="form-select form-control mr-3 col-lg-4 col-12">
+              <option *ngFor="let item of questionType" [value]="item">{{item}}</option>
+            </select>
           </div>
 
         </div>
+        <div class="col-12 mt-3">
+          <label class="checkbox">
+            <input type="checkbox" [(ngModel)]="questionModel.canCopy" [ngModelOptions]="{standalone: true}" />
+            انتقال اطلاعات در کپی
+          </label>
+        </div>
+        <div class="col-12 mt-3">
+          <label class="checkbox">
+            <input type="checkbox" [(ngModel)]="questionModel.canFocusEnd" [ngModelOptions]="{standalone: true}" />
+            انتقال نشانگر در انتها در زمان انتخاب
+          </label>
+        </div>
+        <div class="col-12 mt-3">
+          <label for="normalAnswer"> پاسخ نرمال</label>
+          <div class="position-relative">
+            <input type="text" class="form-control" id="normalAnswer" [(ngModel)]="questionModel.normalAnswer"
+              [ngModelOptions]="{standalone: true}">
+          </div>
+        </div>
+        <div class="col-12 text-center mt-3 mb-3">
+          <button type="submit" class="btn btn-danger" (click)="saveQuestion()">ذخیره سوال </button>
+        </div>
+
+      </div>
+      <div *ngIf="questionsPerSectionList.length > 0" class="col-12 mt-3">
+        <p-table #dt styleClass="p-datatable-gridlines" [value]="questionsPerSectionList" [autoLayout]="true"
+          [paginator]="false" [rows]="10" [showCurrentPageReport]="false"
+          currentPageReportTemplate="نمایش {first} تا {last} " [rowsPerPageOptions]="[10,25,50]">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>
+                نام سوال
+              </th>
+              <th>نوع سوال</th>
+              <th></th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
+            <tr [ngClass]="{'bg-main-outline': item.id == editOrNewSection}">
+              <td class="px-2">
+                <div class="py-2 widthClassPrime">
+                  <span>{{item.title}}</span>
+                </div>
+              </td>
+              <td class="px-2">
+                <div class="py-2 widthClassPrime">
+                  <span>{{item.type}}</span>
+                </div>
+              </td>
+              <td class="px-2">
+                <button *ngIf="item.type == 'MultiSelect' || item.type == 'Check' || item.type == 'Combo' ||
+               item.type == 'Radio' || item.type == 'textCombo'" class="btn btn-info mr-3"
+                  (click)="showQuestionAnswerModal(item.id)">
+                  ساخت جواب سوال
+                </button>
+                <button class="btn btn-warning mr-3" (click)="editQuestion(item)">ویرایش سوال</button>
+                <button class="btn btn-danger mr-3" (click)="deleteQuestion(item.id)">حذف سوال</button>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
       </div>
     </div>
-
 
     <div class="form-group col-12">
       <label for="printTemplate">اطلاعات چاپ</label>
@@ -78,6 +174,52 @@
       <button type="submit" class="btn btn-danger" (click)="saveTreatmentTemplate()">ذخیره قالب</button>
     </div>
   </form>
-
-
 </div>
+
+
+<p-dialog [(visible)]="questionAnswerModal" [closable]="true" [ngClass]="{'modalShadow' : questionAnswerModal}"
+  class="p-2">
+  <p-header>
+    <h4>جواب های سوال</h4>
+  </p-header>
+  <div class="col-12 text-right">
+    <div class="col-12 mt-3">
+      <label for="normalAnswer"> عنوان جواب</label>
+      <div class="position-relative">
+        <input type="text" class="form-control" id="titleQuestionAnswer" [(ngModel)]="titleQuestionAnswer"
+          [ngModelOptions]="{standalone: true}">
+      </div>
+    </div>
+    <div class="col-12 text-center mt-3 mb-3">
+      <button type="submit" class="btn btn-danger" (click)="saveQuestionAnswer()">ذخیره </button>
+    </div>
+
+    <div *ngIf="answersPerQuestion.length > 0" class="col-12 mt-3">
+      <p-table #dt styleClass="p-datatable-gridlines" [value]="answersPerQuestion" [autoLayout]="true"
+        [paginator]="false" [rows]="10" [showCurrentPageReport]="false"
+        currentPageReportTemplate="نمایش {first} تا {last} " [rowsPerPageOptions]="[10,25,50]">
+        <ng-template pTemplate="header">
+          <tr>
+            <th>
+              عنوان جواب
+            </th>
+            <th></th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
+          <tr [ngClass]="{'bg-main-outline': item.id == editOrNewSection}">
+            <td class="px-2">
+              <div class="py-2 widthClassPrime">
+                <span>{{item.title}}</span>
+              </div>
+            </td>
+            <td class="px-2">
+              <button class="btn btn-warning mr-3" (click)="editQuestionAnswer(item)">ویرایش جواب</button>
+              <button class="btn btn-danger mr-3" (click)="deleteQuestionAnswer(item.id)">حذف جواب</button>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+</p-dialog>
