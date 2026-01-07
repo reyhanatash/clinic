@@ -121,38 +121,43 @@
                 <label for="">نمایش یادداشت ها بیماران در زمان پذیرش و وقت دهی و پرونده بالینی</label>
             </div>
         </div>
-        <div class="col-md-4 col-12 mt-2">
-            <div class="dashed_upload p-5 pointer" (click)="fileInput.click()">
-                <div class="wrapper">
-                    <div class="drop">
-                        <div class="cont col-12 d-flex flex-column align-items-center">
-                            <i class="fa fa-cloud-upload"></i>
-                            <div class="">
-                                <h5>
-                                    بکشید و رها کنید
-                                </h5>
-                            </div>
-                            <div class="desc my-2">
-                                یا
-                            </div>
-                            <div>
-                                برای انتخاب فایل کلیک کنید
-                            </div>
-                            <small class="my-3">
-                                فرمت های مجاز :jpg, jpeg, png
-                            </small>
-                        </div>
-                        <output id="list"></output><input #fileInput id="files" class="d-none" type="file"
-                            (change)="handleFileInput($event.target.files)">
-                    </div>
-                </div>
-                <div *ngIf="fileName" class="d-flex align-items-center justify-content-center">
-                    <small>{{fileName}}</small>
-                    <a (click)='removeFile($event)' class='pointer text-danger mx-2'><i class='fa fa-trash'></i></a>
-                </div>
-            </div>
-        </div>
-        <div class="col-12 d-flex justify-content-center">
-            <button class="btn btn-success" (click)="updateSettings()">ذخیره تنظیمات</button>
+        <div class="col-md-4 col-12 text-right">
+            <label for="">درصد روزهای پر نشده</label>
+            <input type="text" class="form-control" [(ngModel)]="newGeneralSetting.nonFilledDays">
         </div>
     </div>
+    <div class="col-md-4 col-12 mt-2">
+        <div class="dashed_upload p-5 pointer" (click)="fileInput.click()">
+            <div class="wrapper">
+                <div class="drop">
+                    <div class="cont col-12 d-flex flex-column align-items-center">
+                        <i class="fa fa-cloud-upload"></i>
+                        <div class="">
+                            <h5>
+                                بکشید و رها کنید
+                            </h5>
+                        </div>
+                        <div class="desc my-2">
+                            یا
+                        </div>
+                        <div>
+                            برای انتخاب فایل کلیک کنید
+                        </div>
+                        <small class="my-3">
+                            فرمت های مجاز :jpg, jpeg, png
+                        </small>
+                    </div>
+                    <output id="list"></output><input #fileInput id="files" class="d-none" type="file"
+                        (change)="handleFileInput($event.target.files)">
+                </div>
+            </div>
+            <div *ngIf="fileName" class="d-flex align-items-center justify-content-center">
+                <small>{{fileName}}</small>
+                <a (click)='removeFile($event)' class='pointer text-danger mx-2'><i class='fa fa-trash'></i></a>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 d-flex justify-content-center">
+        <button class="btn btn-success" (click)="updateSettings()">ذخیره تنظیمات</button>
+    </div>
+</div>
