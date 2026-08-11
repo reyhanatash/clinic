@@ -172,6 +172,7 @@ export class NavbarComponent {
           if (res['status'] == 0) {
             this.toastR.success('با موفقیت حذف گردید');
             this.router.navigate(['/patients']);
+            return false;
           }
         }
       }
